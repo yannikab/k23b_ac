@@ -1,0 +1,151 @@
+% hello.tex - Our first LaTeX sample!
+% \documentclass{article}
+
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{Linux Libertine}
+% \setmainfont[Ligatures=TeX]{Droid Sans}
+% \setmainfont[Ligatures=TeX]{DejaVu Sans}
+\setmonofont{Consolas}[Scale=MatchLowercase]
+
+% \usepackage{fullpage}
+% \usepackage[margin=1in]{geometry}
+\usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
+
+\usepackage{listings}
+\lstset{%
+	language=Java,
+	basicstyle=\footnotesize,
+	frame=single
+	}
+
+
+\begin{document}
+
+\begin{sloppypar}
+
+\title{Software Agent}
+\author{Καμπυλαυκάς Ιωάννης \\ sdi9500781@di.uoa.gr \and Σούλης Αθανάσιος \\ sdi0900155@di.uoa.gr}
+\date{13 Νοεμβρίου 2015}
+\renewcommand{\contentsname}{Περιεχόμενα}
+
+% \tableofcontents
+
+\maketitle
+
+\section{Η συγχρονισμένη ουρά}
+
+\subsection{Το interface \texttt{IBlockingQueue<E>}}
+
+\begin{lstlisting}
+public interface IBlockingQueue<E> {
+    public void put(E item) throws InterruptedException;
+    public E get() throws InterruptedException;
+    public E peek();
+    public int size();
+    boolean hasMaxSize();
+}
+
+\end{lstlisting}
+
+Το interface \texttt{IBlockingQueue<E>} αποτελεί μια γενικευμένη αφαίρεση για μια συγχρονισμένη ουρά αντικειμένων τύπου \texttt{E}, με προαιρετικό μέγιστο μέγεθος. Η μέθοδος \texttt{put()} πέφτει σε αναμονή στην περίπτωση που το τρέχον μέγεθος της ουράς είναι ίσο με το προαιρετικό μέγιστο. Ομοίως η κλήση \texttt{get()} πέφτει σε αναμονή στην περίπτωση που η ουρά είναι κενή. Η μέθοδος \texttt{peek()} επιστρέφει το πρώτο αντικείμενο της ουράς όπως και η \texttt{get()}, χωρίς όμως να το αφαιρέσει από την ουρά. Η μέθοδος \texttt{size()} επιστρέφει το τρέχον μέγεθος της ουράς. Οι κλάσεις που υλοποιούν το παραπάνω interface πρέπει επίσης να επιστρέφουν αν έχει τεθεί μέγιστο μέγεθος για την ουρά, με τη μέθοδο \texttt{hasMaxSize()}.
+
+Στο παραδοτέο υπάρχουν δύο υλοποιήσεις του \texttt{IBlockingQueue<E>} με τελείως ισοδύναμη συμπεριφορά αλλά διαφορετική μέθοδο συγχρονισμού. Στο τελικό παραδοτέο στο οποίο υπάρχουν δύο ουρές (μία για τις εργασίες που εκτελούνται μία φορά και μία για τα αποτελέσματα όλων των εργασιών) χρησιμοποιείται από μία φορά η κάθε υλοποίηση.
+
+\subsection{Η κλάση \texttt{WaitNotifyQueue<E>}}
+
+Η κλάση \texttt{WaitNotifyQueue<E>} περιέχει μια εσωτερική μη συγχρονισμένη ουρά τύπου \texttt{Queue<E>}. Ο έλεγχος της πρόσβασης στη δομή αυτή γίνεται με τη χρήση κλήσεων \texttt{wait()} και \texttt{notify()} μέσα σε \texttt{synchronized} blocks των μεθόδων \texttt{put()} και \texttt{get()} της κλάσης.
+
+\subsection{Η κλάση \texttt{SemaphoreQueue<E>}}
+
+Η κλάση \texttt{SemaphoreQueue<E>} περιέχει κι αυτή μια μη συγχρονισμένη εσωτερική ουρά, η σωστή όμως πρόσβαση σε αυτή γίνεται χρησιμοποιώντας σημαφόρους. Ο σημαφόρος \texttt{occupied} αντιστοιχεί στις κατειλημμένες θέσεις της ουράς και χρησιμοποιείται πάντα ενώ ο σημαφόρος \texttt{available} αντιστοιχεί στις διαθέσιμες θέσεις της ουράς και χρησιμοποιείται μόνο αν έχει προσδιοριστεί μέγιστο μέγεθος για την ουρά. Μετά τον έλεγχο για κενή/γεμάτη ουρά με τον αντίστοιχο σημαφόρο, το νήμα θα πρέπει να μπει σε \texttt{synchronized} block για να έχει πρόσβαση στην εσωτερική ουρά, όπως και στην περίπτωση της \texttt{WaitNotifyQueue<E>}.
+
+\section{Η υπηρεσία εκτέλεσης εργασιών}
+
+\subsection{To interface IExecutorService}
+
+\begin{lstlisting}
+public interface IExecutorService {
+    boolean submit(Runnable r);
+    void shutdown();
+    void awaitTermination() throws InterruptedException;
+}
+
+\end{lstlisting}
+
+Το interface αυτό αποτελεί μια βασική αφαίρεση για μια υπηρεσία εκτέλεσης \texttt{Runnable} αντικειμένων. Με τη μέθοδο \texttt{submit()} γίνεται υποβολή του \texttt{Runnable} για εκτέλεση και η κλήση επιστρέφει \texttt{true} μετά από επιτυχή υποβολή και \texttt{false} σε αντίθετη περίπτωση. Με τη μέθοδο \texttt{shutdown()} ειδοποιούνται οι εργασίες που έχουν ήδη ξεκινήσει να τερματίσουν και γίνεται αδύνατη η υποβολή περαιτέρω εργασιών. Κάθε κλήση της μεθόδου \texttt{submit()} μετά απο κλήση \texttt{shutdown()} επιστρέφει \texttt{false}. Με τη μέθοδο \texttt{awaitTermination()} γίνεται αναμονή για την ολοκλήρωση των εργασιών υπό τερματισμό. Η μέθοδος δεν επιστρέφει παρά μόνο όταν ολοκληρωθούν όλες οι εργασίες οι οποίες είχαν προλάβει να ξεκινήσουν όταν ζητήθηκε τερματισμός. Η μοναδική υλοποίηση του \texttt{IExecutorService} στο παραδοτέο είναι η κλάση \texttt{ThreadPool}.
+
+\subsection{Η κλάση \texttt{ThreadPool}}
+
+Η κλάση \texttt{ThreadPool} υλοποιεί το interface \texttt{IExecutorService} χρησιμοποιώντας ένα σύνολο νημάτων τύπου \texttt{WorkerThread}, το πλήθος των οποίων προσδιορίζεται στον constructor της κλάσης. Εσωτερικά περιέχει μια ουρά \texttt{IBlockingQueue<Runnable>} (χρησιμοποιήθηκε η \texttt{SemaphoreQueue<Runnable>}) από την οποία τα νήματα εξάγουν \texttt{Runnables} και τα εκτελούν. Αν η ουρά είναι κενή και κάποιο νήμα προσπαθήσει να εξάγει ένα \texttt{Runnable} από αυτή, τότε το νήμα περνάει σε αναμονή. Αυτό γίνεται στην κλήση της μεθόδου \texttt{get()} του \texttt{IBlockingQueue<E>} interface που υλοποιείται από την ουρά.
+
+\subsection{Η κλάση WorkerThread}
+
+Η κλάση \texttt{WorkerThread} είναι υποκλάση της \texttt{Thread} και χρησιμοποιείται από την κλάση \texttt{ThreadPool}. Όσο ένα \texttt{WorkerThread} είναι ενεργό, προσπαθεί να πάρει κάποιο \texttt{Runnable} από την ουρά που του έχει περαστεί ως παράμετρος κατά την κατασκευή του. Ακολούθως εκτελεί τη μέθοδο \texttt{run()} του \texttt{Runnable}. Ένα \texttt{WorkerThread} μπορεί να τερματίσει είτε σε χρονική στιγμή που περιμένει στη μέθοδο \texttt{get()} του \texttt{IBlockingQueue<Runnable>} ή κατά τη διάρκεια της εκτέλεσης του run() του \texttt{Runnable} που έχει αναλάβει. Στη δεύτερη περίπτωση, και αν το \texttt{Runnable} χειριστεί εσωτερικά κάποιο InterruptedException, πρέπει να φροντίσει να θέσει ξανά το interrupted status σε \texttt{true} πριν την ολοκλήρωση της \texttt{run()} μεθόδου του, έτσι ώστε να τερματίσει το \texttt{WorkerThread} που το έχει αναλάβει.
+
+\pagebreak
+
+\section{Ο πάροχος εργασιών}
+
+\subsection{Το interface \texttt{IJobProvider}}
+
+\begin{lstlisting}
+public interface IJobProvider {
+    public boolean hasMoreJobs();
+    public Job[] getNextJobs();
+}
+\end{lstlisting}
+
+Πρόκειται για ένα απλό interface για την λήψη εργασιών προς εκτέλεση από κάποια πηγή. Στο παραδοτέο υπάρχουν δύο υλοποιήσεις του παραπάνω interface. Η κλάση \texttt{Job} περιέχει όλες τις πληροφορίες μιας εργασίας καθώς και την έξοδο της, αν η εργασία έχει ολοκληρωθεί. Η κλάση \texttt{Job} υλοποιεί το interface \texttt{Runnable} και η μέθοδος \texttt{run()} αναλαμβάνει να εκτελέσει την nmap διεργασία και να παραλάβει την έξοδο.  
+
+\subsection{H κλάση \texttt{JobGenerator}}
+
+Η συγκεκριμένη κλάση έχει τη χρησιμότητα του να παράγει ένα σχετικά μεγάλο πλήθος εργασιών από ένα μικρό πραγματικό αρχείο και χρησιμοποιήθηκε κατά τον έλεγχο του προγράμματος. Δημιουργεί πολλές εργασίες με αυξανόμενα \texttt{id}, όμως οι παράμετροι της κάθε μίας έχουν απλά επιλεγεί τυχαία από τις ενδεχομένως λίγες διαθέσιμες εργασίες του αρχείου.
+
+\subsection{H κλάση \texttt{JobReader}}
+
+Η κλάση \texttt{JobReader} λειτουργεί πιο συμβατικά, διαβάζοντας ένα αρχείο εισόδου με τη σειρά και επιστρέφοντας όλες τις εργασίες έως ότου φθάσει στο τέλος του. Προορίζεται για χρήση με μεγάλα αρχεία εισόδου τα οποία διαβάζει σταδιακά. Επειδή διαβάζει σταδιακά, υπάρχει μια μικρή ασυνέπεια στην υλοποίηση του interface υπό την έννοια ότι μπορεί να επιστρέψει \texttt{true} σε μια κλήση \texttt{hasMoreJobs()} και ακολούθως να επιστρέψει 0 εργασίες. Αυτό μπορεί να συμβεί το πολύ μια φορά, στην περίπτωση που έχουμε φτάσει ακριβώς στο τέλος του αρχείου με την προηγούμενη ανάγνωση. Κάθε επόμενη κλήση της \texttt{hasMoreJobs()} επιστρέφει \texttt{false}.
+
+\section{Εκτέλεση του προγράμματος}
+
+\subsection{Μεταγλώττιση}
+
+Στον φάκελο k23b/sa όπου βρίσκεται το αρχείο \texttt{pom.xml} του Maven project εκτελούμε:
+
+\texttt{mvn clean package}\newline
+Στον φάκελο \texttt{target} θα αντιγραφούν τα αρχεία \texttt{jobList.txt} και \texttt{sa.properties} που απαιτούνται για την εκτέλεση του προγράμματος. Επίσης δημιουργούνται δύο \texttt{.jar} αρχεία, ένα που περιλαμβάνει τις εξαρτήσεις του project και ένα χωρίς αυτές. Εκτελούμε το πρόγραμμα με:
+
+\texttt{java -jar sa-0.0.1-SNAPSHOT-jar-with-dependencies.jar}\newline
+Η μοναδική εξωτερική εξάρτηση του προγράμματος είναι η βιβλιοθήκη logging log4j. Κατά την εκτέλεση του προγράμματος δημιουργείται φάκελος \texttt{log/} που περιέχει το αρχείο \texttt{sa.log}. Στο αρχείο \texttt{log4j.properties} που επίσης αντιγράφεται από το φάκελο του project στον φάκελο \texttt{target} κατά τη μεταγλώττιση, μπορεί να επιλεγεί το επιθυμητό επίπεδο logging (\texttt{DEBUG}, \texttt{INFO}, \texttt{ERROR}).
+
+\pagebreak
+
+\subsection{Ρυθμίσεις}
+
+Στο παραδοτέο περιλαμβάνεται το αρχείο \texttt{sa.properties} με τις εξής ρυθμίσεις:\newline
+
+\noindent\begin{tabular}{lp{11cm}}
+
+\texttt{jobFileName=jobfile.txt} & (όνομα του αρχείου εργασιών, στον ίδιο κατάλογο)\\
+\texttt{generateJobs=true} & (\texttt{true}: χρήση \texttt{JobGenerator}, \texttt{false}: χρήση \texttt{JobReader})\\
+\texttt{jobRequestInterval=60} & (χρονικό διάστημα μεταξύ δυο αιτημάτων για νέες εργασίες)\\
+\texttt{maxNextJobs=15} & (μέγιστο πλήθος εργασιών που επιστρέφονται σε ένα αίτημα)\\
+\texttt{threadPoolSize=5} & (πλήθος των worker threads στο thread pool)\\
+\texttt{runNmapAsRoot=true} & (εκτέλεση διεργασιών με \texttt{"sudo nmap ..."} αντί για \texttt{"nmap ..."})\\
+\texttt{resultsQueueMax=10} & (μέγιστο μέγεθος ουράς αποτελεσμάτων)\\
+\texttt{senderThreadInterval=15} & (χρονικό διάστημα μεταξύ δύο αποστολών αποτελεσμάτων)\\
+
+\end{tabular}
+
+\subsection{Λειτουργία}
+
+Το κυρίως νήμα ξεκινά διαβάζοντας τις ρυθμίσεις χρησιμοποιώντας τη βοηθητική κλάση \texttt{Settings}. Ακολούθως δημιουργεί μια λίστα που θα κρατήσει τα νήματα που εκτελούν τις περιοδικές εργασίες (αντικείμενα τύπου \texttt{PeriodicThread}), καθώς και ένα \texttt{ThreadPool} για τις μη περιοδικές εργασίες. Το \texttt{ThreadPool} αρχικοποιεί την εσωτερική του ουρά από \texttt{Runnables} (αρχικά κενή) και ξεκινά τα \texttt{WorkerThreads} του. Αμέσως μετά, το κυρίως νήμα δημιουργεί μια ουρά αποτελεσμάτων, τύπου \texttt{IBlockingQueue<Result>} (εδώ χρησιμοποιήθηκε η κλάση \texttt{WaitNotifyQueue<Result>}), και ξεκινά ένα \texttt{SenderThread} το οποίο αναλαμβάνει περιοδικά το άδειασμα της ουράς και την αποστολή των αποτελεσμάτων που αυτή περιέχει στον Aggregator Manager. Το κυρίως νήμα χρησιμοποιώντας τη μέθοδο \texttt{addShutdownHook()} της κλάσης \texttt{Runtime} και περνώντας της ως παράμετρο ένα αντικείμενο τύπου \texttt{ShutdownThread} εξασφαλίζει τον σωστό τερματισμό των νημάτων όταν ληφθεί το σήμα \texttt{SIGINT}. Αμέσως μετά δημιουργείται ένας \texttt{IJobProvider} (\texttt{JobGenerator} ή \texttt{JobReader} ανάλογα με τη σχετική ρύθμιση) και το κυρίως νήμα ξεκινά περιοδικά να παίρνει εργασίες από αυτόν και ανάλογα με το αν είναι περιοδικές η όχι να τις υποβάλλει στο \texttt{ThreadPool} ή να δημιουργεί ένα νέο \texttt{PeriodicThread} το οποίο προσθέτει και στη σχετική λίστα που διατηρεί. Έχει γίνει η επιλογή να υπάρχει ένα μέγιστο μέγεθος της ουράς αποτελεσμάτων έτσι ώστε να αποφεύγεται τυχόν συμφόρηση του δικτύου ή του Aggregator Manager λόγω μεγάλου πλήθους αποτελεσμάτων σε μια αποστολή. Αυτό έχει σαν αποτέλεσμα το ενδεχόμενο τα \texttt{WorkerThreads} και \texttt{PeriodicThreads} να πέσουν σε αναμονή καλώντας τη μέθοδο \texttt{put()} της ουράς αποτελεσμάτων. Για την ουρά από \texttt{Runnables} του \texttt{ThreadPool} δεν υπάρχει κάποιος περιορισμός μεγέθους έτσι ώστε κάθε φορά που έρχονται νέες εργασίες να είναι δυνατή η υποβολή τους χωρίς να χαθούν.
+
+\subsection{Τερματισμός}
+
+Κατά τον τερματισμό, το \texttt{ShutdownThread} αρχικά ειδοποιεί το κυρίως νήμα να τερματίσει, έτσι ώστε να μην υποβάλλονται νέες εργασίες στο σύστημα. Ακολούθως ειδοποιούνται από το νήμα τερματισμού τα \texttt{WorkerThreads} (εμμέσως μέσω της \texttt{ThreadPool}) και \texttt{PeriodicThreads} (άμεσα) να τερματίσουν. Σε αυτή την φάση, αν κάποιο νήμα βρίσκεται στο στάδιο εκτέλεσης μιας εργασίας, δεν τερματίζει άμεσα αλλά μόνο όταν αυτή ολοκληρωθεί και τοποθετήσει τα αποτελέσματα της στη σχετική ουρά. Το νήμα τερματισμού, αφού περιμένει για τον τερματισμό των \texttt{PeriodicThreads} και του \texttt{ThreadPool}, ειδοποιεί τελευταίο το \texttt{SenderThread} το οποίο έχει την ευκαιρία να αδειάσει την ουρά αποτελεσμάτων από τα τελευταία αποτελέσματα και να τα στείλει στον Aggregator Manager. (Η παραπάνω συμπεριφορά γίνεται εμφανής με χρήση του kill -SIGINT <java pid>, αφού με Ctrl-C από το τερματικό οι nmap διεργασίες τερματίζουν βίαια χωρίς το πρόγραμμα να πάρει τα αποτελέσματα).
+
+\end{sloppypar}
+
+\end{document}
