@@ -1,0 +1,5 @@
+amdb_admin
+amdb_request
+amdb_agent
+amdb_job
+amdb_result

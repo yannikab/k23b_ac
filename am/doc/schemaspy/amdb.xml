@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="amdb" type="MySQL - 5.6.26-log">
+   <tables>
+      <table name="amdb_admin" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="ADMIN_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="ADMIN_ID" foreignKey="FK_AGENT_ADMIN" implied="false" onDeleteCascade="false" table="amdb_agent"/>
+            <child column="ADMIN_ID" foreignKey="FK_JOB_ADMIN" implied="false" onDeleteCascade="false" table="amdb_job"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="USERNAME" nullable="false" remarks="" size="40" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="2" name="PASSWORD" nullable="false" remarks="" size="64" type="CHAR"/>
+         <column autoUpdated="false" digits="0" id="3" name="ACTIVE" nullable="false" remarks="" size="1" type="BIT"/>
+         <primaryKey column="ADMIN_ID" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="ADMIN_ID"/>
+         </index>
+         <index name="UK_USERNAME" unique="true">
+            <column ascending="true" name="USERNAME"/>
+         </index>
+      </table>
+      <table name="amdb_agent" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="AGENT_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="AGENT_ID" foreignKey="FK_JOB_AGENT" implied="false" onDeleteCascade="false" table="amdb_job"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="REQUEST_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="REQUEST_ID" foreignKey="FK_AGENT_REQUEST" implied="false" onDeleteCascade="false" table="amdb_request"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="ADMIN_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="ADMIN_ID" foreignKey="FK_AGENT_ADMIN" implied="false" onDeleteCascade="false" table="amdb_admin"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="TIME_ACCEPTED" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="4" name="TIME_JOBREQUEST" nullable="true" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="5" name="TIME_TERMINATED" nullable="true" remarks="" size="19" type="DATETIME"/>
+         <primaryKey column="AGENT_ID" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="AGENT_ID"/>
+         </index>
+         <index name="FK_AGENT_ADMIN" unique="false">
+            <column ascending="true" name="ADMIN_ID"/>
+         </index>
+         <index name="UK_REQUEST_ID" unique="true">
+            <column ascending="true" name="REQUEST_ID"/>
+         </index>
+      </table>
+      <table name="amdb_job" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="JOB_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="JOB_ID" foreignKey="FK_RESULT_JOB" implied="false" onDeleteCascade="false" table="amdb_result"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="AGENT_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="AGENT_ID" foreignKey="FK_JOB_AGENT" implied="false" onDeleteCascade="false" table="amdb_agent"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="ADMIN_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="ADMIN_ID" foreignKey="FK_JOB_ADMIN" implied="false" onDeleteCascade="false" table="amdb_admin"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="3" name="TIME_ASSIGNED" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="4" name="TIME_SENT" nullable="true" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="5" name="PARAMS" nullable="false" remarks="" size="100" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="6" name="PERIODIC" nullable="false" remarks="" size="1" type="BIT"/>
+         <column autoUpdated="false" digits="0" id="7" name="PERIOD" nullable="true" remarks="" size="10" type="INT"/>
+         <column autoUpdated="false" digits="0" id="8" name="TIME_STOPPED" nullable="true" remarks="" size="19" type="DATETIME"/>
+         <primaryKey column="JOB_ID" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="JOB_ID"/>
+         </index>
+         <index name="FK_JOB_ADMIN" unique="false">
+            <column ascending="true" name="ADMIN_ID"/>
+         </index>
+         <index name="FK_JOB_AGENT" unique="false">
+            <column ascending="true" name="AGENT_ID"/>
+         </index>
+      </table>
+      <table name="amdb_request" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="REQUEST_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="REQUEST_ID" foreignKey="FK_AGENT_REQUEST" implied="false" onDeleteCascade="false" table="amdb_agent"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="HASH" nullable="false" remarks="" size="64" type="CHAR"/>
+         <column autoUpdated="false" digits="0" id="2" name="DEVICE_NAME" nullable="true" remarks="" size="100" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="3" name="INTERFACE_IP" nullable="true" remarks="" size="100" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="4" name="INTERFACE_MAC" nullable="true" remarks="" size="100" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="5" name="OS_VERSION" nullable="true" remarks="" size="100" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="6" name="NMAP_VERSION" nullable="true" remarks="" size="100" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="7" name="STATUS" nullable="false" remarks="" size="10" type="INT"/>
+         <column autoUpdated="false" digits="0" id="8" name="TIME_RECEIVED" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <primaryKey column="REQUEST_ID" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="REQUEST_ID"/>
+         </index>
+         <index name="UK_HASH" unique="true">
+            <column ascending="true" name="HASH"/>
+         </index>
+      </table>
+      <table name="amdb_result" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="RESULT_ID" nullable="false" remarks="" size="19" type="BIGINT"/>
+         <column autoUpdated="false" digits="0" id="1" name="JOB_ID" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="JOB_ID" foreignKey="FK_RESULT_JOB" implied="false" onDeleteCascade="false" table="amdb_job"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="0" id="2" name="TIME_RECEIVED" nullable="false" remarks="" size="19" type="TIMESTAMP"/>
+         <column autoUpdated="false" digits="0" id="3" name="OUTPUT" nullable="true" remarks="" size="16777215" type="MEDIUMTEXT"/>
+         <primaryKey column="RESULT_ID" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="RESULT_ID"/>
+         </index>
+         <index name="FK_RESULT_JOB" unique="false">
+            <column ascending="true" name="JOB_ID"/>
+         </index>
+      </table>
+   </tables>
+</database>

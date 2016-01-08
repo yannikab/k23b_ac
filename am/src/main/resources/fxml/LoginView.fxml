@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.66" xmlns:fx="http://javafx.com/fxml/1" fx:controller="k23b.am.view.LoginController">
+  <children>
+    <VBox>
+      <children>
+        <GridPane hgap="10.0" vgap="10.0">
+          <columnConstraints>
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+          </rowConstraints>
+          <children>
+            <TextField fx:id="usernameField" alignment="CENTER" maxWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Username:" GridPane.halignment="RIGHT" />
+            <Label text="Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+          </children>
+          <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+          </padding>
+        </GridPane>
+        <GridPane>
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+          <children>
+            <Button mnemonicParsing="false" onAction="#logInPressed" prefWidth="65.0" text="Login" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#cancelPressed" prefWidth="65.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+          </children>
+          <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="5.0" />
+          </padding>
+        </GridPane>
+      </children>
+    </VBox>
+  </children>
+</AnchorPane>
