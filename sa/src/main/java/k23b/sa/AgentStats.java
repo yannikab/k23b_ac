@@ -1,7 +1,7 @@
 package k23b.sa;
 
 /**
- * 	A class holding the statistics for this exact SA
+ * A class holding the statistics for this exact SA
  */
 public class AgentStats {
 

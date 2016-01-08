@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import k23b.sa.Threads.MainThread;
 
 /**
- * 	The mother class that holds and can change the current State of the SA.
+ * The mother class that holds and can change the current State of the SA.
  */
 
 public abstract class AgentState {
@@ -30,6 +30,6 @@ public abstract class AgentState {
         log.info(message);
         System.out.println(message);
     }
-    
+
     public abstract void handleState();
 }

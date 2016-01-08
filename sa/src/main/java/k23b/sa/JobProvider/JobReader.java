@@ -21,95 +21,92 @@ import org.apache.log4j.Logger;
  */
 public class JobReader implements IJobProvider {
 
-	private static final Logger log = Logger.getLogger(JobReader.class);
+    private static final Logger log = Logger.getLogger(JobReader.class);
 
-	private int maxNextJobs;
+    private int maxNextJobs;
 
-	private static final Random random = new Random(System.currentTimeMillis());
+    private static final Random random = new Random(System.currentTimeMillis());
 
-	private String jobFileName;
-	private File jobFile;
+    private String jobFileName;
+    private File jobFile;
 
-	private BufferedReader br;
+    private BufferedReader br;
 
-	private boolean isFileOpen;
+    private boolean isFileOpen;
 
-	private IBlockingQueue<Result> jobResultsBlockingQueue;
-	
-	public JobReader(String jobFileName, int maxNextJobs, IBlockingQueue<Result> jobResultsBlockingQueue) {
+    private IBlockingQueue<Result> jobResultsBlockingQueue;
 
-		this.jobFileName = jobFileName;
-		this.maxNextJobs = maxNextJobs;
-		this.jobResultsBlockingQueue = jobResultsBlockingQueue;
-		
-		this.isFileOpen = false;
+    public JobReader(String jobFileName, int maxNextJobs, IBlockingQueue<Result> jobResultsBlockingQueue) {
 
-		openFile();
-	}
+        this.jobFileName = jobFileName;
+        this.maxNextJobs = maxNextJobs;
+        this.jobResultsBlockingQueue = jobResultsBlockingQueue;
 
-	@Override
-	public boolean hasMoreJobs() {
-		return this.isFileOpen;
-	}
+        this.isFileOpen = false;
 
-	@Override
-	public Job[] getNextJobs() {
+        openFile();
+    }
 
-		int nextJobs = random.nextInt(this.maxNextJobs);
+    @Override
+    public boolean hasMoreJobs() {
+        return this.isFileOpen;
+    }
 
-		List<Job> jobList = new ArrayList<Job>();
+    @Override
+    public Job[] getNextJobs() {
 
-		try {
+        int nextJobs = random.nextInt(this.maxNextJobs);
 
-			for (int i = 0; i < nextJobs && hasMoreJobs(); i++) {
+        List<Job> jobList = new ArrayList<Job>();
 
-				String line = br.readLine();
+        try {
 
-				if (line == null)
-				{
-					closeFile();
-					break;
+            for (int i = 0; i < nextJobs && hasMoreJobs(); i++) {
 
-				} else {
+                String line = br.readLine();
 
-					jobList.add(new LineParser(line, this.jobResultsBlockingQueue).getJob());
-				}
-			}
-		} catch (IOException e) {
-			log.error("Error while reading from file: " + jobFile.toString());
-		}
+                if (line == null) {
+                    closeFile();
+                    break;
 
-		return jobList.toArray(new Job[0]);
-	}
+                } else {
 
-	private void openFile()
-	{
-		this.jobFile = new File(this.jobFileName);
+                    jobList.add(new LineParser(line, this.jobResultsBlockingQueue).getJob());
+                }
+            }
+        } catch (IOException e) {
+            log.error("Error while reading from file: " + jobFile.toString());
+        }
 
-		try {
+        return jobList.toArray(new Job[0]);
+    }
 
-			FileReader fr = new FileReader(this.jobFile);
-			this.br = new BufferedReader(fr);
+    private void openFile() {
+        this.jobFile = new File(this.jobFileName);
 
-			this.isFileOpen = true;
+        try {
 
-		} catch (FileNotFoundException e) {
-			log.error("File not found: " + this.jobFile.toString());
-		}
-	}
+            FileReader fr = new FileReader(this.jobFile);
+            this.br = new BufferedReader(fr);
 
-	private void closeFile()
-	{
-		try {
+            this.isFileOpen = true;
 
-			log.info("Closing file: " + this.jobFile.toString());
+        } catch (FileNotFoundException e) {
+            log.error("File not found: " + this.jobFile.toString());
+        }
+    }
 
-			this.br.close();
+    private void closeFile() {
+        try {
 
-		} catch (IOException e) {
-			log.error("Error while closing file: " + this.jobFile.toString());
-		} finally {
-			this.isFileOpen = false;
-		}
-	}
+            log.info("Closing file: " + this.jobFile.toString());
+
+            this.br.close();
+
+        } catch (IOException e) {
+            log.error("Error while closing file: " + this.jobFile.toString());
+        } finally {
+            this.isFileOpen = false;
+        }
+    }
 }

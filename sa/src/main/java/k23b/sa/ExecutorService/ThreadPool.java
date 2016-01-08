@@ -13,108 +13,108 @@ import org.apache.log4j.Logger;
 
 public class ThreadPool implements IExecutorService {
 
-	private static final Logger log = Logger.getLogger(ThreadPool.class);
+    private static final Logger log = Logger.getLogger(ThreadPool.class);
 
-	private IBlockingQueue<Runnable> threadPoolBlockingQueue;
+    private IBlockingQueue<Runnable> threadPoolBlockingQueue;
 
-	private WorkerThread[] workerThreads;
+    private WorkerThread[] workerThreads;
 
-	private volatile boolean threadsRunning;
+    private volatile boolean threadsRunning;
 
-	private volatile boolean isShutDown;
+    private volatile boolean isShutDown;
 
-	private String name;
+    private String name;
 
-	/**
-	 * @param name the name of the thread pool
-	 * @param size the amount of WorkerThreads in the thread pool
-	 */
-	public ThreadPool(String name, int size) {
+    /**
+     * @param name the name of the thread pool
+     * @param size the amount of WorkerThreads in the thread pool
+     */
+    public ThreadPool(String name, int size) {
 
-		this.name = name;
+        this.name = name;
 
-		log.info(this + ": Creating " + size + " worker threads.");
+        log.info(this + ": Creating " + size + " worker threads.");
 
-		threadPoolBlockingQueue = new SemaphoreQueue<Runnable>("threadPoolBlockingQueue");
+        threadPoolBlockingQueue = new SemaphoreQueue<Runnable>("threadPoolBlockingQueue");
 
-		workerThreads = new WorkerThread[size];
+        workerThreads = new WorkerThread[size];
 
-		for (int i = 0; i < workerThreads.length; i++) {
-			workerThreads[i] = new WorkerThread(i, threadPoolBlockingQueue);
-		}
+        for (int i = 0; i < workerThreads.length; i++) {
+            workerThreads[i] = new WorkerThread(i, threadPoolBlockingQueue);
+        }
 
-		log.info(this + ": Created " + size + " worker threads.");
+        log.info(this + ": Created " + size + " worker threads.");
 
-		threadsRunning = true;
-		isShutDown = false;
-	}
+        threadsRunning = true;
+        isShutDown = false;
+    }
 
-	/**
-	 * Submitting the runnable for execution
-	 * 
-	 * @param r a Runnable for execution
-	 * @return True after a successful submission; False otherwise
-	 */
+    /**
+     * Submitting the runnable for execution
+     * 
+     * @param r a Runnable for execution
+     * @return True after a successful submission; False otherwise
+     */
 
-	@Override
-	public synchronized boolean submit(Runnable r) {
+    @Override
+    public synchronized boolean submit(Runnable r) {
 
-		if (isShutDown)
-			return false;
+        if (isShutDown)
+            return false;
 
-		try {
+        try {
 
-			threadPoolBlockingQueue.put(r);
+            threadPoolBlockingQueue.put(r);
 
-			return true;
+            return true;
 
-		} catch (InterruptedException e) {
+        } catch (InterruptedException e) {
 
-			log.info(this + ": Interrupted while putting item in queue.");
+            log.info(this + ": Interrupted while putting item in queue.");
 
-			Thread.currentThread().interrupt();
+            Thread.currentThread().interrupt();
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
-	/**
-	 * Running tasks are notified to complete and further submissions are prohibited
-	 */
-	@Override
-	public synchronized void shutdown() {
+    /**
+     * Running tasks are notified to complete and further submissions are prohibited
+     */
+    @Override
+    public synchronized void shutdown() {
 
-		if (threadsRunning) {
+        if (threadsRunning) {
 
-			log.info(this + ": Shutting down worker threads.");
+            log.info(this + ": Shutting down worker threads.");
 
-			for (WorkerThread t : workerThreads)
-				t.interrupt();
+            for (WorkerThread t : workerThreads)
+                t.interrupt();
 
-			isShutDown = true;
-		}
-	}
+            isShutDown = true;
+        }
+    }
 
-	/**
-	 * Wait for the tasks under completion to end. It is used after the {@link #submit(Runnable) submit} method.
-	 * 
-	 * @throws InterruptedException if interrupted while waiting
-	 */
-	@Override
-	public synchronized void awaitTermination() throws InterruptedException {
+    /**
+     * Wait for the tasks under completion to end. It is used after the {@link #submit(Runnable) submit} method.
+     * 
+     * @throws InterruptedException if interrupted while waiting
+     */
+    @Override
+    public synchronized void awaitTermination() throws InterruptedException {
 
-		log.info(this + ": Awaiting thread termination.");
+        log.info(this + ": Awaiting thread termination.");
 
-		for (WorkerThread t : workerThreads)
-			t.join();
+        for (WorkerThread t : workerThreads)
+            t.join();
 
-		threadsRunning = false;
+        threadsRunning = false;
 
-		log.info(this + ": All worker threads finished.");
-	}
+        log.info(this + ": All worker threads finished.");
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

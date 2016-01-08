@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import k23b.sa.Result;
 
 /**
- * 	A list for the compact distribution of a batch of Results to the AM. 
+ * A list for the compact distribution of a batch of Results to the AM.
  */
 
 @XmlRootElement(name = "results")

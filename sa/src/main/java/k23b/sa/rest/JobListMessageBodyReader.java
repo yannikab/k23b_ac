@@ -20,25 +20,25 @@ import javax.xml.bind.JAXBException;
 
 public class JobListMessageBodyReader implements MessageBodyReader<JobList> {
 
-	@Override
-	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+    @Override
+    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
-		return type == JobList.class;
-	}
+        return type == JobList.class;
+    }
 
-	@Override
-	public JobList readFrom(Class<JobList> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-					throws IOException, WebApplicationException {
+    @Override
+    public JobList readFrom(Class<JobList> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+                    throws IOException, WebApplicationException {
 
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(JobList.class);
-			JobList jl = (JobList) jaxbContext.createUnmarshaller().unmarshal(entityStream);
-			return jl;
-		} catch (JAXBException jaxbException) {
-			throw new ProcessingException("Error deserializing JobList.", jaxbException);
-		}
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(JobList.class);
+            JobList jl = (JobList) jaxbContext.createUnmarshaller().unmarshal(entityStream);
+            return jl;
+        } catch (JAXBException jaxbException) {
+            throw new ProcessingException("Error deserializing JobList.", jaxbException);
+        }
 
-	}
+    }
 
 }

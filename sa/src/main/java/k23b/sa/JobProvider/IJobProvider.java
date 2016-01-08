@@ -8,13 +8,13 @@ import k23b.sa.Job;
  */
 public interface IJobProvider {
 
-	/**
-	 * @return true if there is Jobs to be provided; false otherwise
-	 */
-	public boolean hasMoreJobs();
+    /**
+     * @return true if there is Jobs to be provided; false otherwise
+     */
+    public boolean hasMoreJobs();
 
-	/**
-	 * @return an array of a random amount of elements of type Job , dictated by the maxNextJobs property
-	 */
-	public Job[] getNextJobs();
+    /**
+     * @return an array of a random amount of elements of type Job , dictated by the maxNextJobs property
+     */
+    public Job[] getNextJobs();
 }

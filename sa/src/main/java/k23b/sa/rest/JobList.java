@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import k23b.sa.Job;
 
 /**
- * 	A list for the compact distribution of a batch of Jobs to a SA 
+ * A list for the compact distribution of a batch of Jobs to a SA
  */
 
 @XmlRootElement(name = "jobs")

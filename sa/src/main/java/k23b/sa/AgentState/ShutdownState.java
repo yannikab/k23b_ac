@@ -6,7 +6,7 @@ import k23b.sa.Threads.MainThread;
 import sun.misc.Signal;
 
 /**
- * 	The State in which the SA exits.
+ * The State in which the SA exits.
  */
 
 @SuppressWarnings("restriction")

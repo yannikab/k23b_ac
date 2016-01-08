@@ -35,7 +35,7 @@ public class CheckState extends AgentState {
                 // e.printStackTrace();
                 Thread.currentThread().interrupt();
             }
-            
+
             RequestStatus rs = checkRequest();
 
             String message = "Status received: " + rs.toString();
@@ -73,7 +73,7 @@ public class CheckState extends AgentState {
     private RequestStatus checkRequest() {
 
         // return RequestStatus.INVALID;
-        
+
         String message = "Checking Aggregator Manager for registration.";
         log.info(message);
         System.out.println(message);
@@ -86,7 +86,7 @@ public class CheckState extends AgentState {
                 .getClient()
                 .target(baseURI + "handle/request/check/" + agentStats.getHash() + "/")
                 .request(MediaType.TEXT_PLAIN);
-        
+
         try {
 
             Response response = builder.get();

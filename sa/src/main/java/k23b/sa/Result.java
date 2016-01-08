@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * It holds the result as well as the Job id from a nmap task.
  *
@@ -17,67 +16,68 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Result")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = "Result", propOrder = {
-		"jobId",
-		"jobResult"
+        "jobId",
+        "jobResult"
 })
 public class Result {
-	
-	@XmlElement(required = true)
-	private long jobId;
-	@XmlElement(required = true)
-	private String jobResult;
-	
-	public Result(){}
-	
-	public Result(long jobId, String jobResult) {
-		this.jobId = jobId;
-		this.jobResult = jobResult;
-	}
 
-	@Override
-	public String toString() {
+    @XmlElement(required = true)
+    private long jobId;
+    @XmlElement(required = true)
+    private String jobResult;
 
-		String s = String.format("[%d] ", this.jobId);
+    public Result() {
+    }
 
-		String l1 = s;
-		String l2 = "";
+    public Result(long jobId, String jobResult) {
+        this.jobId = jobId;
+        this.jobResult = jobResult;
+    }
 
-		if (jobResult != null) {
+    @Override
+    public String toString() {
 
-			StringTokenizer st = new StringTokenizer(jobResult, System.lineSeparator());
+        String s = String.format("[%d] ", this.jobId);
 
-			try {
+        String l1 = s;
+        String l2 = "";
 
-				for (int i = 0; i < 4; i++)
-					st.nextToken();
+        if (jobResult != null) {
 
-				l1 = l1 + st.nextToken();
+            StringTokenizer st = new StringTokenizer(jobResult, System.lineSeparator());
 
-				StringBuilder sb = new StringBuilder();
+            try {
 
-				sb.append(System.lineSeparator());
+                for (int i = 0; i < 4; i++)
+                    st.nextToken();
 
-				for (int j = 0; j < s.length(); j++)
-					sb.append(" ");
+                l1 = l1 + st.nextToken();
 
-				sb.append(st.nextToken());
+                StringBuilder sb = new StringBuilder();
 
-				l2 = sb.toString();
+                sb.append(System.lineSeparator());
 
-				try {
-					l1 = l1.substring(0, 80);
-				} catch (IndexOutOfBoundsException e) {
-				}
+                for (int j = 0; j < s.length(); j++)
+                    sb.append(" ");
 
-				try {
-					l2 = l2.substring(0, 80);
-				} catch (IndexOutOfBoundsException e) {
-				}
+                sb.append(st.nextToken());
 
-			} catch (NoSuchElementException e) {
-			}
-		}
+                l2 = sb.toString();
 
-		return l1 + l2;
-	}
+                try {
+                    l1 = l1.substring(0, 80);
+                } catch (IndexOutOfBoundsException e) {
+                }
+
+                try {
+                    l2 = l2.substring(0, 80);
+                } catch (IndexOutOfBoundsException e) {
+                }
+
+            } catch (NoSuchElementException e) {
+            }
+        }
+
+        return l1 + l2;
+    }
 }

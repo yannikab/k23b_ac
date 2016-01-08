@@ -76,7 +76,7 @@ public class JobsState extends AgentState {
 
             Thread.currentThread().interrupt();
         }
-        
+
         JobList jobList = getJobs();
 
         RequestStatus rs = requestStatus(jobList);

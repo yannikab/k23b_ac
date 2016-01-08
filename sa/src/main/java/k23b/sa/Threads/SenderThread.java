@@ -140,14 +140,13 @@ public class SenderThread extends Thread {
             try {
 
                 Response response = builder.post(Entity.entity(resultList, MediaType.APPLICATION_XML));
-                
-                if (response.getStatus() != 200){
-                	message = "Sending results failed. HTTP error code: " + response.getStatus();
+
+                if (response.getStatus() != 200) {
+                    message = "Sending results failed. HTTP error code: " + response.getStatus();
                     log.error(message);
                     System.out.println(message);
                 }
-                
-                
+
             } catch (ProcessingException | WebApplicationException e) {
 
                 log.error(e.getMessage());

@@ -20,38 +20,37 @@ import javax.xml.bind.JAXBException;
  * 
  */
 
-
 @Provider
 @Produces(MediaType.APPLICATION_XML)
-public class ResultListMessageBodyWriter implements MessageBodyWriter<ResultList>{
+public class ResultListMessageBodyWriter implements MessageBodyWriter<ResultList> {
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		
-		return type == ResultList.class;
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
-	@Override
-	public long getSize(ResultList t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		// deprecated by JAX-RS 2.0 and ignored by Jersey runtime
-		return 0;
-	}
+        return type == ResultList.class;
+    }
 
-	@Override
-	public void writeTo(ResultList t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-					throws IOException, WebApplicationException {
-		
-		try {
+    @Override
+    public long getSize(ResultList t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        // deprecated by JAX-RS 2.0 and ignored by Jersey runtime
+        return 0;
+    }
+
+    @Override
+    public void writeTo(ResultList t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+                    throws IOException, WebApplicationException {
+
+        try {
             JAXBContext jaxbContext = JAXBContext.newInstance(ResultList.class);
- 
+
             // serialize the entity ResultList to the entity output stream
             jaxbContext.createMarshaller().marshal(t, entityStream);
         } catch (JAXBException jaxbException) {
             throw new ProcessingException(
-                "Error serializing ResultList to the output stream", jaxbException);
+                    "Error serializing ResultList to the output stream", jaxbException);
         }
-		
-	}
+
+    }
 
 }

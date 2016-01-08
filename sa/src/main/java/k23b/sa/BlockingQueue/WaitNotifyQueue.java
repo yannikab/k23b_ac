@@ -12,116 +12,116 @@ import org.apache.log4j.Logger;
  */
 public class WaitNotifyQueue<E> implements IBlockingQueue<E> {
 
-	private static final Logger log = Logger.getLogger(WaitNotifyQueue.class);
+    private static final Logger log = Logger.getLogger(WaitNotifyQueue.class);
 
-	private Queue<E> queue;
+    private Queue<E> queue;
 
-	private int maxSize;
+    private int maxSize;
 
-	private final String name;
+    private final String name;
 
-	/**
-	 * Constructs an empty queue with no maximum capacity
-	 * 
-	 * @param name the name of the newly constructed queue
-	 */
-	public WaitNotifyQueue(String name) {
+    /**
+     * Constructs an empty queue with no maximum capacity
+     * 
+     * @param name the name of the newly constructed queue
+     */
+    public WaitNotifyQueue(String name) {
 
-		this.name = name;
+        this.name = name;
 
-		log.info(this + ": creating queue.");
+        log.info(this + ": creating queue.");
 
-		queue = new LinkedList<E>();
+        queue = new LinkedList<E>();
 
-		maxSize = 0;
-	}
+        maxSize = 0;
+    }
 
-	/**
-	 * Constructs an empty queue with the specified maximum capacity
-	 * 
-	 * @param name the name of the newly constructed queue
-	 * @param maxSize the maximum capacity of the queue
-	 */
-	public WaitNotifyQueue(String name, int maxSize) {
+    /**
+     * Constructs an empty queue with the specified maximum capacity
+     * 
+     * @param name the name of the newly constructed queue
+     * @param maxSize the maximum capacity of the queue
+     */
+    public WaitNotifyQueue(String name, int maxSize) {
 
-		this(name);
+        this(name);
 
-		if (maxSize > 0) {
+        if (maxSize > 0) {
 
-			log.info(this + ": setting maximum size to " + maxSize + ".");
+            log.info(this + ": setting maximum size to " + maxSize + ".");
 
-			this.maxSize = maxSize;
-		}
-	}
+            this.maxSize = maxSize;
+        }
+    }
 
-	@Override
-	public boolean hasMaxSize() {
-		return maxSize > 0;
-	}
+    @Override
+    public boolean hasMaxSize() {
+        return maxSize > 0;
+    }
 
-	@Override
-	public void put(E item) throws InterruptedException {
+    @Override
+    public void put(E item) throws InterruptedException {
 
-		if (Thread.interrupted()) {
-			log.debug(this + ": put() called from interrupted thread, throwing InterruptedException.");
-			throw new InterruptedException();
-		}
+        if (Thread.interrupted()) {
+            log.debug(this + ": put() called from interrupted thread, throwing InterruptedException.");
+            throw new InterruptedException();
+        }
 
-		synchronized (this) {
+        synchronized (this) {
 
-			if (hasMaxSize()) {
-				while (queue.size() == maxSize)
-					this.wait();
-			}
+            if (hasMaxSize()) {
+                while (queue.size() == maxSize)
+                    this.wait();
+            }
 
-			queue.add(item);
+            queue.add(item);
 
-			log.debug(this + ": enqueued item " + item + ".");
+            log.debug(this + ": enqueued item " + item + ".");
 
-			this.notifyAll();
-		}
-	}
+            this.notifyAll();
+        }
+    }
 
-	@Override
-	public E get() throws InterruptedException {
+    @Override
+    public E get() throws InterruptedException {
 
-		if (Thread.interrupted()) {
-			log.debug(this + ": get() called from interrupted thread, throwing InterruptedException.");
-			throw new InterruptedException();
-		}
+        if (Thread.interrupted()) {
+            log.debug(this + ": get() called from interrupted thread, throwing InterruptedException.");
+            throw new InterruptedException();
+        }
 
-		E item;
+        E item;
 
-		synchronized (this) {
+        synchronized (this) {
 
-			while (queue.size() == 0) {
-				this.wait();
-			}
+            while (queue.size() == 0) {
+                this.wait();
+            }
 
-			item = queue.remove();
+            item = queue.remove();
 
-			log.debug(this + ": dequeued item " + item + ".");
+            log.debug(this + ": dequeued item " + item + ".");
 
-			if (hasMaxSize()) {
-				this.notifyAll();
-			}
-		}
+            if (hasMaxSize()) {
+                this.notifyAll();
+            }
+        }
 
-		return item;
-	}
+        return item;
+    }
 
-	@Override
-	public synchronized E peek() {
-		return queue.peek();
-	}
+    @Override
+    public synchronized E peek() {
+        return queue.peek();
+    }
 
-	@Override
-	public synchronized int size() {
-		return queue.size();
-	}
+    @Override
+    public synchronized int size() {
+        return queue.size();
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

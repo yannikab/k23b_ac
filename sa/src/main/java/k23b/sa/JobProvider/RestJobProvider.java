@@ -9,7 +9,7 @@ import k23b.sa.BlockingQueue.IBlockingQueue;
 import k23b.sa.rest.JobList;
 
 /**
- * 	Creates an array of Jobs sent by the AM.
+ * Creates an array of Jobs sent by the AM.
  */
 
 public class RestJobProvider implements IJobProvider {

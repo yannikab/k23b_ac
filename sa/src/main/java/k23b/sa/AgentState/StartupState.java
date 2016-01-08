@@ -48,7 +48,7 @@ public class StartupState extends AgentState {
 
         // Create the client
         getMainThread().setClient(ClientBuilder.newClient().register(JobListMessageBodyReader.class).register(ResultListMessageBodyWriter.class));
-        
+
         try {
 
             getMainThread().setAgentStats(getAgentStats());

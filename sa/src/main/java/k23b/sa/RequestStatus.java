@@ -1,7 +1,7 @@
 package k23b.sa;
 
 /**
- * 	An enumeration of the Request Status of this SA. 
+ * An enumeration of the Request Status of this SA.
  */
 public enum RequestStatus {
     PENDING, ACCEPTED, REJECTED, UNKNOWN, INVALID;
