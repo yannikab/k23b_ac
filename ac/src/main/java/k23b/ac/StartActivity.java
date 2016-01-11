@@ -3,10 +3,9 @@ package k23b.ac;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class StartActivity extends Activity {
 
     private static final String LOGIN_ACTION = "k23b.ac.LOGIN_ACTION";
     private static final int LOGIN_REQUEST = 1;
@@ -21,18 +20,11 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_start);
 
         mTextView = (TextView) findViewById(R.id.text_view);
 
         startLoginActivity();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(k23b.ac.R.menu.main, menu);
-        return true;
     }
 
     private void startLoginActivity() {
