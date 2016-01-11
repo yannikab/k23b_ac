@@ -458,12 +458,12 @@ public class AgentDao {
         }
     }
 
-    long agentId;
-    long requestId;
-    long adminId;
-    Date timeAccepted;
-    Date timeJobRequest;
-    Date timeTerminated;
+    private long agentId;
+    private long requestId;
+    private long adminId;
+    private Date timeAccepted;
+    private Date timeJobRequest;
+    private Date timeTerminated;
 
     public long getAgentId() {
         return agentId;

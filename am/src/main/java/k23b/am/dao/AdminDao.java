@@ -38,8 +38,8 @@ public class AdminDao {
             log.debug("Setting parameter 1 to: " + username);
             ss.setString(1, username);
 
-            log.debug("Setting parameter 2 to: " + new String(password));
-            ss.setString(2, new String(password));
+            log.debug("Setting parameter 2 to: " + password);
+            ss.setString(2, password);
 
             log.debug("Setting parameter 3 to: " + active);
             ss.setBoolean(3, active);
@@ -112,7 +112,7 @@ public class AdminDao {
             // e.printStackTrace();
             log.error(e.getMessage());
 
-            throw new DaoException("Error while finding AdminDao by id: " + adminId);
+            throw new DaoException("Error while finding admin by id: " + adminId);
         }
     }
 
@@ -199,7 +199,6 @@ public class AdminDao {
 
             if (rows != 1)
                 throw new DaoException("Error while setting active to " + active + " on admin with id: " + adminId);
-            ;
 
         } catch (SQLException e) {
             // e.printStackTrace();
@@ -209,10 +208,10 @@ public class AdminDao {
         }
     }
 
-    long adminId;
-    String username;
-    String password;
-    boolean active;
+    private long adminId;
+    private String username;
+    private String password;
+    private boolean active;
 
     public long getAdminId() {
         return adminId;

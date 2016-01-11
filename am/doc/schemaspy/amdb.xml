@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <database name="amdb" type="MySQL - 5.6.26-log">
    <tables>
-      <table name="amdb_admin" numRows="0" remarks="" type="TABLE">
+      <table name="amdb_admin" numRows="4" remarks="" type="TABLE">
          <column autoUpdated="true" digits="0" id="0" name="ADMIN_ID" nullable="false" remarks="" size="19" type="BIGINT">
             <child column="ADMIN_ID" foreignKey="FK_AGENT_ADMIN" implied="false" onDeleteCascade="false" table="amdb_agent"/>
             <child column="ADMIN_ID" foreignKey="FK_JOB_ADMIN" implied="false" onDeleteCascade="false" table="amdb_job"/>
+            <child column="ADMIN_ID" foreignKey="FK_USER_ADMIN" implied="false" onDeleteCascade="false" table="amdb_user"/>
          </column>
          <column autoUpdated="false" digits="0" id="1" name="USERNAME" nullable="false" remarks="" size="40" type="VARCHAR"/>
          <column autoUpdated="false" digits="0" id="2" name="PASSWORD" nullable="false" remarks="" size="64" type="CHAR"/>
@@ -101,6 +102,25 @@
          </index>
          <index name="FK_RESULT_JOB" unique="false">
             <column ascending="true" name="JOB_ID"/>
+         </index>
+      </table>
+      <table name="amdb_user" numRows="1" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="USER_ID" nullable="false" remarks="" size="19" type="BIGINT"/>
+         <column autoUpdated="false" digits="0" id="1" name="ADMIN_ID" nullable="true" remarks="" size="19" type="BIGINT">
+            <parent column="ADMIN_ID" foreignKey="FK_USER_ADMIN" implied="false" onDeleteCascade="false" table="amdb_admin"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="2" name="USERNAME" nullable="false" remarks="" size="40" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="3" name="PASSWORD" nullable="false" remarks="" size="64" type="CHAR"/>
+         <column autoUpdated="false" digits="0" id="4" name="ACTIVE" nullable="false" remarks="" size="1" type="BIT"/>
+         <primaryKey column="USER_ID" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="USER_ID"/>
+         </index>
+         <index name="FK_USER_ADMIN" unique="false">
+            <column ascending="true" name="ADMIN_ID"/>
+         </index>
+         <index name="UK_USERNAME" unique="true">
+            <column ascending="true" name="USERNAME"/>
          </index>
       </table>
    </tables>

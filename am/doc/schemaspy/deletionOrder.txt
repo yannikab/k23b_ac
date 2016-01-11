@@ -1,3 +1,4 @@
+amdb_user
 amdb_result
 amdb_job
 amdb_agent

@@ -3,3 +3,4 @@ amdb_request
 amdb_agent
 amdb_job
 amdb_result
+amdb_user

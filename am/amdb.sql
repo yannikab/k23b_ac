@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2015 at 01:46 AM
+-- Generation Time: Jan 11, 2016 at 02:42 AM
 -- Server version: 5.6.26-log
 -- PHP Version: 5.6.13-pl0-gentoo
 
@@ -97,6 +97,20 @@ CREATE TABLE IF NOT EXISTS `amdb_result` (
   `OUTPUT` mediumtext
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `amdb_user`
+--
+
+CREATE TABLE IF NOT EXISTS `amdb_user` (
+  `USER_ID` bigint(20) NOT NULL,
+  `ADMIN_ID` bigint(20) DEFAULT NULL,
+  `USERNAME` varchar(40) NOT NULL,
+  `PASSWORD` char(64) NOT NULL,
+  `ACTIVE` bit(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -139,6 +153,14 @@ ALTER TABLE `amdb_result`
   ADD KEY `FK_RESULT_JOB` (`JOB_ID`);
 
 --
+-- Indexes for table `amdb_user`
+--
+ALTER TABLE `amdb_user`
+  ADD PRIMARY KEY (`USER_ID`),
+  ADD UNIQUE KEY `UK_USERNAME` (`USERNAME`),
+  ADD KEY `FK_USER_ADMIN` (`ADMIN_ID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -168,6 +190,11 @@ ALTER TABLE `amdb_request`
 ALTER TABLE `amdb_result`
   MODIFY `RESULT_ID` bigint(20) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `amdb_user`
+--
+ALTER TABLE `amdb_user`
+  MODIFY `USER_ID` bigint(20) NOT NULL AUTO_INCREMENT;
+--
 -- Constraints for dumped tables
 --
 
@@ -190,6 +217,12 @@ ALTER TABLE `amdb_job`
 --
 ALTER TABLE `amdb_result`
   ADD CONSTRAINT `FK_RESULT_JOB` FOREIGN KEY (`JOB_ID`) REFERENCES `amdb_job` (`JOB_ID`);
+
+--
+-- Constraints for table `amdb_user`
+--
+ALTER TABLE `amdb_user`
+  ADD CONSTRAINT `FK_USER_ADMIN` FOREIGN KEY (`ADMIN_ID`) REFERENCES `amdb_admin` (`ADMIN_ID`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

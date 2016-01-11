@@ -36,8 +36,8 @@ public class ResultSrvTest {
 
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb", "root", "s3cr3t");
 
-            new ScriptRunner(c).runScript("src/main/resources/sql/drop.sql");
-            new ScriptRunner(c).runScript("src/main/resources/sql/amdb.sql");
+            new ScriptRunner(c).runScript("drop.sql");
+            new ScriptRunner(c).runScript("amdb.sql");
 
             c.close();
 

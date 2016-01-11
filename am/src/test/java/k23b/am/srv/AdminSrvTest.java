@@ -26,8 +26,8 @@ public class AdminSrvTest {
 
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb", "root", "s3cr3t");
 
-            new ScriptRunner(c).runScript("src/main/resources/sql/drop.sql");
-            new ScriptRunner(c).runScript("src/main/resources/sql/amdb.sql");
+            new ScriptRunner(c).runScript("drop.sql");
+            new ScriptRunner(c).runScript("amdb.sql");
 
             c.close();
 
@@ -57,8 +57,6 @@ public class AdminSrvTest {
 
             Assert.assertNull(AdminSrv.findById(326));
 
-            System.out.println("Data accesses averted: " + AdminCC.getAccessesAverted());
-
         } catch (SrvException e) {
             // e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -78,8 +76,6 @@ public class AdminSrvTest {
             Assert.assertNotNull(a);
             Assert.assertEquals(username, a.getUsername());
             Assert.assertEquals(false, a.getActive());
-
-            System.out.println("Data accesses averted: " + AdminCC.getAccessesAverted());
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -103,8 +99,6 @@ public class AdminSrvTest {
             Assert.assertEquals(username, a.getUsername());
             Assert.assertEquals(false, a.getActive());
 
-            System.out.println("Data accesses averted: " + AdminCC.getAccessesAverted());
-
         } catch (SrvException e) {
             // e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -126,8 +120,6 @@ public class AdminSrvTest {
             AdminSrv.login(username, password);
 
             Assert.assertTrue(AdminSrv.isLoggedIn(username));
-
-            System.out.println("Data accesses averted: " + AdminCC.getAccessesAverted());
 
         } catch (SrvException e) {
             // e.printStackTrace();

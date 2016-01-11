@@ -31,7 +31,7 @@ digraph "oneDegreeRelationshipsDiagram" {
       <TR><TD PORT="USERNAME" COLSPAN="3" BGCOLOR="#f4f7da" ALIGN="LEFT">USERNAME</TD></TR>
       <TR><TD PORT="PASSWORD" COLSPAN="3" ALIGN="LEFT">PASSWORD</TD></TR>
       <TR><TD PORT="ACTIVE" COLSPAN="3" ALIGN="LEFT">ACTIVE</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">4 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">3 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_admin.html"
     tooltip="amdb_admin"

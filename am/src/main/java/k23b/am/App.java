@@ -21,6 +21,7 @@ import k23b.am.cc.AgentCC;
 import k23b.am.cc.JobCC;
 import k23b.am.cc.RequestCC;
 import k23b.am.cc.ResultCC;
+import k23b.am.cc.UserCC;
 import k23b.am.dao.ConnectionSingleton;
 import k23b.am.rest.JobListMessageBodyWriter;
 import k23b.am.rest.ResultListMessageBodyReader;
@@ -84,6 +85,7 @@ public class App extends Application {
             AgentCC.initCache(Settings.getCacheSize());
             JobCC.initCache(Settings.getCacheSize());
             ResultCC.initCache(Settings.getCacheSize());
+            UserCC.initCache(Settings.getCacheSize());
         }
 
         if (Settings.getCreateAdmins())
