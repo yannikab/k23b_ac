@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="title_activity_main">Android Client</string>
+    <string name="title_section_agents">Agents</string>
+    <string name="title_section_jobs">Jobs</string>
+    <string name="title_section_results_agent">Agent Results</string>
+    <string name="title_section_results_all">All Results</string>
+
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Navigation Drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="agents">Agents</string>
+    <string name="jobs">Jobs</string>
+    <string name="results_agent">Agent Results</string>
+    <string name="results_all">All Results</string>
+
+</resources>
