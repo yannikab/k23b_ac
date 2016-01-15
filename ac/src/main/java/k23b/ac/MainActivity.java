@@ -2,15 +2,16 @@ package k23b.ac;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import k23b.ac.sections.AgentsFragment;
-import k23b.ac.sections.JobsFragment;
-import k23b.ac.sections.ResultsAgentFragment;
-import k23b.ac.sections.ResultsAllFragment;
+import k23b.ac.views.AgentsFragment;
+import k23b.ac.views.JobsFragment;
+import k23b.ac.views.ResultsAgentFragment;
+import k23b.ac.views.ResultsAllFragment;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -42,18 +43,24 @@ public class MainActivity extends Activity
 
         FragmentManager fragmentManager = getFragmentManager();
 
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.container);
+
         switch (position) {
         case 0:
-            fragmentManager.beginTransaction().replace(R.id.container, new AgentsFragment()).commit();
+            if (!(currentFragment instanceof AgentsFragment))
+                fragmentManager.beginTransaction().replace(R.id.container, new AgentsFragment()).commit();
             break;
         case 1:
-            fragmentManager.beginTransaction().replace(R.id.container, new JobsFragment()).commit();
+            if (!(currentFragment instanceof JobsFragment))
+                fragmentManager.beginTransaction().replace(R.id.container, new JobsFragment()).commit();
             break;
         case 2:
-            fragmentManager.beginTransaction().replace(R.id.container, new ResultsAgentFragment()).commit();
+            if (!(currentFragment instanceof ResultsAgentFragment))
+                fragmentManager.beginTransaction().replace(R.id.container, new ResultsAgentFragment()).commit();
             break;
         case 3:
-            fragmentManager.beginTransaction().replace(R.id.container, new ResultsAllFragment()).commit();
+            if (!(currentFragment instanceof ResultsAllFragment))
+                fragmentManager.beginTransaction().replace(R.id.container, new ResultsAllFragment()).commit();
             break;
         }
     }
@@ -106,5 +113,10 @@ public class MainActivity extends Activity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

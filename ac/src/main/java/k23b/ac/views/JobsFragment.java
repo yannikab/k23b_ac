@@ -1,4 +1,4 @@
-package k23b.ac.sections;
+package k23b.ac.views;
 
 import android.app.Activity;
 import android.app.Fragment;
