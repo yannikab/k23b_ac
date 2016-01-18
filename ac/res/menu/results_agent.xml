@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="k23b.ac.MainActivity" >
+
+    <item
+        android:id="@+id/action_results_agent"
+        android:showAsAction="withText|ifRoom"
+        android:title="@string/action_results_agent"/>
+
+</menu>

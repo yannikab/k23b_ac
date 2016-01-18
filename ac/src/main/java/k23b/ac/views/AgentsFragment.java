@@ -1,34 +1,40 @@
 package k23b.ac.views;
 
-import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
 import k23b.ac.MainActivity;
 import k23b.ac.R;
 import k23b.ac.Settings;
-import k23b.ac.rest.AgentContainer;
+import k23b.ac.rest.Agent;
+import k23b.ac.rest.AgentsFetchTask;
+import k23b.ac.rest.AgentsReceiver;
 
-public class AgentsFragment extends Fragment {
+public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMode.Callback {
 
     private AgentsFetchTask agentsFetchTask;
 
-    @SuppressWarnings("unused")
-    private AgentContainer agentContainer;
+    private List<Agent> agents;
 
-    private View agentsProgressView;
+    private Agent selectedAgent;
 
-    private View agentsSectionView;
+    private ActionMode actionMode;
 
     public AgentsFragment() {
+
         super();
     }
 
@@ -43,6 +49,10 @@ public class AgentsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setRetainInstance(true);
+
+        setHasOptionsMenu(true);
+
         if (savedInstanceState == null)
             return;
 
@@ -51,26 +61,28 @@ public class AgentsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_agents, container, false);
 
-        Button button = (Button) view.findViewById(R.id.agents_button);
+        ListView agentsListView = (ListView) view.findViewById(R.id.agents_listView);
+        
+        agentsListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                agentContainer = null;
+                if (actionMode != null)
+                    return false;
 
-                showProgress(true);
+                selectedAgent = (Agent) parent.getAdapter().getItem(position);
 
-                agentsFetchTask = new AgentsFetchTask("Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
+                actionMode = AgentsFragment.this.getActivity().startActionMode(AgentsFragment.this);
 
-                agentsFetchTask.execute();
+                view.setSelected(true);
+
+                return true;
             }
         });
-
-        agentsProgressView = view.findViewById(R.id.agents_progress);
-        agentsSectionView = view.findViewById(R.id.agents_view);
 
         return view;
     }
@@ -78,6 +90,63 @@ public class AgentsFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        showAgents();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.agents, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+        case R.id.action_agents_refresh:
+            fetchAgents();
+            break;
+        default:
+            break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void fetchAgents() {
+
+        if (agentsFetchTask != null)
+            return;
+
+        showProgress(true);
+
+        agentsFetchTask = new AgentsFetchTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
+
+        agentsFetchTask.execute();
+    }
+
+    @Override
+    public void setAgents(List<Agent> agents) {
+
+        this.agentsFetchTask = null;
+
+        this.agents = agents;
+
+        showAgents();
+
+        showProgress(false);
+    }
+
+    private void showAgents() {
+
+        if (getView() == null)
+            return;
+
+        ListView agentsListView = (ListView) getView().findViewById(R.id.agents_listView);
+
+        agentsListView.setAdapter(agents == null ? null : new AgentsArrayAdapter(getActivity(), this.agents));
     }
 
     @Override
@@ -108,11 +177,6 @@ public class AgentsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
     }
@@ -122,76 +186,47 @@ public class AgentsFragment extends Fragment {
         super.onDetach();
     }
 
-    public void showProgress(final boolean show) {
-        // simply show and hide the relevant UI components.
-        agentsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        agentsSectionView.setVisibility(show ? View.GONE : View.VISIBLE);
-    }
+    private void showProgress(final boolean show) {
 
-    public class AgentsFetchTask extends AsyncTask<Void, Void, AgentContainer> {
-
-        private final String mUsername;
-        private final String mPassword;
-
-        AgentsFetchTask(String username, String password) {
-            mUsername = username;
-            mPassword = password;
-        }
-
-        @Override
-        protected AgentContainer doInBackground(Void... params) {
-
-            try {
-
-                // Thread.sleep(500);
-
-                String url = Settings.getBaseURI() + "agents/" + mUsername + "/" + mPassword;
-
-                // Create a new RestTemplate instance
-                RestTemplate restTemplate = new RestTemplate();
-
-                restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
-
-                AgentContainer agentContainer = restTemplate.getForObject(url, AgentContainer.class);
-
-                return agentContainer;
-
-            } catch (Exception e) {
-                logException(getLocalClassName(), e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final AgentContainer agentContainer) {
-
-            AgentsFragment.this.agentsFetchTask = null;
-            AgentsFragment.this.agentContainer = agentContainer;
-            showProgress(false);
-        }
-
-        @Override
-        protected void onCancelled() {
-
-            AgentsFragment.this.agentsFetchTask = null;
-            AgentsFragment.this.agentContainer = null;
-            showProgress(false);
-        }
-    }
-
-    private void logException(String tag, Exception e) {
-
-        if (e.getMessage() != null) {
-            Log.e(tag, e.getMessage());
+        if (getView() == null)
             return;
-        }
 
-        for (StackTraceElement ste : e.getStackTrace())
-            Log.e(getLocalClassName(), ste.toString());
+        getView().findViewById(R.id.agents_progress).setVisibility(show ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.agents_view).setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-    public String getLocalClassName() {
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.agent_actions, menu);
+        return true;
+    }
 
-        return "AgentsFragment";
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+        switch (item.getItemId()) {
+        case R.id.action_agent_terminate:
+            show();
+            mode.finish();
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        this.actionMode = null;
+        this.selectedAgent = null;
+    }
+
+    private void show() {
+        Toast.makeText(getActivity(), String.valueOf(selectedAgent.getAgentId()), Toast.LENGTH_LONG).show();
     }
 }

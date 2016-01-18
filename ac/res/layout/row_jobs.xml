@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/rowJobId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:textSize="@dimen/row_job_textSize" />
+
+    <TextView
+        android:id="@+id/rowJobTimeAssigned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="2"
+        android:textSize="@dimen/row_job_textSize" />
+
+    <TextView
+        android:id="@+id/rowJobTimeSent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="2"
+        android:textSize="@dimen/row_job_textSize" />
+
+    <TextView
+        android:id="@+id/rowJobParameters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="2"
+        android:textSize="@dimen/row_job_textSize" />
+
+    <TextView
+        android:id="@+id/rowJobPeriodic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:textSize="@dimen/row_job_textSize" />
+
+    <TextView
+        android:id="@+id/rowJobInterval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:textSize="@dimen/row_job_textSize" />
+
+    <TextView
+        android:id="@+id/rowJobStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="2"
+        android:textSize="@dimen/row_job_textSize" />
+
+</LinearLayout>

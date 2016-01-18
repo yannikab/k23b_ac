@@ -4,8 +4,12 @@
     <string name="app_name">Navigation Drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+    <string name="action_agents_refresh">Refresh</string>
+    <string name="action_jobs_refresh">Refresh</string>
+    <string name="action_results_agent">Results</string>
+    <string name="action_results_all">All Results</string>
+    <string name="action_agent_terminate">Terminate</string>
     <string name="agents">Agents</string>
     <string name="jobs">Jobs</string>
     <string name="results_agent">Agent Results</string>
