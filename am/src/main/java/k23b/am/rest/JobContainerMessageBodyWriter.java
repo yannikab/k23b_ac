@@ -22,27 +22,27 @@ import javax.xml.bind.JAXBException;
 
 @Provider
 @Produces(MediaType.APPLICATION_XML)
-public class JobListMessageBodyWriter implements MessageBodyWriter<JobList>{
+public class JobContainerMessageBodyWriter implements MessageBodyWriter<JobContainer>{
 
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		
-		return type == JobList.class;
+		return type == JobContainer.class;
 	}
 
 	@Override
-	public long getSize(JobList t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+	public long getSize(JobContainer t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		// deprecated by JAX-RS 2.0 and ignored by Jersey runtime
 		return 0;
 	}
 
 	@Override
-	public void writeTo(JobList t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public void writeTo(JobContainer t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 					throws IOException, WebApplicationException {
 		
 		try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(JobList.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(JobContainer.class);
  
             // serialize the entity JobList to the entity output stream
             jaxbContext.createMarshaller().marshal(t, entityStream);

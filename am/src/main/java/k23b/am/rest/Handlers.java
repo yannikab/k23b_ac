@@ -151,8 +151,6 @@ public class Handlers {
         log.info("");
         log.info("getJobs(): Job request from agent with hash:" + hashKey);
 
-        JobList jl = new JobList();
-
         try {
 
             RequestDao rd = RequestSrv.findByHash(hashKey);
@@ -161,34 +159,35 @@ public class Handlers {
 
                 log.info("getJobs(): Received job request from unknown agent with hash: " + hashKey);
 
-                jl.setStatus("Unknown");
+                JobContainer jc = new JobContainer("Unknown");
 
-                log.info("Returning status: " + jl.getStatus());
+                log.info("Returning status: " + jc.getStatus());
 
-                return Response.status(200).entity(jl).build();
+                return Response.status(200).entity(jc).build();
             }
 
             RequestStatus rs = rd.getRequestStatus();
 
-            jl.setStatus(rs.toString());
+            JobContainer jc = new JobContainer(rs.toString());
 
             if (rs == RequestStatus.PENDING || rs == RequestStatus.REJECTED) {
 
-                log.info("Returning status: " + jl.getStatus());
-                
-                JAXBContext jaxbContext;
-				try {
-					jaxbContext = JAXBContext.newInstance(JobList.class);
-					Marshaller marshaller = jaxbContext.createMarshaller();
-	            	marshaller.setEventHandler(new ResultValidationEventHandler());
-	            	marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-	            	marshaller.marshal(jl, System.out);
-				} catch (JAXBException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                
-                return Response.status(200).entity(jl).build();
+                try {
+
+                    JAXBContext jaxbContext = JAXBContext.newInstance(JobContainer.class);
+                    Marshaller marshaller = jaxbContext.createMarshaller();
+                    marshaller.setEventHandler(new ResultValidationEventHandler());
+                    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                    marshaller.marshal(jc, System.out);
+
+                } catch (JAXBException e) {
+                    // e.printStackTrace();
+                    log.error(e.getMessage());
+                }
+
+                log.info("Returning status: " + jc.getStatus());
+
+                return Response.status(200).entity(jc).build();
             }
 
             if (rs == RequestStatus.ACCEPTED) {
@@ -206,50 +205,54 @@ public class Handlers {
 
                 Set<JobDao> jdSet = JobSrv.findAllWithAgentId(ad.getAgentId(), false);
 
-                List<Job> jobList = new ArrayList<Job>();
-
                 for (JobDao j : jdSet) {
 
                     Job job = new Job();
 
-                    job.setId(j.getJobId());
-                    job.setCmd(j.getParams());
+                    job.setJobId(j.getJobId());
+                    job.setAgentId(j.getAgentId());
+                    job.setAdminId(j.getAdminId());
+                    job.setTimeAssigned(j.getTimeAssigned());
+                    job.setTimeSent(j.getTimeSent());
+                    job.setParams(j.getParams());
                     job.setPeriodic(j.getPeriodic());
                     job.setPeriod(j.getPeriod());
+                    job.setTimeStopped(j.getTimeStopped());
 
-                    jobList.add(job);
+                    jc.getJobs().add(job);
                 }
 
-                jobList.sort((first, second) -> {
-                    if (first.getId() > second.getId())
+                jc.getJobs().sort((first, second) -> {
+                    if (first.getJobId() > second.getJobId())
                         return 1;
-                    else if (first.getId() < second.getId())
+                    else if (first.getJobId() < second.getJobId())
                         return -1;
                     else
                         return 0;
                 });
 
-                jl.setJob(jobList);
-
                 for (JobDao j : jdSet)
                     JobSrv.send(j.getJobId());
 
-                log.info("Returning status: " + jl.getStatus());
-                
-                JAXBContext jaxbContext;
-				try {
-					jaxbContext = JAXBContext.newInstance(JobList.class);
-					Marshaller marshaller = jaxbContext.createMarshaller();
-	            	marshaller.setEventHandler(new ResultValidationEventHandler());
-	            	marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-	            	marshaller.marshal(jl, System.out);
-				} catch (JAXBException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                
-				 GenericEntity<JobList> ge = new GenericEntity<JobList>(jl) {};
-                return Response.status(200).entity(ge).build();
+                try {
+
+                    JAXBContext jaxbContext = JAXBContext.newInstance(JobContainer.class);
+                    Marshaller marshaller = jaxbContext.createMarshaller();
+                    marshaller.setEventHandler(new ResultValidationEventHandler());
+                    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                    marshaller.marshal(jc, System.out);
+
+                } catch (JAXBException e) {
+                    // e.printStackTrace();
+                    log.error(e.getMessage());
+                }
+
+                // GenericEntity<JobContainer> ge = new GenericEntity<JobContainer>(jl) {
+                // };
+
+                log.info("Returning status: " + jc.getStatus());
+
+                return Response.status(200).entity(jc).build();
             }
 
         } catch (SrvException e) {

@@ -1,54 +1,109 @@
 package k23b.am.rest;
 
-import java.util.Comparator;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * 	Serves the purpose of sending the Job info from the AM to the SA.
+ * Serves the purpose of sending Job information.
  */
 
 @XmlRootElement(name = "job")
-@XmlType(name = "job", propOrder = {
-        "id",
-        "cmd",
-        "isPeriodic",
-        "period"
-})
-@XmlAccessorType(XmlAccessType.NONE)
-public class Job implements Comparable<Job> {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Job {
 
     @XmlElement(required = true)
-    private long id;
+    private long jobId;
+
     @XmlElement(required = true)
-    private String cmd;
+    private long agentId;
+
     @XmlElement(required = true)
-    private boolean isPeriodic;
+    private long adminId;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = true)
+    private Date timeAssigned;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlElement(required = false)
+    private Date timeSent;
+
+    @XmlElement(required = true)
+    private String params;
+
+    @XmlElement(required = true)
+    private boolean periodic;
+
+    @XmlElement(required = false)
     private int period;
 
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlElement(required = false)
+    private Date timeStopped;
+
     public Job() {
+        super();
     }
 
-    public long getId() {
-        return id;
+    public long getJobId() {
+        return jobId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setJobId(long jobId) {
+        this.jobId = jobId;
     }
 
-    public boolean isPeriodic() {
-        return isPeriodic;
+    public long getAgentId() {
+        return agentId;
     }
 
-    public void setPeriodic(boolean isPeriodic) {
-        this.isPeriodic = isPeriodic;
+    public void setAgentId(long agentId) {
+        this.agentId = agentId;
+    }
+
+    public long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(long adminId) {
+        this.adminId = adminId;
+    }
+
+    public Date getTimeAssigned() {
+        return timeAssigned;
+    }
+
+    public void setTimeAssigned(Date timeAssigned) {
+        this.timeAssigned = timeAssigned;
+    }
+
+    public Date getTimeSent() {
+        return timeSent;
+    }
+
+    public void setTimeSent(Date timeSent) {
+        this.timeSent = timeSent;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
+    }
+
+    public boolean getPeriodic() {
+        return periodic;
+    }
+
+    public void setPeriodic(boolean periodic) {
+        this.periodic = periodic;
     }
 
     public int getPeriod() {
@@ -59,33 +114,16 @@ public class Job implements Comparable<Job> {
         this.period = period;
     }
 
-    public String getCmd() {
-        return cmd;
+    public Date getTimeStopped() {
+        return timeStopped;
     }
 
-    public void setCmd(String cmd) {
-        this.cmd = cmd;
-    }
-
-    @Override
-    public int compareTo(Job o) {
-        if (id < o.getId())
-            return -1;
-        else if (id == o.getId())
-            return 0;
-        else
-            return 1;
-    }
-
-    @XmlTransient
-    static class JobComparator implements Comparator<Job> {
-        public int compare(Job c1, Job c2) {
-            return c1.compareTo(c2);
-        }
+    public void setTimeStopped(Date timeStopped) {
+        this.timeStopped = timeStopped;
     }
 
     @Override
     public String toString() {
-        return "Job [id=" + id + ", cmd=" + cmd + ", isPeriodic=" + isPeriodic + ", period=" + period + "]";
+        return "Job [jobId=" + jobId + ", agentId=" + agentId + ", adminId=" + adminId + ", timeAssigned=" + timeAssigned + ", timeSent=" + timeSent + ", params=" + params + ", periodic=" + periodic + ", period=" + period + ", timeStopped=" + timeStopped + "]";
     }
 }

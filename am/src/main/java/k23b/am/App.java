@@ -23,7 +23,7 @@ import k23b.am.cc.RequestCC;
 import k23b.am.cc.ResultCC;
 import k23b.am.cc.UserCC;
 import k23b.am.dao.ConnectionSingleton;
-import k23b.am.rest.JobListMessageBodyWriter;
+import k23b.am.rest.JobContainerMessageBodyWriter;
 import k23b.am.rest.ResultListMessageBodyReader;
 import k23b.am.srv.AdminSrv;
 import k23b.am.srv.SrvException;
@@ -38,6 +38,7 @@ public class App extends Application {
 
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/am/";
+    // public static final String BASE_URI = "http://192.168.1.15:8080/am/";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -48,7 +49,7 @@ public class App extends Application {
         // create a resource config that scans for JAX-RS resources and providers in k23b.am package
         final ResourceConfig rc = new ResourceConfig()
                 .packages("k23b.am.rest")
-                .register(JobListMessageBodyWriter.class)
+                .register(JobContainerMessageBodyWriter.class)
                 .register(ResultListMessageBodyReader.class);
 
         // create and start a new instance of grizzly http server exposing the Jersey application at BASE_URI
