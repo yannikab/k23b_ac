@@ -10,9 +10,12 @@
     <string name="action_results_agent">Results</string>
     <string name="action_results_all">All Results</string>
     <string name="action_agent_terminate">Terminate</string>
+    <string name="action_agent_assign_job">Assign Job</string>
+    <string name="action_job_stop">Stop</string>
+    <string name="action_job_reassign">Re-assign</string>
     <string name="agents">Agents</string>
     <string name="jobs">Jobs</string>
-    <string name="results_agent">Agent Results</string>
+    <string name="results_agent">Results</string>
     <string name="results_all">All Results</string>
 
 </resources>

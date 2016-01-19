@@ -4,17 +4,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import k23b.ac.views.AgentsFragment;
 import k23b.ac.views.JobsFragment;
 import k23b.ac.views.ResultsAgentFragment;
 import k23b.ac.views.ResultsAllFragment;
 
-public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public static final int ASSIGN_JOB_REQUEST = 1;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -123,5 +126,28 @@ public class MainActivity extends Activity
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+        case ASSIGN_JOB_REQUEST:
+
+            switch (resultCode) {
+            case RESULT_OK:
+                Toast.makeText(this, String.valueOf("Job assigned to Agent"), Toast.LENGTH_LONG).show();
+                break;
+            case RESULT_CANCELED:
+            default:
+                Toast.makeText(this, String.valueOf("Job assignment cancelled"), Toast.LENGTH_LONG).show();
+                break;
+            }
+            break;
+        default:
+            break;
+        }
     }
 }

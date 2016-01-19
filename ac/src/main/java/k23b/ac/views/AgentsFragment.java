@@ -21,7 +21,7 @@ import k23b.ac.R;
 import k23b.ac.Settings;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.AgentsFetchTask;
-import k23b.ac.rest.AgentsReceiver;
+import k23b.ac.rest.AgentsFetchTask.AgentsReceiver;
 
 public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMode.Callback {
 
@@ -36,6 +36,8 @@ public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMo
     public AgentsFragment() {
 
         super();
+
+        fetchAgents();
     }
 
     @Override
@@ -65,7 +67,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMo
         View view = inflater.inflate(R.layout.fragment_agents, container, false);
 
         ListView agentsListView = (ListView) view.findViewById(R.id.agents_listView);
-        
+
         agentsListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
@@ -91,7 +93,14 @@ public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMo
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (actionMode != null) {
+            actionMode.finish();
+            actionMode = null;
+        }
+
         showAgents();
+
+        showProgress(agentsFetchTask != null);
     }
 
     @Override

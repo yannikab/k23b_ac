@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="k23b.ac.MainActivity" >
+
+    <item
+        android:id="@+id/action_job_stop"
+        android:showAsAction="withText|ifRoom"
+        android:title="@string/action_job_stop"/>
+    
+    <item
+        android:id="@+id/action_job_reassign"
+        android:showAsAction="withText|ifRoom"
+        android:title="@string/action_job_reassign"/>
+
+</menu>

@@ -8,5 +8,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_credentials">Incorrect username or password</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_network_error">Network error.</string>
+    <string name="error_login_cancelled">Login cancelled.</string>
 
 </resources>

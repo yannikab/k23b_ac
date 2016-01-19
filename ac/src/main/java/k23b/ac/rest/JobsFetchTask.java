@@ -7,9 +7,13 @@ import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
-import android.util.Log;
+import k23b.ac.Logger;
 
 public class JobsFetchTask extends AsyncTask<Void, Void, List<Job>> {
+
+    public interface JobsReceiver {
+        public void setJobs(List<Job> jobs);
+    }
 
     private final JobsReceiver receiver;
     private final String baseURI;
@@ -66,11 +70,11 @@ public class JobsFetchTask extends AsyncTask<Void, Void, List<Job>> {
     private void logException(String tag, Exception e) {
 
         if (e.getMessage() != null) {
-            Log.e(tag, e.getMessage());
+            Logger.error(tag, e.getMessage());
             return;
         }
 
         for (StackTraceElement ste : e.getStackTrace())
-            Log.e(tag, ste.toString());
+            Logger.error(tag, ste.toString());
     }
 }

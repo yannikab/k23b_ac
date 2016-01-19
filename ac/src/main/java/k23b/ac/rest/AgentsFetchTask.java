@@ -7,9 +7,13 @@ import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
-import android.util.Log;
+import k23b.ac.Logger;
 
 public class AgentsFetchTask extends AsyncTask<Void, Void, List<Agent>> {
+
+    public interface AgentsReceiver {
+        public void setAgents(List<Agent> agents);
+    }
 
     private final AgentsReceiver receiver;
     private final String baseURI;
@@ -64,11 +68,11 @@ public class AgentsFetchTask extends AsyncTask<Void, Void, List<Agent>> {
     private void logException(String tag, Exception e) {
 
         if (e.getMessage() != null) {
-            Log.e(tag, e.getMessage());
+            Logger.error(tag, e.getMessage());
             return;
         }
 
         for (StackTraceElement ste : e.getStackTrace())
-            Log.e(tag, ste.toString());
+            Logger.error(tag, ste.toString());
     }
 }
