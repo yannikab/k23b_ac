@@ -106,9 +106,10 @@ public class UserSrv {
      * 
      * @param username the user's username.
      * @param password the user's password.
-     * @throws SrvException if a user with specified username does not exist, password is incorrect, the user could not be logged in, or a data access error occurs.
+     * @throws UserLoginException if a user with specified username does not exist, password is incorrect, or the user could not be logged in.
+     * @throws SrvException if a data access error occurs.
      */
-    public static void login(String username, String password) throws SrvException {
+    public static void login(String username, String password) throws UserLoginException, SrvException {
 
         try {
 
@@ -117,10 +118,10 @@ public class UserSrv {
                 UserDao u = UserCC.findByUsername(username);
 
                 if (u == null)
-                    throw new SrvException("Can not login user. User does not exist with username: " + username);
+                    throw new UserLoginException("Can not login user. User does not exist with username: " + username);
 
                 if (!u.getPassword().equals(password))
-                    throw new SrvException("Can not login user. Incorrect password.");
+                    throw new UserLoginException("Can not login user. Incorrect password.");
 
                 UserCC.setActive(u.getUserId(), true);
             }

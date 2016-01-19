@@ -17,6 +17,7 @@ import k23b.am.srv.AgentSrv;
 import k23b.am.srv.JobSrv;
 import k23b.am.srv.RequestSrv;
 import k23b.am.srv.SrvException;
+import k23b.am.srv.UserLoginException;
 import k23b.am.srv.UserSrv;
 
 @Path("client/")
@@ -37,9 +38,12 @@ public class ClientHandlers {
 
             return Response.status(200).entity("Accepted").build();
 
+        } catch (UserLoginException e) {
+            // e.printStackTrace();
+            return Response.status(200).entity("Incorrect").build();
         } catch (SrvException e) {
             // e.printStackTrace();
-            return Response.status(200).entity("Invalid").build();
+            return Response.status(200).entity("Service Error").build();
         }
     }
 
