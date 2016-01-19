@@ -9,154 +9,153 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-	
-	private static DatabaseHandler instance;
-	private SQLiteDatabase db;
-	private static AtomicInteger dbOpenCounter;
-	
-	
-    public static synchronized DatabaseHandler getDBHandler(Context context)
-    {
-        if (instance == null){
+
+    private static DatabaseHandler instance;
+    private SQLiteDatabase db;
+    private static AtomicInteger dbOpenCounter;
+
+    public static synchronized DatabaseHandler getDBHandler(Context context) {
+        
+        if (instance == null) {
             instance = new DatabaseHandler(context);
             dbOpenCounter = new AtomicInteger(0);
         }
 
         return instance;
     }
-    
-    public synchronized SQLiteDatabase openDatabase() throws SQLiteException{
-        if(dbOpenCounter.incrementAndGet() == 1) {        	
+
+    public synchronized SQLiteDatabase openDatabase() throws SQLiteException {
+        
+        if (dbOpenCounter.incrementAndGet() == 1) {
             // Opening new database
-    		Log.d(DatabaseHandler.class.getName(), "Opening DB");
-    		try{
-    			db = instance.getWritableDatabase();
-    		}
-    		catch(SQLiteException e){
-    			Log.e(DatabaseHandler.class.getName(), e.getMessage());
-    			throw new SQLiteException("Error while opening DB");
-    		}
+            Log.d(DatabaseHandler.class.getName(), "Opening DB");
+            try {
+                db = instance.getWritableDatabase();
+            } catch (SQLiteException e) {
+                Log.e(DatabaseHandler.class.getName(), e.getMessage());
+                throw new SQLiteException("Error while opening DB");
+            }
         }
         return db;
     }
-	
+
     public synchronized void closeDatabase() {
-        if(dbOpenCounter.decrementAndGet() == 0) {
-        	Log.d(DatabaseHandler.class.getName(), "Closing DB");
+        
+        if (dbOpenCounter.decrementAndGet() == 0) {
+            Log.d(DatabaseHandler.class.getName(), "Closing DB");
             // Closing database
             db.close();
         }
     }
-    
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		
-		Log.d(DatabaseHandler.class.getName(), "Creating the DB tables");
-		// Creating required tables
-		db.execSQL(USERS_TABLE_CREATE);
-		db.execSQL(JOBS_TABLE_CREATE);
-		Log.d(DatabaseHandler.class.getName(), "DB tables Created");
-	}
 
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
-		Log.d(DatabaseHandler.class.getName(), "Upgrading from "+oldVersion+" to "+newVersion);
-		// on upgrade drop older tables
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+        Log.d(DatabaseHandler.class.getName(), "Creating the DB tables");
+        // Creating required tables
+        db.execSQL(USERS_TABLE_CREATE);
+        db.execSQL(JOBS_TABLE_CREATE);
+        Log.d(DatabaseHandler.class.getName(), "DB tables Created");
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        Log.d(DatabaseHandler.class.getName(), "Upgrading from " + oldVersion + " to " + newVersion);
+        // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + JOBS_TABLE);
- 
+
         // create new tables
         onCreate(db);
         Log.d(DatabaseHandler.class.getName(), "Upgrading done");
-	}
-	
-	public void dropTables(SQLiteDatabase db){
-		Log.d(DatabaseHandler.class.getName(), "Dropping Tables");
+    }
+
+    public void dropTables(SQLiteDatabase db) {
+        
+        Log.d(DatabaseHandler.class.getName(), "Dropping Tables");
 
         db.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + JOBS_TABLE);
- 
+
         Log.d(DatabaseHandler.class.getName(), "Tables Dropped");
 
-	}
-	
-	public DatabaseHandler(Context context) {
-		super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
-	}
-    
-	// Database Version
-	private static final int DATABASE_VERSION = 1;
+    }
 
-	// Database Name
-	private static final String DATABASE_NAME = "acdb";
+    private DatabaseHandler(Context context) {
+        
+        super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
-	// Table Names
-	private static final String USERS_TABLE = "acdb_users";
-	private static final String JOBS_TABLE = "acdb_jobs";
+    // Database Version
+    private static final int DATABASE_VERSION = 1;
 
-	// Users Table Columns names
-	private static final String KEY_U_USERNAME = "USERNAME";
-	private static final String KEY_U_PASSWORD = "PASSWORD";
+    // Database Name
+    private static final String DATABASE_NAME = "acdb";
 
-	// Jobs Table Columns names
-	private static final String KEY_J_ID = "ID";
-	private static final String KEY_J_PARAMETERS = "PARAMETERS";
-	private static final String KEY_J_USERNAME = "USERNAME";
-	private static final String KEY_J_TIME_ASSIGNED = "TIME_ASSIGNED";
-	private static final String KEY_J_PERIODIC = "PERIODIC";
-	private static final String KEY_J_PERIOD = "PERIOD";
+    // Table Names
+    private static final String USERS_TABLE = "acdb_users";
+    private static final String JOBS_TABLE = "acdb_jobs";
 
-	// Create Queries
-	private static final String USERS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + USERS_TABLE + "(" + KEY_U_USERNAME
-			+ " TEXT PRIMARY KEY NOT NULL," + KEY_U_PASSWORD + " TEXT NOT NULL" + ")";
+    // Users Table Columns names
+    private static final String KEY_U_USERNAME = "USERNAME";
+    private static final String KEY_U_PASSWORD = "PASSWORD";
 
-	private static final String JOBS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + JOBS_TABLE + "(" + KEY_J_ID
-			+ " INTEGER PRIMARY KEY NOT NULL," + KEY_J_PARAMETERS + " TEXT NOT NULL," + KEY_J_USERNAME
-			+ " TEXT NOT NULL," + KEY_J_TIME_ASSIGNED + " TEXT NOT NULL," + KEY_J_PERIODIC + " INTEGER NOT NULL,"
-			+ KEY_J_PERIOD + " INTEGER," + " FOREIGN KEY (" + KEY_J_USERNAME + ") REFERENCES " + USERS_TABLE + " ("
-			+ KEY_U_USERNAME + "))";
+    // Jobs Table Columns names
+    private static final String KEY_J_ID = "ID";
+    private static final String KEY_J_PARAMETERS = "PARAMETERS";
+    private static final String KEY_J_USERNAME = "USERNAME";
+    private static final String KEY_J_TIME_ASSIGNED = "TIME_ASSIGNED";
+    private static final String KEY_J_PERIODIC = "PERIODIC";
+    private static final String KEY_J_PERIOD = "PERIOD";
 
-	
-	public static String getKeyUUsername() {
-		return KEY_U_USERNAME;
-	}
+    // Create Queries
+    private static final String USERS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + USERS_TABLE + "(" + KEY_U_USERNAME
+            + " TEXT PRIMARY KEY NOT NULL," + KEY_U_PASSWORD + " TEXT NOT NULL" + ")";
 
-	public static String getKeyUPassword() {
-		return KEY_U_PASSWORD;
-	}
+    private static final String JOBS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + JOBS_TABLE + "(" + KEY_J_ID
+            + " INTEGER PRIMARY KEY NOT NULL," + KEY_J_PARAMETERS + " TEXT NOT NULL," + KEY_J_USERNAME
+            + " TEXT NOT NULL," + KEY_J_TIME_ASSIGNED + " TEXT NOT NULL," + KEY_J_PERIODIC + " INTEGER NOT NULL,"
+            + KEY_J_PERIOD + " INTEGER," + " FOREIGN KEY (" + KEY_J_USERNAME + ") REFERENCES " + USERS_TABLE + " ("
+            + KEY_U_USERNAME + "))";
 
-	public static String getKeyJId() {
-		return KEY_J_ID;
-	}
+    public static String getKeyUUsername() {
+        return KEY_U_USERNAME;
+    }
 
-	public static String getKeyJParameters() {
-		return KEY_J_PARAMETERS;
-	}
+    public static String getKeyUPassword() {
+        return KEY_U_PASSWORD;
+    }
 
-	public static String getKeyJUsername() {
-		return KEY_J_USERNAME;
-	}
+    public static String getKeyJId() {
+        return KEY_J_ID;
+    }
 
-	public static String getKeyJTimeAssigned() {
-		return KEY_J_TIME_ASSIGNED;
-	}
+    public static String getKeyJParameters() {
+        return KEY_J_PARAMETERS;
+    }
 
-	public static String getKeyJPeriodic() {
-		return KEY_J_PERIODIC;
-	}
+    public static String getKeyJUsername() {
+        return KEY_J_USERNAME;
+    }
 
-	public static String getKeyJPeriod() {
-		return KEY_J_PERIOD;
-	}
-	
-	public static String getUsersTable() {
-		return USERS_TABLE;
-	}
+    public static String getKeyJTimeAssigned() {
+        return KEY_J_TIME_ASSIGNED;
+    }
 
-	public static String getJobsTable() {
-		return JOBS_TABLE;
-	}
+    public static String getKeyJPeriodic() {
+        return KEY_J_PERIODIC;
+    }
 
-	
+    public static String getKeyJPeriod() {
+        return KEY_J_PERIOD;
+    }
+
+    public static String getUsersTable() {
+        return USERS_TABLE;
+    }
+
+    public static String getJobsTable() {
+        return JOBS_TABLE;
+    }
 }
