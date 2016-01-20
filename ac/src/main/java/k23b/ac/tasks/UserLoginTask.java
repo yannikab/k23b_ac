@@ -1,4 +1,4 @@
-package k23b.ac.rest;
+package k23b.ac.tasks;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,6 +18,8 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
     public interface LoginCallback {
 
         public void loginSuccess();
+
+        public void registrationPending();
 
         public void incorrectCredentials();
 
@@ -45,11 +47,11 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
         try {
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // e.printStackTrace();
-            }
+            // try {
+            // Thread.sleep(5000);
+            // } catch (InterruptedException e) {
+            // // e.printStackTrace();
+            // }
 
             String url = baseURI + "login/" + username + "/" + hashForPassword(password);
 
@@ -61,13 +63,15 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
             if (result.startsWith("Accepted"))
                 return UserLoginStatus.SUCCESS;
+            else if (result.startsWith("Pending"))
+                return UserLoginStatus.REGISTRATION_PENDING;
             else if (result.startsWith("Incorrect"))
                 return UserLoginStatus.INCORRECT_CREDENTIALS;
             else
                 return UserLoginStatus.INVALID;
-            
+
         } catch (RestClientException e) {
-            Logger.logThrowable(getClass().getSimpleName(), e);
+            Logger.logException(getClass().getSimpleName(), e);
             return UserLoginStatus.NETWORK_ERROR;
         }
     }
@@ -88,6 +92,10 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
         case SUCCESS:
             loginCallback.loginSuccess();
+            break;
+
+        case REGISTRATION_PENDING:
+            loginCallback.registrationPending();
             break;
 
         case CANCELLED:

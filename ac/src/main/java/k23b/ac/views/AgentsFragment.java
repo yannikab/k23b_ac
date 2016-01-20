@@ -20,12 +20,12 @@ import k23b.ac.MainActivity;
 import k23b.ac.R;
 import k23b.ac.Settings;
 import k23b.ac.rest.Agent;
-import k23b.ac.rest.AgentsFetchTask;
-import k23b.ac.rest.AgentsFetchTask.AgentsReceiver;
+import k23b.ac.tasks.AgentsReceiveTask;
+import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiver;
 
 public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMode.Callback {
 
-    private AgentsFetchTask agentsFetchTask;
+    private AgentsReceiveTask agentsFetchTask;
 
     private List<Agent> agents;
 
@@ -131,7 +131,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiver, ActionMo
 
         showProgress(true);
 
-        agentsFetchTask = new AgentsFetchTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
+        agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
 
         agentsFetchTask.execute();
     }

@@ -22,17 +22,17 @@ import k23b.ac.MainActivity;
 import k23b.ac.R;
 import k23b.ac.Settings;
 import k23b.ac.rest.Agent;
-import k23b.ac.rest.AgentsFetchTask;
-import k23b.ac.rest.AgentsFetchTask.AgentsReceiver;
 import k23b.ac.rest.Job;
-import k23b.ac.rest.JobsFetchTask;
-import k23b.ac.rest.JobsFetchTask.JobsReceiver;
+import k23b.ac.tasks.AgentsReceiveTask;
+import k23b.ac.tasks.JobsReceiveTask;
+import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiver;
+import k23b.ac.tasks.JobsReceiveTask.JobsReceiver;
 
 public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiver {
 
-    private AgentsFetchTask agentsFetchTask;
+    private AgentsReceiveTask agentsFetchTask;
 
-    private JobsFetchTask jobsFetchTask;
+    private JobsReceiveTask jobsFetchTask;
 
     private List<Agent> agents;
 
@@ -173,7 +173,7 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
 
         showProgress(true);
 
-        agentsFetchTask = new AgentsFetchTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
+        agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
 
         agentsFetchTask.execute();
     }
@@ -216,7 +216,7 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
 
         showProgress(true);
 
-        jobsFetchTask = new JobsFetchTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C", selectedAgent.getRequestHash());
+        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C", selectedAgent.getRequestHash());
 
         jobsFetchTask.execute();
     }

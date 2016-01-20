@@ -138,6 +138,7 @@ public final class R {
         public static final int error_invalid_password=0x7f050015;
         public static final int error_login_cancelled=0x7f050019;
         public static final int error_network_error=0x7f050018;
+        public static final int error_registration_pending=0x7f05001a;
         public static final int jobs=0x7f05000d;
         public static final int navigation_drawer_close=0x7f050002;
         public static final int navigation_drawer_open=0x7f050001;
@@ -145,14 +146,14 @@ public final class R {
         public static final int prompt_username=0x7f050011;
         public static final int results_agent=0x7f05000e;
         public static final int results_all=0x7f05000f;
-        public static final int start_message=0x7f050020;
+        public static final int start_message=0x7f050021;
         public static final int title_activity_login=0x7f050010;
-        public static final int title_activity_main=0x7f05001a;
-        public static final int title_activity_start=0x7f05001f;
-        public static final int title_section_agents=0x7f05001b;
-        public static final int title_section_jobs=0x7f05001c;
-        public static final int title_section_results_agent=0x7f05001d;
-        public static final int title_section_results_all=0x7f05001e;
+        public static final int title_activity_main=0x7f05001b;
+        public static final int title_activity_start=0x7f050020;
+        public static final int title_section_agents=0x7f05001c;
+        public static final int title_section_jobs=0x7f05001d;
+        public static final int title_section_results_agent=0x7f05001e;
+        public static final int title_section_results_all=0x7f05001f;
     }
     public static final class style {
         /** 

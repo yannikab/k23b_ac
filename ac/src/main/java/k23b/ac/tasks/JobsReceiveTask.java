@@ -1,15 +1,18 @@
-package k23b.ac.rest;
+package k23b.ac.tasks;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
 import k23b.ac.Logger;
+import k23b.ac.rest.Job;
+import k23b.ac.rest.JobContainer;
 
-public class JobsFetchTask extends AsyncTask<Void, Void, List<Job>> {
+public class JobsReceiveTask extends AsyncTask<Void, Void, List<Job>> {
 
     public interface JobsReceiver {
         public void setJobs(List<Job> jobs);
@@ -21,7 +24,7 @@ public class JobsFetchTask extends AsyncTask<Void, Void, List<Job>> {
     private final String password;
     private final String agentHash;
 
-    public JobsFetchTask(JobsReceiver receiver, String baseURI, String username, String password, String agentHash) {
+    public JobsReceiveTask(JobsReceiver receiver, String baseURI, String username, String password, String agentHash) {
         super();
         this.receiver = receiver;
         this.baseURI = baseURI;
@@ -49,8 +52,8 @@ public class JobsFetchTask extends AsyncTask<Void, Void, List<Job>> {
 
             return jobContainer.getStatus().equals("Accepted") ? jobContainer.getJobs() : null;
 
-        } catch (Exception e) {
-            logException("JobsFetchTask", e);
+        } catch (RestClientException e) {
+            Logger.logException(getClass().getSimpleName(), e);
             return null;
         }
     }
@@ -65,16 +68,5 @@ public class JobsFetchTask extends AsyncTask<Void, Void, List<Job>> {
     protected void onCancelled() {
 
         receiver.setJobs(null);
-    }
-
-    private void logException(String tag, Exception e) {
-
-        if (e.getMessage() != null) {
-            Logger.error(tag, e.getMessage());
-            return;
-        }
-
-        for (StackTraceElement ste : e.getStackTrace())
-            Logger.error(tag, ste.toString());
     }
 }

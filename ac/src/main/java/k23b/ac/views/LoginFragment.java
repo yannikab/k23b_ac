@@ -20,7 +20,7 @@ import android.widget.Toast;
 import k23b.ac.MainActivity;
 import k23b.ac.R;
 import k23b.ac.Settings;
-import k23b.ac.rest.UserLoginTask;
+import k23b.ac.tasks.UserLoginTask;
 
 public class LoginFragment extends Fragment implements UserLoginTask.LoginCallback {
 
@@ -99,7 +99,7 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 0;
     }
 
     private void attemptLogin() {
@@ -122,15 +122,17 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         boolean cancel = false;
         View focusView = null;
 
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            passwordView.setError(getString(R.string.error_invalid_password));
-            focusView = passwordView;
-            cancel = true;
-        }
-
         if (TextUtils.isEmpty(username)) {
             usernameView.setError(getString(R.string.error_field_required));
             focusView = usernameView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(password)) {
+            passwordView.setError(getString(R.string.error_field_required));
+            focusView = passwordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            passwordView.setError(getString(R.string.error_invalid_password));
+            focusView = passwordView;
             cancel = true;
         }
 
@@ -174,6 +176,19 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         Intent mainIntent = new Intent(getActivity(), MainActivity.class);
         mainIntent.putExtra("user", "Yannis Kabilafkas");
         startActivity(mainIntent);
+    }
+
+    @Override
+    public void registrationPending() {
+
+        if (userLoginTask == null)
+            return;
+
+        userLoginTask = null;
+
+        showProgress(false);
+
+        Toast.makeText(getActivity(), getString(R.string.error_registration_pending), Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -16,14 +16,14 @@ public class Logger {
         Log.e(tag, message);
     }
 
-    public static void logThrowable(String tag, Throwable t) {
+    public static void logException(String tag, Exception e) {
 
-        if (t.getMessage() != null) {
-            Logger.error(tag, t.getMessage());
+        if (e.getMessage() != null) {
+            Logger.error(tag, e.getMessage());
             return;
         }
 
-        for (StackTraceElement ste : t.getStackTrace())
+        for (StackTraceElement ste : e.getStackTrace())
             Logger.error(tag, ste.toString());
     }
 

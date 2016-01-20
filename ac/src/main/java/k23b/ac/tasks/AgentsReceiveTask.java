@@ -1,15 +1,18 @@
-package k23b.ac.rest;
+package k23b.ac.tasks;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
 import k23b.ac.Logger;
+import k23b.ac.rest.Agent;
+import k23b.ac.rest.AgentContainer;
 
-public class AgentsFetchTask extends AsyncTask<Void, Void, List<Agent>> {
+public class AgentsReceiveTask extends AsyncTask<Void, Void, List<Agent>> {
 
     public interface AgentsReceiver {
         public void setAgents(List<Agent> agents);
@@ -20,7 +23,7 @@ public class AgentsFetchTask extends AsyncTask<Void, Void, List<Agent>> {
     private final String username;
     private final String password;
 
-    public AgentsFetchTask(AgentsReceiver receiver, String baseURI, String username, String password) {
+    public AgentsReceiveTask(AgentsReceiver receiver, String baseURI, String username, String password) {
         super();
         this.receiver = receiver;
         this.baseURI = baseURI;
@@ -47,8 +50,8 @@ public class AgentsFetchTask extends AsyncTask<Void, Void, List<Agent>> {
 
             return agentContainer.getStatus().equals("Accepted") ? agentContainer.getAgents() : null;
 
-        } catch (Exception e) {
-            logException("AgentsFetchTask", e);
+        } catch (RestClientException e) {
+            Logger.logException(getClass().getSimpleName(), e);
             return null;
         }
     }
@@ -63,16 +66,5 @@ public class AgentsFetchTask extends AsyncTask<Void, Void, List<Agent>> {
     protected void onCancelled() {
 
         receiver.setAgents(null);
-    }
-
-    private void logException(String tag, Exception e) {
-
-        if (e.getMessage() != null) {
-            Logger.error(tag, e.getMessage());
-            return;
-        }
-
-        for (StackTraceElement ste : e.getStackTrace())
-            Logger.error(tag, ste.toString());
     }
 }
