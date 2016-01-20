@@ -24,7 +24,7 @@ import k23b.sa.Threads.MainThread;
 import k23b.sa.Threads.PeriodicThread;
 import k23b.sa.Threads.SenderThread;
 import k23b.sa.Threads.ShutdownThread;
-import k23b.sa.rest.JobList;
+import k23b.sa.rest.JobContainer;
 
 /**
  * The State in which the SA gets a batch of Jobs from the AM.
@@ -77,7 +77,7 @@ public class JobsState extends AgentState {
             Thread.currentThread().interrupt();
         }
 
-        JobList jobList = getJobs();
+        JobContainer jobList = getJobs();
 
         RequestStatus rs = requestStatus(jobList);
 
@@ -89,7 +89,7 @@ public class JobsState extends AgentState {
 
         case ACCEPTED: {
 
-            if (jobList.getJob().isEmpty()) {
+            if (jobList.getJobs().isEmpty()) {
 
                 String message = "Aggregator Manager sent an empty job list.";
                 System.out.println(message);
@@ -149,9 +149,9 @@ public class JobsState extends AgentState {
                         log.error(Thread.currentThread().getName() + ": InterruptedException during periodic thread join().");
                     }
 
-                } else if (job.isPeriodic()) {
+                } else if (job.getPeriodic()) {
 
-                    periodicThreadMap.put(job.getId(), new PeriodicThread(job.getId(), job, job.getPeriod()));
+                    periodicThreadMap.put(job.getJobId(), new PeriodicThread(job.getJobId(), job, job.getPeriod()));
 
                 } else {
 
@@ -185,7 +185,7 @@ public class JobsState extends AgentState {
      * 
      * @return A list of Jobs to be run.
      */
-    private JobList getJobs() {
+    private JobContainer getJobs() {
 
         // return invalidJobList();
 
@@ -213,7 +213,7 @@ public class JobsState extends AgentState {
                 return invalidJobList();
             }
 
-            return response.readEntity(JobList.class);
+            return response.readEntity(JobContainer.class);
 
         } catch (ProcessingException e) {
             // e.printStackTrace();
@@ -228,9 +228,8 @@ public class JobsState extends AgentState {
      * @return A Job list with its Status set to Invalid
      */
 
-    private JobList invalidJobList() {
-        JobList jl = new JobList();
-        jl.setStatus("Invalid");
+    private JobContainer invalidJobList() {
+        JobContainer jl = new JobContainer("Invalid");
         return jl;
     }
 
@@ -240,7 +239,7 @@ public class JobsState extends AgentState {
      * @return The status of the jobList
      */
 
-    private RequestStatus requestStatus(JobList jobList) {
+    private RequestStatus requestStatus(JobContainer jobList) {
 
         try {
 

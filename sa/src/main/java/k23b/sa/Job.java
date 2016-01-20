@@ -6,139 +6,107 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
-import k23b.sa.BlockingQueue.IBlockingQueue;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+
+import k23b.sa.BlockingQueue.IBlockingQueue;
+import k23b.sa.rest.DateAdapter;
 
 /**
  * Holds information about an nmap task including its output. As it implements the interface Runnable its method {@link #run() run} is invoked by the WorkerThread to execute the nmap task
  *
  */
+
 @XmlRootElement(name = "job")
-@XmlType(name = "job", propOrder = {
-        "id",
-        "cmd",
-        "isPeriodic",
-        "period"
-})
-@XmlAccessorType(XmlAccessType.NONE)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Job implements Runnable {
 
-    @XmlTransient
     private static final Logger log = Logger.getLogger(Job.class);
-    @XmlTransient
-    private String[] cmdArray;
+
     @XmlElement(required = true)
-    private long id;
+    private long jobId;
+
     @XmlElement(required = true)
-    private String cmd;
+    private long agentId;
+
     @XmlElement(required = true)
-    private boolean isPeriodic;
+    private long adminId;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = true)
+    private Date timeAssigned;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlElement(required = false)
+    private Date timeSent;
+
+    @XmlElement(required = true)
+    private String params;
+
+    @XmlElement(required = true)
+    private boolean periodic;
+
+    @XmlElement(required = false)
     private int period;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlElement(required = false)
+    private Date timeStopped;
+
     @XmlTransient
     private IBlockingQueue<Result> jobResultsBlockingQueue;
+
+    @XmlTransient
+    private String[] cmdArray;
 
     @XmlTransient
     private String output;
 
     public Job() {
+        super();
     }
 
     public Job(int id, String[] cmdArray, boolean isPeriodic, int period, IBlockingQueue<Result> jobResultsBlockingQueue) {
 
-        this.id = id;
+        this.jobId = id;
         this.cmdArray = cmdArray;
-        this.isPeriodic = isPeriodic;
+        this.periodic = isPeriodic;
         this.period = period;
         this.jobResultsBlockingQueue = jobResultsBlockingQueue;
 
         this.output = null;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public long getJobId() {
+        return jobId;
     }
 
     public String[] getCmdArray() {
         return cmdArray;
     }
 
-    public void setCmdArray(String[] cmdArray) {
-        this.cmdArray = cmdArray;
-    }
-
-    public boolean isPeriodic() {
-        return isPeriodic;
-    }
-
-    public void setPeriodic(boolean isPeriodic) {
-        this.isPeriodic = isPeriodic;
+    public boolean getPeriodic() {
+        return periodic;
     }
 
     public int getPeriod() {
         return period;
     }
 
-    public void setPeriod(int period) {
-        this.period = period;
+    public String getCmd() {
+        return params;
     }
 
     public String getOutput() {
         return output;
-    }
-
-    public void setOutput(String output) {
-        this.output = output;
-    }
-
-    public String getCmd() {
-        return cmd;
-    }
-
-    public void setCmd(String cmd) {
-        this.cmd = cmd;
-    }
-
-    @Override
-    public String toString() {
-        return ("" + id);
-    }
-
-    public String description() {
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Job: ");
-        sb.append(this.id);
-        sb.append(",");
-
-        for (String param : this.cmdArray) {
-            sb.append(" ");
-            sb.append(param);
-        }
-        sb.append(", ");
-
-        sb.append(this.isPeriodic ? "true" : "false");
-
-        if (this.isPeriodic) {
-            sb.append(", ");
-            sb.append(this.period);
-        }
-
-        return sb.toString();
     }
 
     public boolean isTerminating() {
@@ -184,7 +152,7 @@ public class Job implements Runnable {
 
             this.output = sw.toString();
 
-            log.debug("Job " + this.id + ": output taken." + " isInterrupted(): " + Thread.currentThread().isInterrupted());
+            log.debug("Job " + this.jobId + ": output taken." + " isInterrupted(): " + Thread.currentThread().isInterrupted());
 
             // Store current interrupt status and clear it, prevent waitFor() and put() from throwing InterruptedException
             boolean isInterrupted = Thread.interrupted();
@@ -193,7 +161,7 @@ public class Job implements Runnable {
 
             long end = System.currentTimeMillis();
 
-            log.debug("Job " + this.id + " exit code: " + exitVal + ", run time: " + (end - start) + " isInterrupted(): " + Thread.currentThread().isInterrupted());
+            log.debug("Job " + this.jobId + " exit code: " + exitVal + ", run time: " + (end - start) + " isInterrupted(): " + Thread.currentThread().isInterrupted());
 
             switch (exitVal) {
             case 0: // nmap finished normally
@@ -201,32 +169,32 @@ public class Job implements Runnable {
                 log.info("Job finished successfully: " + this.description());
 
                 // put the XML output into the jobResults Queue
-                jobResultsBlockingQueue.put(new Result(this.id, output));
+                jobResultsBlockingQueue.put(new Result(this.jobId, output));
 
-                log.debug("Job " + this.id + ": Result placed on queue.");
+                log.debug("Job " + this.jobId + ": Result placed on queue.");
 
                 break;
             case 1: // nmap reports network error
 
                 log.error("Network error from job: " + this.description());
 
-                jobResultsBlockingQueue.put(new Result(this.id, null));
+                jobResultsBlockingQueue.put(new Result(this.jobId, null));
 
-                log.debug("Job " + this.id + ": Result placed on queue.");
+                log.debug("Job " + this.jobId + ": Result placed on queue.");
 
                 break;
             case 2: // nmap reports unknown error
 
                 log.error("Error from job: " + this.description());
 
-                jobResultsBlockingQueue.put(new Result(this.id, null));
+                jobResultsBlockingQueue.put(new Result(this.jobId, null));
 
-                log.debug("Job " + this.id + ": Result placed on queue.");
+                log.debug("Job " + this.jobId + ": Result placed on queue.");
 
                 break;
             default: // invalid exit code from nmap, we assume thread was interrupted while running process
 
-                log.info("Job " + this.id + ": Invalid exit code from nmap, job was interrupted.");
+                log.info("Job " + this.jobId + ": Invalid exit code from nmap, job was interrupted.");
 
                 isInterrupted = true;
             }
@@ -254,4 +222,32 @@ public class Job implements Runnable {
         }
     }
 
+    public String description() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Job: ");
+        sb.append(this.jobId);
+        sb.append(",");
+
+        for (String param : this.cmdArray) {
+            sb.append(" ");
+            sb.append(param);
+        }
+        sb.append(", ");
+
+        sb.append(this.periodic ? "true" : "false");
+
+        if (this.periodic) {
+            sb.append(", ");
+            sb.append(this.period);
+        }
+
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return (String.valueOf(jobId));
+    }
 }

@@ -82,7 +82,7 @@ public class JobGenerator implements IJobProvider {
 
             Job randomJob = allJobs.get(random.nextInt(count));
 
-            jobs[i] = new Job(i, randomJob.getCmdArray(), randomJob.isPeriodic(), randomJob.getPeriod(), this.jobResultsBlockingQueue);
+            jobs[i] = new Job(i, randomJob.getCmdArray(), randomJob.getPeriodic(), randomJob.getPeriod(), this.jobResultsBlockingQueue);
         }
 
         return jobs;

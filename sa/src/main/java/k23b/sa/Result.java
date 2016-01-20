@@ -7,31 +7,30 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * It holds the result as well as the Job id from a nmap task.
  *
  */
-@XmlRootElement(name = "Result")
-@XmlAccessorType(XmlAccessType.NONE)
-@XmlType(name = "Result", propOrder = {
-        "jobId",
-        "jobResult"
-})
+
+@XmlRootElement(name = "result")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Result {
 
     @XmlElement(required = true)
-    private long jobId;
+    protected long jobId;
+
     @XmlElement(required = true)
-    private String jobResult;
+    protected String output;
 
     public Result() {
+        super();
     }
 
-    public Result(long jobId, String jobResult) {
+    public Result(long jobId, String output) {
+
         this.jobId = jobId;
-        this.jobResult = jobResult;
+        this.output = output;
     }
 
     @Override
@@ -42,9 +41,9 @@ public class Result {
         String l1 = s;
         String l2 = "";
 
-        if (jobResult != null) {
+        if (output != null) {
 
-            StringTokenizer st = new StringTokenizer(jobResult, System.lineSeparator());
+            StringTokenizer st = new StringTokenizer(output, System.lineSeparator());
 
             try {
 

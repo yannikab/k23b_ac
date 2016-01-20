@@ -14,31 +14,31 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 /**
- * An implementation of the MessageBodyReader Interface for the JobList.
+ * An implementation of the MessageBodyReader Interface for the JobContainer.
  * 
  */
 
-public class JobListMessageBodyReader implements MessageBodyReader<JobList> {
+public class JobContainerMessageBodyReader implements MessageBodyReader<JobContainer> {
 
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
-        return type == JobList.class;
+        return type == JobContainer.class;
     }
 
     @Override
-    public JobList readFrom(Class<JobList> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+    public JobContainer readFrom(Class<JobContainer> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
                     throws IOException, WebApplicationException {
 
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(JobList.class);
-            JobList jl = (JobList) jaxbContext.createUnmarshaller().unmarshal(entityStream);
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(JobContainer.class);
+            JobContainer jl = (JobContainer) jaxbContext.createUnmarshaller().unmarshal(entityStream);
             return jl;
+
         } catch (JAXBException jaxbException) {
-            throw new ProcessingException("Error deserializing JobList.", jaxbException);
+            throw new ProcessingException("Error deserializing JobContainer.", jaxbException);
         }
-
     }
-
 }

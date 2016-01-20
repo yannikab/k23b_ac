@@ -18,8 +18,8 @@ import k23b.sa.AgentStats;
 import k23b.sa.Settings;
 import k23b.sa.JobProvider.LineParser;
 import k23b.sa.Threads.MainThread;
-import k23b.sa.rest.JobListMessageBodyReader;
-import k23b.sa.rest.ResultListMessageBodyWriter;
+import k23b.sa.rest.JobContainerMessageBodyReader;
+import k23b.sa.rest.ResultContainerMessageBodyWriter;
 
 /**
  * The State in which the SA starts up and initializes its settings and statistics.
@@ -47,7 +47,7 @@ public class StartupState extends AgentState {
         LineParser.setRunNmapAsRoot(getMainThread().getSettings().getRunNmapAsRoot());
 
         // Create the client
-        getMainThread().setClient(ClientBuilder.newClient().register(JobListMessageBodyReader.class).register(ResultListMessageBodyWriter.class));
+        getMainThread().setClient(ClientBuilder.newClient().register(JobContainerMessageBodyReader.class).register(ResultContainerMessageBodyWriter.class));
 
         try {
 

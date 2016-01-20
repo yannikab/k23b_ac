@@ -1,8 +1,5 @@
 package k23b.sa.Threads;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
@@ -15,7 +12,7 @@ import org.apache.log4j.Logger;
 import k23b.sa.Result;
 import k23b.sa.AgentState.JobsState;
 import k23b.sa.BlockingQueue.IBlockingQueue;
-import k23b.sa.rest.ResultList;
+import k23b.sa.rest.ResultContainer;
 
 /**
  * Implements the functionality of sending the results that are stored in the blocking queue to the Aggregator manager (on part1 it outputs to stdout)
@@ -103,17 +100,17 @@ public class SenderThread extends Thread {
         System.out.println(message);
         log.info(message);
 
+        ResultContainer resultContainer = new ResultContainer();
+        
         if (resultsSize > 0) {
-
-            List<Result> results = new ArrayList<Result>(resultsSize);
-
+            
             while (jobResultsBlockingQueue.size() > 0)
 
                 try {
 
                     Result r = jobResultsBlockingQueue.get();
 
-                    results.add(r);
+                    resultContainer.getResults().add(r);
 
                 } catch (InterruptedException e) {
 
@@ -125,12 +122,8 @@ public class SenderThread extends Thread {
                 }
 
             // output results
-            for (Result r : results)
+            for (Result r : resultContainer.getResults())
                 System.out.println(r.toString());
-
-            // send the results to AM
-            ResultList resultList = new ResultList();
-            resultList.setResult(results);
 
             Builder builder = mainThread
                     .getClient()
@@ -139,7 +132,7 @@ public class SenderThread extends Thread {
 
             try {
 
-                Response response = builder.post(Entity.entity(resultList, MediaType.APPLICATION_XML));
+                Response response = builder.post(Entity.entity(resultContainer, MediaType.APPLICATION_XML));
 
                 if (response.getStatus() != 200) {
                     message = "Sending results failed. HTTP error code: " + response.getStatus();
