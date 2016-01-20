@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +18,7 @@ import k23b.ac.views.ResultsAllFragment;
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     public static final int ASSIGN_JOB_REQUEST = 1;
-    public static Context context;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -34,9 +33,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        context = this.getApplicationContext();
-        
+
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 

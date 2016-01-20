@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import k23b.ac.dao.DatabaseHandler;
 
 public class StartActivity extends Activity {
 
@@ -23,6 +24,8 @@ public class StartActivity extends Activity {
         setContentView(R.layout.activity_start);
 
         mTextView = (TextView) findViewById(R.id.text_view);
+
+        DatabaseHandler.setContext(this.getApplicationContext());
 
         startLoginActivity();
     }

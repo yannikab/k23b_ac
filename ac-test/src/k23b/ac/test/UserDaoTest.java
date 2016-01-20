@@ -12,36 +12,22 @@ import k23b.ac.dao.UserDao;
 
 public class UserDaoTest extends AndroidTestCase {
 
-    private Context context;
-
-    // private Context getTestContext() {
-    //
-    // try {
-    //
-    // Method getTestContext = ServiceTestCase.class.getMethod("getTestContext");
-    //
-    // return (Context) getTestContext.invoke(this);
-    //
-    // } catch (final Exception exception) {
-    // exception.printStackTrace();
-    // return null;
-    // }
-    // }
-
     protected void setUp() throws Exception {
         super.setUp();
 
-        context = getContext();
+        Context context = getContext();
 
         // setContext(context);
 
         assertNotNull(context);
 
-        SQLiteDatabase db = DatabaseHandler.getDBHandler(context).openDatabase();
+        DatabaseHandler.setContext(context);
+        
+        SQLiteDatabase db = DatabaseHandler.getDBHandler().openDatabase();
 
-        DatabaseHandler.getDBHandler(context).onUpgrade(db, 1, 1);
+        DatabaseHandler.getDBHandler().onUpgrade(db, 1, 1);
 
-        DatabaseHandler.getDBHandler(context).closeDatabase();
+        DatabaseHandler.getDBHandler().closeDatabase();
     }
 
     protected void tearDown() throws Exception {
@@ -50,11 +36,9 @@ public class UserDaoTest extends AndroidTestCase {
 
     public void testFindNonExistentUser() {
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            User u = ud.findUserbyUsername("Yannis");
+            User u = UserDao.findUserbyUsername("Yannis");
 
             assertNull(u);
 
@@ -67,14 +51,12 @@ public class UserDaoTest extends AndroidTestCase {
 
     public void testCreateUser() {
 
-        UserDao ud = new UserDao(context);
-
         try {
 
             String username = "Yannis";
             String password = "abcde";
 
-            User u = ud.createUser(username, password);
+            User u = UserDao.createUser(username, password, false);
 
             assertNotNull(u);
             assertEquals(username, u.getUsername());
@@ -91,13 +73,11 @@ public class UserDaoTest extends AndroidTestCase {
         String username = "Yannis";
         String password = "abcde";
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            ud.createUser(username, password);
+            UserDao.createUser(username, password, false);
 
-            User u = ud.findUserbyUsername(username);
+            User u = UserDao.findUserbyUsername(username);
 
             assertNotNull(u);
             assertEquals(username, u.getUsername());
@@ -113,13 +93,11 @@ public class UserDaoTest extends AndroidTestCase {
 
         String username = "Yannis";
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            ud.createUser(username, "pass1");
+            UserDao.createUser(username, "pass1", false);
 
-            ud.createUser(username, "pass2");
+            UserDao.createUser(username, "pass2", false);
 
             fail("Succesfully created two users with the same username.");
 
@@ -130,11 +108,9 @@ public class UserDaoTest extends AndroidTestCase {
 
     public void testDeleteNonExistentUser() {
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            ud.deleteUser("Yannis");
+            UserDao.deleteUser("Yannis");
 
             fail("Succesfully deleted non existent user.");
 
@@ -148,17 +124,15 @@ public class UserDaoTest extends AndroidTestCase {
         String username = "Yannis";
         String password = "abcde";
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            ud.createUser(username, password);
+            UserDao.createUser(username, password, false);
 
-            assertNotNull(ud.findUserbyUsername(username));
+            assertNotNull(UserDao.findUserbyUsername(username));
 
-            ud.deleteUser(username);
+            UserDao.deleteUser(username);
 
-            assertNull(ud.findUserbyUsername(username));
+            assertNull(UserDao.findUserbyUsername(username));
 
         } catch (DaoException e) {
             // e.printStackTrace();
@@ -168,11 +142,9 @@ public class UserDaoTest extends AndroidTestCase {
 
     public void testFindAll() {
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            Set<User> users = ud.findAll();
+            Set<User> users = UserDao.findAll();
 
             assertNotNull(users);
             assertEquals(0, users.size());
@@ -187,13 +159,11 @@ public class UserDaoTest extends AndroidTestCase {
         String username = "Yannis";
         String password = "abcde";
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            ud.createUser(username, password);
+            UserDao.createUser(username, password, false);
 
-            Set<User> users = ud.findAll();
+            Set<User> users = UserDao.findAll();
 
             assertNotNull(users);
             assertEquals(1, users.size());
@@ -214,15 +184,13 @@ public class UserDaoTest extends AndroidTestCase {
         String username = "Yannis";
         String password = "abcde";
 
-        UserDao ud = new UserDao(context);
-
         try {
 
-            ud.createUser(username, password);
+            UserDao.createUser(username, password, false);
 
-            ud.deleteUser(username);
+            UserDao.deleteUser(username);
 
-            Set<User> users = ud.findAll();
+            Set<User> users = UserDao.findAll();
 
             assertNotNull(users);
             assertEquals(0, users.size());
@@ -235,16 +203,14 @@ public class UserDaoTest extends AndroidTestCase {
 
     public void testCreateManyUsers() {
 
-        UserDao ud = new UserDao(context);
-
         int count = 100;
 
         try {
 
             for (int i = 0; i < count; i++)
-                ud.createUser(String.valueOf(i), String.valueOf(i));
+                UserDao.createUser(String.valueOf(i), String.valueOf(i), false);
 
-            Set<User> users = ud.findAll();
+            Set<User> users = UserDao.findAll();
 
             assertNotNull(users);
             assertEquals(count, users.size());
