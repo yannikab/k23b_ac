@@ -1,9 +1,12 @@
 package k23b.ac.dao;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -22,14 +25,14 @@ public class JobDao {
 
     // I might need to return only an ID
     @SuppressLint("SimpleDateFormat")
-    public static Job createJob(String parameters, String username, int agentId, Date time_assigned, boolean periodic,
+    public static JobDao createJob(String parameters, String username, int agentId, Date time_assigned, boolean periodic,
             int period) throws DaoException {
 
         Log.d(JobDao.class.getName(),
                 "Creating Job with Parameters: " + parameters + " Username: " + username + " AgentId: " + agentId
                         + " Time assigned: " + time_assigned + " Periodic: " + periodic + " Period " + period);
 
-        Job job = null;
+        JobDao job = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = dateFormat.format(time_assigned);
 
@@ -46,7 +49,7 @@ public class JobDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        User user = UserDao.findUserbyUsername(username);
+        UserDao user = UserDao.findUserbyUsername(username);
         if (user == null) {
             dbHandler.closeDatabase();
             throw new DaoException("Creating Job with invalid User");
@@ -95,11 +98,12 @@ public class JobDao {
         if (cursor.moveToFirst()) {
 
             Log.d(JobDao.class.getName(),
+                    
                     "Created Job with Id: " + cursor.getInt(0) + " Parameters: " + cursor.getString(1) + " Username: "
                             + cursor.getString(2) + " AgentId: " + cursor.getInt(3) + " Time assigned: "
                             + cursor.getString(4) + " Periodic: " + cursor.getInt(5) + " Period: " + cursor.getInt(6)
                             + " successfully!");
-            job = new Job(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
+            job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
                     cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
 
             cursor.close();
@@ -120,9 +124,9 @@ public class JobDao {
 
     }
 
-    public static Job findJobById(int jobId) throws DaoException {
+    public static JobDao findJobById(int jobId) throws DaoException {
 
-        Job job = null;
+        JobDao job = null;
         Log.d(JobDao.class.getName(), "Searching Job with Id: " + jobId);
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
@@ -143,7 +147,7 @@ public class JobDao {
 
         if (cursor.moveToFirst()) {
             Log.d(JobDao.class.getName(), "1 row selected");
-            job = new Job(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
+            job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
                     cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
         } else
             Log.d(JobDao.class.getName(), "0 rows selected");
@@ -175,10 +179,10 @@ public class JobDao {
         Log.d(JobDao.class.getName(), "Deleted Job with Id: " + jobId);
     }
 
-    public static Set<Job> findAllJobsFromUsername(String username) throws DaoException {
+    public static Set<JobDao> findAllJobsFromUsername(String username) throws DaoException {
 
         Log.d(JobDao.class.getName(), "Searching all Jobs with Username: " + username);
-        Set<Job> jobSet = new HashSet<Job>();
+        Set<JobDao> jobSet = new HashSet<JobDao>();
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
@@ -187,7 +191,7 @@ public class JobDao {
         Cursor cursor = db.query(DatabaseHandler.getJobsTable(), jobTableColumns,
                 DatabaseHandler.getKeyJUsername() + " = '" + username + "'", null, null, null, null);
 
-        User user = UserDao.findUserbyUsername(username);
+        UserDao user = UserDao.findUserbyUsername(username);
         if (user == null) {
             dbHandler.closeDatabase();
             throw new DaoException("No such Username");
@@ -198,7 +202,7 @@ public class JobDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                jobSet.add(new Job(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
+                jobSet.add(new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
                         cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6)));
 
                 rows++;
@@ -215,10 +219,10 @@ public class JobDao {
 
     }
 
-    public static Set<Job> findAllJobsFromAgentId(int agentId) {
+    public static Set<JobDao> findAllJobsFromAgentId(int agentId) {
 
         Log.d(JobDao.class.getName(), "Searching all Jobs with AgentId: " + agentId);
-        Set<Job> jobSet = new HashSet<Job>();
+        Set<JobDao> jobSet = new HashSet<JobDao>();
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
@@ -232,7 +236,7 @@ public class JobDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                jobSet.add(new Job(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
+                jobSet.add(new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
                         cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6)));
 
                 rows++;
@@ -249,10 +253,10 @@ public class JobDao {
 
     }
 
-    public static Set<Job> findAllJobsFromActiveUsers() {
+    public static Set<JobDao> findAllJobsFromActiveUsers() {
 
         Log.d(JobDao.class.getName(), "Searching all Jobs from Active Users");
-        Set<Job> jobSet = new HashSet<Job>();
+        Set<JobDao> jobSet = new HashSet<JobDao>();
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
@@ -278,7 +282,7 @@ public class JobDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                jobSet.add(new Job(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
+                jobSet.add(new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
                         cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6)));
 
                 rows++;
@@ -309,7 +313,7 @@ public class JobDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        Job j = JobDao.findJobById(jobId);
+        JobDao j = JobDao.findJobById(jobId);
         if (j == null) {
             dbHandler.closeDatabase();
             throw new DaoException("No such Job to set time");
@@ -324,6 +328,104 @@ public class JobDao {
         dbHandler.closeDatabase();
         Log.d(JobDao.class.getName(), "Time Assigned of Job with Id: " + jobId + " Updated");
 
+    }
+
+    private int id;
+    private String parameters;
+    private String username;
+    private int agentId;
+    private Date time_assigned;
+    private boolean periodic;
+    private int period;
+
+    private JobDao(int id, String parameters, String username, int agentId, Date time_assigned, boolean periodic, int period) {
+        this.id = id;
+        this.parameters = parameters;
+        this.username = username;
+        this.agentId = agentId;
+        this.time_assigned = time_assigned;
+        this.periodic = periodic;
+        this.period = period;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private JobDao(int id, String parameters, String username, int agentId, String time_assigned, boolean periodic, int period) {
+        
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+        this.id = id;
+        this.parameters = parameters;
+        this.username = username;
+        this.agentId = agentId;
+        try {
+            this.time_assigned = format.parse(time_assigned);
+        } catch (ParseException e) {
+            Log.e(JobDao.class.getName(), "Parse error on Date parsing");
+        }
+        this.periodic = periodic;
+        this.period = period;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(int agentId) {
+        this.agentId = agentId;
+    }
+
+    public Date getTime_assigned() {
+        return time_assigned;
+    }
+
+    public void setTime_assigned(Date time_assigned) {
+        this.time_assigned = time_assigned;
+    }
+
+    public boolean getPeriodic() {
+        return periodic;
+    }
+
+    public void setPeriodic(boolean periodic) {
+        this.periodic = periodic;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    @Override
+    public String toString() {
+        return "Job [id=" + id + ", parameters=" + parameters + ", username=" + username + ", agentId=" + agentId
+                + ", time_assigned=" + time_assigned + ", periodic=" + periodic + ", period=" + period + "]";
     }
 
 }

@@ -1,16 +1,12 @@
 package k23b.ac.srv;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import k23b.ac.dao.DaoException;
-import k23b.ac.dao.User;
+import k23b.ac.dao.JobDao;
 import k23b.ac.dao.UserDao;
-import k23b.ac.srv.SrvException;
 
 public class UserSrv {
 
-    public static User register(String username, String password) throws SrvException {
+    public static UserDao create(String username, String password) throws SrvException {
 
         try {
 
@@ -24,7 +20,7 @@ public class UserSrv {
         }
     }
 
-    public static User findByUsername(String username) throws SrvException {
+    public static UserDao findByUsername(String username) throws SrvException {
 
         try {
 
@@ -32,6 +28,21 @@ public class UserSrv {
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while finding User by username: " + username);
+        }
+    }
+
+    public static void delete(String username) throws SrvException {
+
+        try {
+
+            if (!JobDao.findAllJobsFromUsername(username).isEmpty())
+                throw new SrvException("Can not delete user. User " + username + " still has jobs in the database.");
+
+            UserDao.deleteUser(username);
+
+        } catch (DaoException e) {
+
+            throw new SrvException("Data access error while deleting user with username: " + username);
         }
     }
 

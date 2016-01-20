@@ -16,12 +16,12 @@ public class UserDao {
     private static String[] userTableColumns = { DatabaseHandler.getKeyUUsername(), DatabaseHandler.getKeyUPassword(),
             DatabaseHandler.getKeyUActive() };
 
-    public static User createUser(String username, String password, boolean active) throws DaoException {
+    public static UserDao createUser(String username, String password, boolean active) throws DaoException {
 
         Log.d(UserDao.class.getName(),
-                "Creating User with Username: " + username + ", Password: " + password + " and Active: " + active);
+                "Creating UserDao with Username: " + username + ", Password: " + password + " and Active: " + active);
 
-        User user = null;
+        UserDao user = null;
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.getKeyUUsername(), username);
         values.put(DatabaseHandler.getKeyUPassword(), password);
@@ -36,15 +36,15 @@ public class UserDao {
 
             if (rowId < 0) {
                 dbHandler.closeDatabase();
-                Log.e(UserDao.class.getName(), "Error while inserting User with Username: " + username + ", Password: "
+                Log.e(UserDao.class.getName(), "Error while inserting UserDao with Username: " + username + ", Password: "
                         + password + " and Active: " + active);
-                throw new DaoException("Error while inserting User with Username: " + username + ", Password: "
+                throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: "
                         + password + " and Active: " + active);
             }
         } catch (SQLiteException e) {
             dbHandler.closeDatabase();
             Log.e(UserDao.class.getName(), e.getMessage());
-            throw new DaoException("Error while inserting User with Username: " + username + ", Password: " + password
+            throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: " + password
                     + " and Active: " + active + " | " + e.getMessage());
         }
 
@@ -63,8 +63,8 @@ public class UserDao {
             if (cursor.getString(1).compareTo(password) == 0) {
 
                 Log.d(UserDao.class.getName(),
-                        "Created User with Username: " + username + " and Password: " + password + " successfully!");
-                user = new User(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
+                        "Created UserDao with Username: " + username + " and Password: " + password + " successfully!");
+                user = new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
 
                 cursor.close();
                 // Database not needed anymore
@@ -79,17 +79,17 @@ public class UserDao {
         // Database not needed anymore
         dbHandler.closeDatabase();
 
-        Log.e(UserDao.class.getName(), "Created User with Username: " + username + ", Password: " + password
+        Log.e(UserDao.class.getName(), "Created UserDao with Username: " + username + ", Password: " + password
                 + " and Active: " + active + " NOT FOUND !");
-        throw new DaoException("Created User with Username: " + username + ", Password: " + password + " and Active: "
+        throw new DaoException("Created UserDao with Username: " + username + ", Password: " + password + " and Active: "
                 + active + " NOT FOUND !");
 
     }
 
-    public static User findUserbyUsername(String username) throws DaoException {
+    public static UserDao findUserbyUsername(String username) throws DaoException {
 
-        User user = null;
-        Log.d(UserDao.class.getName(), "Searching User with Username: " + username);
+        UserDao user = null;
+        Log.d(UserDao.class.getName(), "Searching UserDao with Username: " + username);
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
@@ -110,7 +110,7 @@ public class UserDao {
 
         if (cursor.moveToFirst()) {
             Log.d(UserDao.class.getName(), "1 row selected");
-            user = new User(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
+            user = new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
         } else
             Log.d(UserDao.class.getName(), "0 rows selected");
 
@@ -124,17 +124,17 @@ public class UserDao {
 
     public static void deleteUser(String username) throws DaoException {
 
-        Log.d(UserDao.class.getName(), "Deleting User with Username: " + username);
+        Log.d(UserDao.class.getName(), "Deleting UserDao with Username: " + username);
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        Set<Job> jobSet = JobDao.findAllJobsFromUsername(username);
+        Set<JobDao> jobSet = JobDao.findAllJobsFromUsername(username);
         if (!jobSet.isEmpty()) {
             dbHandler.closeDatabase();
             throw new DaoException(
-                    "Trying to delete User with Username: " + username + " while there are some jobs from him left.");
+                    "Trying to delete UserDao with Username: " + username + " while there are some jobs from him left.");
         }
 
         int rowsAffected = db.delete(DatabaseHandler.getUsersTable(),
@@ -143,14 +143,14 @@ public class UserDao {
 
         // Database not needed anymore
         dbHandler.closeDatabase();
-        Log.d(UserDao.class.getName(), "Deleted User with Username: " + username);
+        Log.d(UserDao.class.getName(), "Deleted UserDao with Username: " + username);
 
     }
 
-    public static Set<User> findAll() throws DaoException {
+    public static Set<UserDao> findAll() throws DaoException {
 
         Log.d(UserDao.class.getName(), "Searching all Users");
-        Set<User> userSet = new HashSet<User>();
+        Set<UserDao> userSet = new HashSet<UserDao>();
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
@@ -163,7 +163,7 @@ public class UserDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                userSet.add(new User(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
+                userSet.add(new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
                 rows++;
                 cursor.moveToNext();
             }
@@ -178,10 +178,10 @@ public class UserDao {
 
     }
 
-    public static Set<User> findAllActive() {
+    public static Set<UserDao> findAllActive() {
 
         Log.d(UserDao.class.getName(), "Searching all Active Users");
-        Set<User> userSet = new HashSet<User>();
+        Set<UserDao> userSet = new HashSet<UserDao>();
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
@@ -195,7 +195,7 @@ public class UserDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                userSet.add(new User(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
+                userSet.add(new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
                 rows++;
                 cursor.moveToNext();
             }
@@ -221,15 +221,15 @@ public class UserDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        User u = UserDao.findUserbyUsername(username);
+        UserDao u = UserDao.findUserbyUsername(username);
         if (u == null) {
             dbHandler.closeDatabase();
-            throw new DaoException("No such User: " + username + " to set Active");
+            throw new DaoException("No such UserDao: " + username + " to set Active");
         }
-        
+
         // if (u.isActive()) {
         // dbHandler.closeDatabase();
-        // throw new DaoException("User: " + username + " already Active");
+        // throw new DaoException("UserDao: " + username + " already Active");
         // }
 
         int rowsAffected = db.update(DatabaseHandler.getUsersTable(), values,
@@ -239,7 +239,7 @@ public class UserDao {
 
         // Database not needed anymore
         dbHandler.closeDatabase();
-        Log.d(JobDao.class.getName(), "User: " + username + " set to Active");
+        Log.d(JobDao.class.getName(), "UserDao: " + username + " set to Active");
 
     }
 
@@ -254,14 +254,14 @@ public class UserDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        User u = UserDao.findUserbyUsername(username);
+        UserDao u = UserDao.findUserbyUsername(username);
         if (u == null) {
             dbHandler.closeDatabase();
-            throw new DaoException("No such User: " + username + " to set Inactive");
+            throw new DaoException("No such UserDao: " + username + " to set Inactive");
         }
         // if (!u.isActive()) {
         // dbHandler.closeDatabase();
-        // throw new DaoException("User: " + username + " already Inactive");
+        // throw new DaoException("UserDao: " + username + " already Inactive");
         // }
 
         int rowsAffected = db.update(DatabaseHandler.getUsersTable(), values,
@@ -271,6 +271,33 @@ public class UserDao {
 
         // Database not needed anymore
         dbHandler.closeDatabase();
-        Log.d(JobDao.class.getName(), "User: " + username + " set to Inactive");
+        Log.d(JobDao.class.getName(), "UserDao: " + username + " set to Inactive");
+    }
+
+    private String username;
+    private String password;
+    // private boolean active;
+
+    private UserDao(String username, String password, boolean active) {
+        this.username = username;
+        this.password = password;
+        // this.active = active;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    // public boolean isActive() {
+    // return active;
+    // }
+
+    @Override
+    public String toString() {
+        return "UserDao [username=" + username + ", password=" + password + ", active=" + "]";
     }
 }
