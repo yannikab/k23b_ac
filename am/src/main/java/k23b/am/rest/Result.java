@@ -6,55 +6,52 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
- * 	Serves the purpose of receiving the Job Result info from a SA.
+ * Serves the purpose of sending and receiving a job result.
  */
-@XmlRootElement(name = "Result")
-@XmlAccessorType(XmlAccessType.NONE)
-@XmlType(name = "Result", propOrder = {
-        "jobId",
-        "jobResult"
-})
+
+@XmlRootElement(name = "result")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Result {
-    @XmlTransient
-    private long resultId;
+
+    @XmlElement(required = false)
+    protected long resultId;
+
     @XmlElement(required = true)
-    private long jobId;
-    @XmlTransient
-    private Date time;
+    protected long jobId;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlElement(required = false)
+    protected Date timeReceived;
+
     @XmlElement(required = true)
-    private String jobResult;
+    protected String output;
 
     public Result() {
+        super();
+    }
+
+    public Result(long jobId, String output) {
+
+        this.jobId = jobId;
+        this.output = output;
     }
 
     public long getResultId() {
         return this.resultId;
     }
 
-    public void setResultId(long resultId) {
-        this.resultId = resultId;
-    }
-
     public long getJobId() {
         return this.jobId;
     }
 
-    public Date getTime() {
-        return this.time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
+    public Date getTimeReceived() {
+        return this.timeReceived;
     }
 
     public String getJobResult() {
-        return jobResult;
-    }
-
-    public void setJobResult(String jobResult) {
-        this.jobResult = jobResult;
+        return output;
     }
 }

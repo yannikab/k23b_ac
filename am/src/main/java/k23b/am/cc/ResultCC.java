@@ -145,6 +145,28 @@ public class ResultCC {
     }
 
     /**
+     * Retrieves all results received for a specific agent within a specific time range and caches them.
+     * 
+     * @param agentId the agent's id.
+     * @param startTime start of the time range.
+     * @param endTime end of the time range.
+     * @return a set of objects, each representing a result.
+     * @throws DaoException if a data access error occurs.
+     */
+    public static Set<ResultDao> findAllWithinDates(long agentId, Date startTime, Date endTime) throws DaoException {
+
+        if (cacheDisabled())
+            return ResultDao.findAllWithinDates(agentId, startTime, endTime);
+
+        Set<ResultDao> results = ResultDao.findAllWithinDates(agentId, startTime, endTime);
+
+        for (ResultDao rd : results)
+            cache.put(rd);
+
+        return results;
+    }
+
+    /**
      * Retrieves all results that have been received within a specific time range and caches them.
      * 
      * @param startTime start of the time range.
@@ -166,20 +188,39 @@ public class ResultCC {
     }
 
     /**
-     * Retrieves all results received for a specific agent within a specific time range and caches them.
+     * Retrieves a number of most recent results received for a specific agent and caches them.
      * 
      * @param agentId the agent's id.
-     * @param startTime start of the time range.
-     * @param endTime end of the time range.
+     * @param number the number of last results to return.
      * @return a set of objects, each representing a result.
      * @throws DaoException if a data access error occurs.
      */
-    public static Set<ResultDao> findAllWithinDates(long agentId, Date startTime, Date endTime) throws DaoException {
+    public static Set<ResultDao> findLast(long agentId, int number) throws DaoException {
 
         if (cacheDisabled())
-            return ResultDao.findAllWithinDates(agentId, startTime, endTime);
+            return ResultDao.findLast(agentId, number);
 
-        Set<ResultDao> results = ResultDao.findAllWithinDates(agentId, startTime, endTime);
+        Set<ResultDao> results = ResultDao.findLast(agentId, number);
+
+        for (ResultDao rd : results)
+            cache.put(rd);
+
+        return results;
+    }
+
+    /**
+     * Retrieves a number of most recent results received for all agents and caches them.
+     * 
+     * @param number the number of last results to return.
+     * @return a set of objects, each representing a result.
+     * @throws DaoException if a data access error occurs.
+     */
+    public static Set<ResultDao> findLast(int number) throws DaoException {
+        
+        if (cacheDisabled())
+            return ResultDao.findLast(number);
+
+        Set<ResultDao> results = ResultDao.findLast(number);
 
         for (ResultDao rd : results)
             cache.put(rd);

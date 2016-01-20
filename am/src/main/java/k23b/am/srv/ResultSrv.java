@@ -168,4 +168,55 @@ public class ResultSrv {
             throw new SrvException("Data access error while finding results between times " + startTime + " and " + endTime + ".");
         }
     }
+
+    /**
+     * Retrieves a number of most recent results received for a specific agent and caches them.
+     * 
+     * @param agentId the agent's id.
+     * @param number the number of last results to return.
+     * @return a set of objects, each representing a result.
+     * @throws DaoException if a data access error occurs.
+     */
+    public static Set<ResultDao> findLast(long agentId, int number) throws SrvException {
+
+        if (!(number > 0))
+            throw new SrvException("Number of results must have a positive value.");
+
+        try {
+
+            synchronized (lock ? ResultCC.class : new Object()) {
+
+                return ResultCC.findLast(number);
+            }
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            throw new SrvException("Data access error while finding last results for agent with id: " + agentId);
+        }
+    }
+
+    /**
+     * Retrieves a number of most recent results received for all agents and caches them.
+     * 
+     * @param number the number of last results to return.
+     * @return a set of objects, each representing a result.
+     * @throws DaoException if a data access error occurs.
+     */
+    public static Set<ResultDao> findLast(int number) throws SrvException {
+
+        if (!(number > 0))
+            throw new SrvException("Number of results must have a positive value.");
+
+        try {
+
+            synchronized (lock ? ResultCC.class : new Object()) {
+
+                return ResultCC.findLast(number);
+            }
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            throw new SrvException("Data access error while finding last results.");
+        }
+    }
 }

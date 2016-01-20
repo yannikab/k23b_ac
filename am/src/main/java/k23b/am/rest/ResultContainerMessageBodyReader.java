@@ -18,21 +18,21 @@ import javax.xml.bind.JAXBException;
  * 
  */
 
-public class ResultListMessageBodyReader implements MessageBodyReader<ResultList> {
+public class ResultContainerMessageBodyReader implements MessageBodyReader<ResultContainer> {
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		
-		return type == ResultList.class;
+		return type == ResultContainer.class;
 	}
 
 	@Override
-	public ResultList readFrom(Class<ResultList> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public ResultContainer readFrom(Class<ResultContainer> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 					throws IOException, WebApplicationException {
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(ResultList.class);
-			ResultList resList = (ResultList) jaxbContext.createUnmarshaller().unmarshal(entityStream);
+			JAXBContext jaxbContext = JAXBContext.newInstance(ResultContainer.class);
+			ResultContainer resList = (ResultContainer) jaxbContext.createUnmarshaller().unmarshal(entityStream);
 			return resList;
 		} catch (JAXBException jaxbException) {
 			throw new ProcessingException("Error deserializing ResultList.", jaxbException);

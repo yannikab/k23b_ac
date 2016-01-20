@@ -57,6 +57,9 @@ public class XmlTreeParser {
 
     private Document parseXML(String xml) {
 
+        if (xml == null)
+            return null;
+        
         if (db == null)
             return null;
 

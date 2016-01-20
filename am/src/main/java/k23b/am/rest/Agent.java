@@ -13,30 +13,30 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Agent {
 
     @XmlElement(required = true)
-    private long agentId;
+    protected long agentId;
 
     @XmlElement(required = true)
-    private String requestHash;
+    protected String requestHash;
 
     @XmlElement(required = true)
-    private String adminUsername;
+    protected String adminUsername;
 
     @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = true)
-    private Date timeAccepted;
-
-    @XmlJavaTypeAdapter(DateAdapter.class)
-    @XmlElement(required = false)
-    private Date timeJobRequest;
+    protected Date timeAccepted;
 
     @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = false)
-    private Date timeTerminated;
-    
+    protected Date timeJobRequest;
+
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlElement(required = false)
+    protected Date timeTerminated;
+
     public Agent() {
         super();
     }
-
+    
     public long getAgentId() {
         return agentId;
     }

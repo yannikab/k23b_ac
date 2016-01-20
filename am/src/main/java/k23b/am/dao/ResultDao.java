@@ -278,6 +278,115 @@ public class ResultDao {
         }
     }
 
+    /**
+     * Retrieves a number of most recent results received for a specific agent.
+     * 
+     * @param agentId the agent's id.
+     * @param number the number of last results to return.
+     * @return a set of objects, each representing a result.
+     * @throws DaoException if a data access error occurs.
+     */
+    public static Set<ResultDao> findLast(long agentId, int number) throws DaoException {
+
+        String sql = ""
+                + "select * "
+                + "from amdb_result inner join amdb_job "
+                + "on amdb_result.JOB_ID = amdb_job.JOB_ID "
+                + "where amdb_job.AGENT_ID = ? "
+                + "order by amdb_result.TIME_RECEIVED desc, amdb_result.RESULT_ID desc "
+                + "limit ?";
+
+        try (SynchronizedStatement ss = ConnectionSingleton.getInstance().getStatement(sql)) {
+
+            log.debug("");
+            log.debug("Executing query: " + sql);
+
+            log.debug("Setting parameter 1 to: " + agentId);
+            ss.setLong(1, agentId);
+
+            log.debug("Setting parameter 2 to: " + number);
+            ss.setInt(2, number);
+
+            ss.executeQuery();
+
+            ResultSet rs = ss.getResultSet();
+
+            Set<ResultDao> results = new HashSet<ResultDao>();
+
+            int rows = 0;
+
+            while (rs.next()) {
+
+                rows++;
+                long resultId = rs.getLong("RESULT_ID");
+                long jobId = rs.getLong("JOB_ID");
+                Date timeReceived = rs.getTimestamp("TIME_RECEIVED");
+                String output = rs.getString("OUTPUT");
+
+                results.add(new ResultDao(resultId, jobId, timeReceived, output));
+            }
+
+            log.debug(rows + (rows == 1 ? " row " : " rows ") + "selected.");
+            return results;
+
+        } catch (SQLException e) {
+            // e.printStackTrace();
+            throw new DaoException("Error while finding last results for agent with id: " + agentId);
+        }
+    }
+
+    /**
+     * Retrieves a number of most recent results received for all agents.
+     * 
+     * @param number the number of last results to return.
+     * @return a set of objects, each representing a result.
+     * @throws DaoException if a data access error occurs.
+     */
+    public static Set<ResultDao> findLast(int number) throws DaoException {
+
+        String sql = ""
+                + "select * "
+                + "from amdb_result inner join amdb_job "
+                + "on amdb_result.JOB_ID = amdb_job.JOB_ID "
+                + "order by amdb_result.TIME_RECEIVED desc, amdb_result.RESULT_ID desc "
+                + "limit ?";
+
+        try (SynchronizedStatement ss = ConnectionSingleton.getInstance().getStatement(sql)) {
+
+            log.debug("");
+            log.debug("Executing query: " + sql);
+
+            log.debug("Setting parameter 1 to: " + number);
+            ss.setInt(1, number);
+
+            ss.executeQuery();
+
+            ResultSet rs = ss.getResultSet();
+
+            Set<ResultDao> results = new HashSet<ResultDao>();
+
+            int rows = 0;
+
+            while (rs.next()) {
+
+                rows++;
+                long resultId = rs.getLong("RESULT_ID");
+                long jobId = rs.getLong("JOB_ID");
+                Date timeReceived = rs.getTimestamp("TIME_RECEIVED");
+                String output = rs.getString("OUTPUT");
+
+                results.add(new ResultDao(resultId, jobId, timeReceived, output));
+            }
+
+            log.debug(rows + (rows == 1 ? " row " : " rows ") + "selected.");
+            return results;
+
+        } catch (SQLException e) {
+            // e.printStackTrace();
+            throw new DaoException("Error while finding last results");
+        }
+    }
+
     private long resultId;
     private long jobId;
     private Date timeReceived;

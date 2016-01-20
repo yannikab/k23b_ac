@@ -106,10 +106,10 @@ public class UserSrv {
      * 
      * @param username the user's username.
      * @param password the user's password.
-     * @throws UserLoginException if a user with specified username does not exist, password is incorrect, or the user could not be logged in.
+     * @throws UserCredentialsException if a user with specified username does not exist, password is incorrect, or the user could not be logged in.
      * @throws SrvException if a data access error occurs.
      */
-    public static void login(String username, String password) throws UserLoginException, SrvException {
+    public static void login(String username, String password) throws UserCredentialsException, SrvException {
 
         try {
 
@@ -118,10 +118,10 @@ public class UserSrv {
                 UserDao u = UserCC.findByUsername(username);
 
                 if (u == null)
-                    throw new UserLoginException("Can not login user. User does not exist with username: " + username);
+                    throw new UserCredentialsException("Can not login user. User does not exist with username: " + username);
 
                 if (!u.getPassword().equals(password))
-                    throw new UserLoginException("Can not login user. Incorrect password.");
+                    throw new UserCredentialsException("Can not login user. Incorrect password.");
 
                 UserCC.setActive(u.getUserId(), true);
             }
@@ -166,9 +166,10 @@ public class UserSrv {
      * 
      * @param username the user's username.
      * @return true if the user is logged in, false otherwise.
-     * @throws SrvException if a user with specified username does not exist, or a data access error occurs.
+     * @throws UserCredentialsException if a user with specified username does not exist.
+     * @throws SrvException if a data access error occurs.
      */
-    public static boolean isLoggedIn(String username) throws SrvException {
+    public static boolean isLoggedIn(String username) throws UserCredentialsException, SrvException {
 
         try {
 
@@ -177,7 +178,7 @@ public class UserSrv {
                 UserDao u = UserCC.findByUsername(username);
 
                 if (u == null)
-                    throw new SrvException("Can not check user login status. User does not exist with username: " + username);
+                    throw new UserCredentialsException("Can not check user login status. User does not exist with username: " + username);
 
                 return u.getActive();
             }
@@ -188,6 +189,13 @@ public class UserSrv {
         }
     }
 
+    /**
+     * Accepts a user on behalf of a specified admin.
+     * 
+     * @param username the user's username.
+     * @param adminId id of the admin that is accepting the user.
+     * @throws SrvException if the admin does not exist or is not logged in, the user does not exist or is already accepted, or a data access error occurs.
+     */
     public static void accept(String username, long adminId) throws SrvException {
 
         try {
@@ -225,6 +233,13 @@ public class UserSrv {
         }
     }
 
+    /**
+     * Rejects a user on behalf of a specified admin.
+     * 
+     * @param username the user's username.
+     * @param adminId id of the admin that is rejecting the user.
+     * @throws SrvException if the admin does not exist or is not logged in, the user does not exist or is not accepted, or a data access error occurs.
+     */
     public static void reject(String username, long adminId) throws SrvException {
 
         try {
@@ -262,7 +277,15 @@ public class UserSrv {
         }
     }
 
-    public static boolean isAccepted(String username) throws SrvException {
+    /**
+     * Checks for a user's accepted status given its username.
+     * 
+     * @param username the user's username.
+     * @return true if the user has been accepted by some admin, false otherwise.
+     * @throws UserCredentialsException if a user with specified username does not exist.
+     * @throws SrvException if a data access error occurs.
+     */
+    public static boolean isAccepted(String username) throws UserCredentialsException, SrvException {
 
         try {
 
@@ -271,7 +294,7 @@ public class UserSrv {
                 UserDao u = UserCC.findByUsername(username);
 
                 if (u == null)
-                    throw new SrvException("Can not check user accept status. User does not exist with username: " + username);
+                    throw new UserCredentialsException("Can not check user accept status. User does not exist with username: " + username);
 
                 return u.getAdminId() > 0;
             }

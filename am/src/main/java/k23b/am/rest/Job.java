@@ -17,34 +17,34 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Job {
 
     @XmlElement(required = true)
-    private long jobId;
+    protected long jobId;
 
     @XmlElement(required = true)
-    private long agentId;
+    protected long agentId;
 
     @XmlElement(required = true)
-    private long adminId;
+    protected long adminId;
 
     @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = true)
-    private Date timeAssigned;
+    protected Date timeAssigned;
 
     @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = false)
-    private Date timeSent;
+    protected Date timeSent;
 
     @XmlElement(required = true)
-    private String params;
+    protected String params;
 
     @XmlElement(required = true)
-    private boolean periodic;
+    protected boolean periodic;
 
     @XmlElement(required = false)
-    private int period;
+    protected int period;
 
     @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = false)
-    private Date timeStopped;
+    protected Date timeStopped;
 
     public Job() {
         super();

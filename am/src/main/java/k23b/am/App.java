@@ -24,7 +24,8 @@ import k23b.am.cc.ResultCC;
 import k23b.am.cc.UserCC;
 import k23b.am.dao.ConnectionSingleton;
 import k23b.am.rest.JobContainerMessageBodyWriter;
-import k23b.am.rest.ResultListMessageBodyReader;
+import k23b.am.rest.ResultContainerMessageBodyReader;
+import k23b.am.rest.ResultContainerMessageBodyWriter;
 import k23b.am.srv.AdminSrv;
 import k23b.am.srv.SrvException;
 
@@ -37,8 +38,8 @@ public class App extends Application {
     private static final Logger log = Logger.getLogger(App.class);
 
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8080/am/";
-    // public static final String BASE_URI = "http://192.168.1.15:8080/am/";
+    // public static final String BASE_URI = "http://localhost:8080/am/";
+    public static final String BASE_URI = "http://192.168.1.15:8080/am/";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -50,7 +51,8 @@ public class App extends Application {
         final ResourceConfig rc = new ResourceConfig()
                 .packages("k23b.am.rest")
                 .register(JobContainerMessageBodyWriter.class)
-                .register(ResultListMessageBodyReader.class);
+                .register(ResultContainerMessageBodyReader.class)
+                .register(ResultContainerMessageBodyWriter.class);
 
         // create and start a new instance of grizzly http server exposing the Jersey application at BASE_URI
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);

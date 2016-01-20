@@ -10,7 +10,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
@@ -247,9 +246,6 @@ public class Handlers {
                     log.error(e.getMessage());
                 }
 
-                // GenericEntity<JobContainer> ge = new GenericEntity<JobContainer>(jl) {
-                // };
-
                 log.info("Returning status: " + jc.getStatus());
 
                 return Response.status(200).entity(jc).build();
@@ -267,7 +263,7 @@ public class Handlers {
      * The AM gets a list with the Results of some Jobs the SA has finished.
      * 
      * @param hashKey The hashkey of the SA who makes the check.
-     * @param entityResultList The list with the Results the SA has sent to the AM.
+     * @param resultContainer The list with the Results the SA has sent to the AM.
      * @return A Response to the SA with a code success.
      */
 
@@ -277,12 +273,12 @@ public class Handlers {
     @Produces(MediaType.APPLICATION_XML)
     public Response getResults(
             @PathParam("hashKey") String hashKey,
-            ResultList entityResultList) {
+            ResultContainer resultContainer) {
 
         log.info("");
         log.info("getResults(): Results received from agent with hash: " + hashKey);
 
-        List<Result> resList = entityResultList.getResult();
+        List<Result> resList = resultContainer.getResults();
 
         // In case we want the SA to send again some problematic Results
         List<Result> errorResList = new ArrayList<Result>();
