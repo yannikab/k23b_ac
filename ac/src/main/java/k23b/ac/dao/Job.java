@@ -13,27 +13,30 @@ public class Job {
 	private int id;
 	private String parameters;
 	private String username;
+	private int agentId;
 	private Date time_assigned;
 	private boolean periodic;
 	private int period;
 	
-	public Job(int id, String parameters, String username, Date time_assigned, boolean periodic, int period) {
+	public Job(int id, String parameters, String username, int agentId, Date time_assigned, boolean periodic, int period) {
 		this.id = id;
 		this.parameters = parameters;
 		this.username = username;
+		this.agentId = agentId;
 		this.time_assigned = time_assigned;
 		this.periodic = periodic;
 		this.period = period;
 	}
 	
 	@SuppressLint("SimpleDateFormat")
-	public Job(int id, String parameters, String username, String time_assigned, boolean periodic, int period) {
+	public Job(int id, String parameters, String username, int agentId, String time_assigned, boolean periodic, int period) {
 		
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		this.id = id;
 		this.parameters = parameters;
 		this.username = username;
+		this.agentId = agentId;
 		try {
 			this.time_assigned = format.parse(time_assigned);
 		} catch (ParseException e) {
@@ -67,6 +70,14 @@ public class Job {
 		this.username = username;
 	}
 
+	public int getAgentId() {
+		return agentId;
+	}
+
+	public void setAgentId(int agentId) {
+		this.agentId = agentId;
+	}
+
 	public Date getTime_assigned() {
 		return time_assigned;
 	}
@@ -93,8 +104,8 @@ public class Job {
 
 	@Override
 	public String toString() {
-		return "Job [id=" + id + ", parameters=" + parameters + ", username=" + username + ", time_assigned="
-				+ time_assigned + ", periodic=" + periodic + ", period=" + period + "]";
+		return "Job [id=" + id + ", parameters=" + parameters + ", username=" + username + ", agentId=" + agentId
+				+ ", time_assigned=" + time_assigned + ", periodic=" + periodic + ", period=" + period + "]";
 	}
 
 }
