@@ -53,7 +53,7 @@ public class JobSrv {
     // return JobDao.findAllJobsFromAgentId(agentId);
     // }
 
-    public static void delete(int jobId) throws SrvException {
+    public static void delete(long jobId) throws SrvException {
 
         try {
 
