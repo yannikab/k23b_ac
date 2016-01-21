@@ -10,14 +10,12 @@ import java.util.Set;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class JobDao {
-
-    private static SQLiteDatabase db;
 
     private static String[] jobTableColumns = { DatabaseHandler.getKeyJId(), DatabaseHandler.getKeyJParameters(),
             DatabaseHandler.getKeyJUsername(), DatabaseHandler.getKeyJAgent_ID(), DatabaseHandler.getKeyJTimeAssigned(),
@@ -45,7 +43,7 @@ public class JobDao {
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         // (these are checks that belong to the srv layer)
         //
@@ -78,7 +76,7 @@ public class JobDao {
                 throw new DaoException(message);
             }
 
-        } catch (SQLiteException e) {
+        } catch (SQLException e) {
             // Database not needed anymore
             dbHandler.closeDatabase();
 
@@ -114,11 +112,13 @@ public class JobDao {
             // job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
             // cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
 
+            long id =cursor.getLong(0); 
+            
             cursor.close();
             // Database not needed anymore
             dbHandler.closeDatabase();
 
-            return cursor.getLong(0);
+            return id;
         }
 
         cursor.close();
@@ -142,7 +142,7 @@ public class JobDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         Cursor cursor = db.query(DatabaseHandler.getJobsTable(), jobTableColumns,
                 DatabaseHandler.getKeyJId() + " = " + jobId, null, null, null, null);
@@ -177,7 +177,7 @@ public class JobDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         int rowsAffected = db.delete(DatabaseHandler.getJobsTable(), DatabaseHandler.getKeyJId() + " = " + jobId, null);
 
@@ -198,7 +198,7 @@ public class JobDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         Cursor cursor = db.query(DatabaseHandler.getJobsTable(), jobTableColumns,
                 DatabaseHandler.getKeyJUsername() + " = '" + username + "'", null, null, null, null);
@@ -239,7 +239,7 @@ public class JobDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         Cursor cursor = db.query(DatabaseHandler.getJobsTable(), jobTableColumns,
                 DatabaseHandler.getKeyJAgent_ID() + " = '" + agentId + "'", null, null, null, null);
@@ -274,7 +274,7 @@ public class JobDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM ")

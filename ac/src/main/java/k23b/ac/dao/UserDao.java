@@ -5,25 +5,22 @@ import java.util.Set;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 public class UserDao {
 
-    private static SQLiteDatabase db;
-
     private static String[] userTableColumns = { DatabaseHandler.getKeyUUsername(), DatabaseHandler.getKeyUPassword(),
             DatabaseHandler.getKeyUActive() };
 
-    public static UserDao createUser(String username, String password) throws DaoException {
+    public static String createUser(String username, String password) throws DaoException {
 
         boolean active = false;
 
         Log.d(UserDao.class.getName(),
                 "Creating UserDao with Username: " + username + ", Password: " + password + " and Active: " + active);
 
-        UserDao user = null;
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.getKeyUUsername(), username);
         values.put(DatabaseHandler.getKeyUPassword(), password);
@@ -31,9 +28,10 @@ public class UserDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         try {
+
             long rowId = db.insertOrThrow(DatabaseHandler.getUsersTable(), null, values);
 
             if (rowId < 0) {
@@ -43,7 +41,8 @@ public class UserDao {
                 throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: "
                         + password + " and Active: " + active);
             }
-        } catch (SQLiteException e) {
+
+        } catch (SQLException e) {
             dbHandler.closeDatabase();
             Log.e(UserDao.class.getName(), e.getMessage());
             throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: " + password
@@ -62,17 +61,19 @@ public class UserDao {
         }
 
         if (cursor.moveToFirst()) {
-            if (cursor.getString(1).compareTo(password) == 0) {
+
+            if (cursor.getString(0).compareTo(username) == 0) {
 
                 Log.d(UserDao.class.getName(),
                         "Created UserDao with Username: " + username + " and Password: " + password + " successfully!");
-                user = new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
+
+                // user = new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
 
                 cursor.close();
                 // Database not needed anymore
                 dbHandler.closeDatabase();
 
-                return user;
+                return username;
             }
             Log.d(UserDao.class.getName(), "Password: " + cursor.getString(1));
 
@@ -95,7 +96,7 @@ public class UserDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         Cursor cursor = db.query(DatabaseHandler.getUsersTable(), userTableColumns,
                 DatabaseHandler.getKeyUUsername() + " = '" + username + "'", null, null, null, null);
@@ -130,18 +131,22 @@ public class UserDao {
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
-        Set<JobDao> jobSet = JobDao.findAllJobsFromUsername(username);
-        if (!jobSet.isEmpty()) {
-            dbHandler.closeDatabase();
-            throw new DaoException(
-                    "Trying to delete UserDao with Username: " + username + " while there are some jobs from him left.");
-        }
+        // this check belongs to the srv layer
+        // Set<JobDao> jobSet = JobDao.findAllJobsFromUsername(username);
+        // if (!jobSet.isEmpty()) {
+        // dbHandler.closeDatabase();
+        // throw new DaoException(
+        // "Trying to delete UserDao with Username: " + username + " while there are some jobs from him left.");
+        // }
 
         int rowsAffected = db.delete(DatabaseHandler.getUsersTable(),
                 DatabaseHandler.getKeyUUsername() + " = '" + username + "'", null);
         Log.d(UserDao.class.getName(), "Rows affected: " + rowsAffected);
+
+        if (rowsAffected == 0)
+            throw new DaoException("Error while deleting user with username: " + username);
 
         // Database not needed anymore
         dbHandler.closeDatabase();
@@ -156,7 +161,7 @@ public class UserDao {
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         Cursor cursor = db.query(DatabaseHandler.getUsersTable(), userTableColumns, null, null, null, null, null);
 
@@ -187,7 +192,7 @@ public class UserDao {
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         Cursor cursor = db.query(DatabaseHandler.getUsersTable(), userTableColumns,
                 DatabaseHandler.getKeyUActive() + " = " + 1, null, null, null, null);
@@ -221,7 +226,7 @@ public class UserDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         UserDao u = UserDao.findUserByUsername(username);
         if (u == null) {
@@ -254,7 +259,7 @@ public class UserDao {
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
-        db = dbHandler.openDatabase();
+        SQLiteDatabase db = dbHandler.openDatabase();
 
         UserDao u = UserDao.findUserByUsername(username);
         if (u == null) {

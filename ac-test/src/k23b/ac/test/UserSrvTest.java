@@ -68,7 +68,7 @@ public class UserSrvTest extends AndroidTestCase {
         }
     }
 
-    public void testCreateAndFindAdmin() {
+    public void testCreateAndFindUser() {
 
         String username = "Yannis";
         String password = "abcde";

@@ -12,12 +12,13 @@ public class JobSrv {
     public static JobDao create(String username, long agentId, String params, boolean periodic, int period) throws SrvException {
 
         try {
-
+ 
             UserDao user = UserDao.findUserByUsername(username);
 
             if (user == null)
                 throw new SrvException("Can not create job. Could not find User with username: " + username);
 
+            // not using active
             // if (!user.isActive())
             // throw new SrvException("Can not create job. User with username " + username + " is not logged in.");
 

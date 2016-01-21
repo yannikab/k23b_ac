@@ -15,7 +15,9 @@ public class UserSrv {
             if (UserDao.findUserByUsername(username) != null)
                 throw new SrvException("Cannot create User. Another User already exists with username: " + username);
 
-            return UserDao.createUser(username, password);
+            String name = UserDao.createUser(username, password);
+            
+            return UserDao.findUserByUsername(name);
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while creating User with username: " + username);
