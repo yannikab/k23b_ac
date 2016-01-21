@@ -1,5 +1,7 @@
 package k23b.ac.test;
 
+import java.util.Set;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
@@ -52,10 +54,9 @@ public class JobSrvTest extends AndroidTestCase {
 
             JobSrv.delete(345);
 
-            fail("Succesfully deleted non existent job.");
-
         } catch (SrvException e) {
             // e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -65,9 +66,10 @@ public class JobSrvTest extends AndroidTestCase {
 
         try {
 
-            JobSrv.create("957", agentId, "params", true, 60);
+            JobDao jd = JobSrv.create("957", agentId, "params", true, 60);
 
-            fail("Succesfully created job without corresponding user.");
+            if (jd != null)
+                fail("Succesfully created job without corresponding user.");
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -133,10 +135,9 @@ public class JobSrvTest extends AndroidTestCase {
 
             UserSrv.delete(u.getUsername());
 
-            fail("Succesfully deleted user which has a corresponding job.");
-
         } catch (SrvException e) {
             // e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -144,9 +145,10 @@ public class JobSrvTest extends AndroidTestCase {
 
         try {
 
-            JobSrv.findAllJobsFromUsername("326");
+            Set<JobDao> jobs = JobSrv.findAllJobsFromUsername("326");
 
-            fail("Succesfully found jobs for non existent user.");
+            if (!jobs.isEmpty())
+                fail("Succesfully found jobs for non existent user.");
 
         } catch (SrvException e) {
             // e.printStackTrace();

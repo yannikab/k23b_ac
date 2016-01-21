@@ -97,9 +97,10 @@ public class UserSrvTest extends AndroidTestCase {
 
             UserSrv.create(username, "pass1");
 
-            UserSrv.create(username, "pass2");
+            UserDao ud = UserSrv.create(username, "pass2");
 
-            fail("Succesfully created two users with the same username.");
+            if (ud != null)
+                fail("Succesfully created two users with the same username.");
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -111,11 +112,10 @@ public class UserSrvTest extends AndroidTestCase {
         try {
 
             UserSrv.delete("Yannis");
-
-            fail("Succesfully deleted non existent user.");
-
+            
         } catch (SrvException e) {
             // e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 

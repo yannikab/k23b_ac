@@ -118,13 +118,13 @@ public class JobThreadTest extends AndroidTestCase {
                         UserDao u = UserSrv.create(username, password);
 
                         if (u != null) {
-                            
+
                             JobDao j = JobSrv.create(u.getUsername(), 1, "params", false, 60);
 
                             if (j != null)
                                 JobSrv.delete(j.getId());
                         }
-                        
+
                         UserSrv.delete(u.getUsername());
                     }
 
@@ -149,8 +149,7 @@ public class JobThreadTest extends AndroidTestCase {
                         Thread.sleep(200);
 
                         if (UserSrv.find(username) != null)
-                            if (JobSrv.findAllJobsFromUsername(username).isEmpty())
-                                UserSrv.delete(username);
+                            UserSrv.delete(username);
                     }
 
                 } catch (SrvException e) {
