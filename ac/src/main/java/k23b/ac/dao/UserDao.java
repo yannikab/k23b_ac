@@ -16,7 +16,9 @@ public class UserDao {
     private static String[] userTableColumns = { DatabaseHandler.getKeyUUsername(), DatabaseHandler.getKeyUPassword(),
             DatabaseHandler.getKeyUActive() };
 
-    public static UserDao createUser(String username, String password, boolean active) throws DaoException {
+    public static UserDao createUser(String username, String password) throws DaoException {
+
+        boolean active = false;
 
         Log.d(UserDao.class.getName(),
                 "Creating UserDao with Username: " + username + ", Password: " + password + " and Active: " + active);
@@ -86,7 +88,7 @@ public class UserDao {
 
     }
 
-    public static UserDao findUserbyUsername(String username) throws DaoException {
+    public static UserDao findUserByUsername(String username) throws DaoException {
 
         UserDao user = null;
         Log.d(UserDao.class.getName(), "Searching UserDao with Username: " + username);
@@ -221,7 +223,7 @@ public class UserDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        UserDao u = UserDao.findUserbyUsername(username);
+        UserDao u = UserDao.findUserByUsername(username);
         if (u == null) {
             dbHandler.closeDatabase();
             throw new DaoException("No such UserDao: " + username + " to set Active");
@@ -254,7 +256,7 @@ public class UserDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        UserDao u = UserDao.findUserbyUsername(username);
+        UserDao u = UserDao.findUserByUsername(username);
         if (u == null) {
             dbHandler.closeDatabase();
             throw new DaoException("No such UserDao: " + username + " to set Inactive");

@@ -25,14 +25,12 @@ public class JobDao {
 
     // I might need to return only an ID
     @SuppressLint("SimpleDateFormat")
-    public static JobDao createJob(String parameters, String username, int agentId, Date time_assigned, boolean periodic,
-            int period) throws DaoException {
+    public static long createJob(String parameters, String username, long agentId, Date time_assigned, boolean periodic, int period) throws DaoException {
 
         Log.d(JobDao.class.getName(),
                 "Creating Job with Parameters: " + parameters + " Username: " + username + " AgentId: " + agentId
                         + " Time assigned: " + time_assigned + " Periodic: " + periodic + " Period " + period);
 
-        JobDao job = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = dateFormat.format(time_assigned);
 
@@ -49,18 +47,22 @@ public class JobDao {
         // Express the need for an open Database
         db = dbHandler.openDatabase();
 
-        UserDao user = UserDao.findUserbyUsername(username);
-        if (user == null) {
-            dbHandler.closeDatabase();
-            throw new DaoException("Creating Job with invalid User");
-        }
+        // (these are checks that belong to the srv layer)
+        //
+        // UserDao user = UserDao.findUserbyUsername(username);
+        // if (user == null) {
+        // dbHandler.closeDatabase();
+        // throw new DaoException("Creating Job with invalid User");
+        // }
         // else if (!user.isActive()) {
         // dbHandler.closeDatabase();
         // throw new DaoException("Cannot create a Job from an Inactive User");
         // }
 
         long rowId;
+
         try {
+
             rowId = db.insertOrThrow(DatabaseHandler.getJobsTable(), null, values);
 
             if (rowId < 0) {
@@ -70,14 +72,18 @@ public class JobDao {
                 String message = "Error while inserting Job Job with Parameters: " + parameters + " Username: "
                         + username + " AgentId: " + agentId + " Time assigned: " + time_assigned + " Periodic: "
                         + periodic + " Period " + period;
+
                 Log.e(JobDao.class.getName(), message);
+
                 throw new DaoException(message);
             }
+
         } catch (SQLiteException e) {
             // Database not needed anymore
             dbHandler.closeDatabase();
 
             Log.e(JobDao.class.getName(), e.getMessage());
+
             throw new DaoException("Error while inserting Job Job with Parameters: " + parameters + " Username: "
                     + username + " AgentId: " + agentId + " Time assigned: " + time_assigned + " Periodic: " + periodic
                     + " Period " + period + " | " + e.getMessage());
@@ -92,39 +98,44 @@ public class JobDao {
             dbHandler.closeDatabase();
 
             Log.e(JobDao.class.getName(), "More than one Jobs with Id: " + rowId);
+
             throw new DaoException("More than one Jobs with Id: " + rowId);
         }
 
         if (cursor.moveToFirst()) {
 
             Log.d(JobDao.class.getName(),
-                    
-                    "Created Job with Id: " + cursor.getInt(0) + " Parameters: " + cursor.getString(1) + " Username: "
-                            + cursor.getString(2) + " AgentId: " + cursor.getInt(3) + " Time assigned: "
+
+                    "Created Job with Id: " + cursor.getLong(0) + " Parameters: " + cursor.getString(1) + " Username: "
+                            + cursor.getString(2) + " AgentId: " + cursor.getLong(3) + " Time assigned: "
                             + cursor.getString(4) + " Periodic: " + cursor.getInt(5) + " Period: " + cursor.getInt(6)
                             + " successfully!");
-            job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
-                    cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
+
+            // job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
+            // cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
 
             cursor.close();
             // Database not needed anymore
             dbHandler.closeDatabase();
-            return job;
+
+            return cursor.getLong(0);
         }
 
         cursor.close();
 
         // Database not needed anymore
         dbHandler.closeDatabase();
-        String message = "Created Job with Id: " + cursor.getInt(0) + " Parameters: " + parameters + " Username: "
+
+        String message = "Created Job with Id: " + cursor.getLong(0) + " Parameters: " + parameters + " Username: "
                 + username + " AgentId: " + agentId + " Time assigned: " + time_assigned + " Periodic: " + periodic
                 + " Period " + period + "NOT FOUND !";
-        Log.e(JobDao.class.getName(), message);
-        throw new DaoException(message);
 
+        Log.e(JobDao.class.getName(), message);
+
+        throw new DaoException(message);
     }
 
-    public static JobDao findJobById(int jobId) throws DaoException {
+    public static JobDao findJobById(long jobId) throws DaoException {
 
         JobDao job = null;
         Log.d(JobDao.class.getName(), "Searching Job with Id: " + jobId);
@@ -149,18 +160,19 @@ public class JobDao {
             Log.d(JobDao.class.getName(), "1 row selected");
             job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
                     cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
-        } else
+        } else {
             Log.d(JobDao.class.getName(), "0 rows selected");
+        }
 
         cursor.close();
         // Database not needed anymore
         dbHandler.closeDatabase();
 
         return job;
-
     }
 
-    public static void deleteJob(int jobId) throws DaoException {
+    public static void deleteJob(long jobId) throws DaoException {
+        
         Log.d(JobDao.class.getName(), "Deleting Job with Id: " + jobId);
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
@@ -191,11 +203,12 @@ public class JobDao {
         Cursor cursor = db.query(DatabaseHandler.getJobsTable(), jobTableColumns,
                 DatabaseHandler.getKeyJUsername() + " = '" + username + "'", null, null, null, null);
 
-        UserDao user = UserDao.findUserbyUsername(username);
-        if (user == null) {
-            dbHandler.closeDatabase();
-            throw new DaoException("No such Username");
-        }
+        // check belongs to the srv layer, we assume the user key is correct
+        // UserDao user = UserDao.findUserbyUsername(username);
+        // if (user == null) {
+        // dbHandler.closeDatabase();
+        // throw new DaoException("No such Username");
+        // }
 
         int rows = 0;
 
@@ -209,6 +222,7 @@ public class JobDao {
                 cursor.moveToNext();
             }
         }
+        
         Log.d(JobDao.class.getName(), rows + (rows == 1 ? " row " : " rows ") + "selected.");
 
         cursor.close();
@@ -216,10 +230,9 @@ public class JobDao {
         dbHandler.closeDatabase();
 
         return jobSet;
-
     }
 
-    public static Set<JobDao> findAllJobsFromAgentId(int agentId) {
+    public static Set<JobDao> findAllJobsFromAgentId(long agentId) {
 
         Log.d(JobDao.class.getName(), "Searching all Jobs with AgentId: " + agentId);
         Set<JobDao> jobSet = new HashSet<JobDao>();
@@ -243,6 +256,7 @@ public class JobDao {
                 cursor.moveToNext();
             }
         }
+        
         Log.d(JobDao.class.getName(), rows + (rows == 1 ? " row " : " rows ") + "selected.");
 
         cursor.close();
@@ -299,46 +313,46 @@ public class JobDao {
 
     }
 
-    public static void setTimeAssigned(int jobId, Date timeAssigned) throws DaoException {
+    // public static void setTimeAssigned(int jobId, Date timeAssigned) throws DaoException {
+    //
+    // Log.d(JobDao.class.getName(), "Updating Time Assigned of Job with Id: " + jobId);
+    //
+    // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // String time = dateFormat.format(timeAssigned);
+    //
+    // ContentValues values = new ContentValues();
+    // values.put(DatabaseHandler.getKeyJTimeAssigned(), time);
+    //
+    // DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
+    // // Express the need for an open Database
+    // db = dbHandler.openDatabase();
+    //
+    // JobDao j = JobDao.findJobById(jobId);
+    // if (j == null) {
+    // dbHandler.closeDatabase();
+    // throw new DaoException("No such Job to set time");
+    // }
+    //
+    // int rowsAffected = db.update(DatabaseHandler.getJobsTable(), values,
+    // DatabaseHandler.getKeyJId() + " = " + jobId, null);
+    //
+    // Log.d(JobDao.class.getName(), "Rows affected: " + rowsAffected);
+    //
+    // // Database not needed anymore
+    // dbHandler.closeDatabase();
+    // Log.d(JobDao.class.getName(), "Time Assigned of Job with Id: " + jobId + " Updated");
+    //
+    // }
 
-        Log.d(JobDao.class.getName(), "Updating Time Assigned of Job with Id: " + jobId);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = dateFormat.format(timeAssigned);
-
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHandler.getKeyJTimeAssigned(), time);
-
-        DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
-        // Express the need for an open Database
-        db = dbHandler.openDatabase();
-
-        JobDao j = JobDao.findJobById(jobId);
-        if (j == null) {
-            dbHandler.closeDatabase();
-            throw new DaoException("No such Job to set time");
-        }
-
-        int rowsAffected = db.update(DatabaseHandler.getJobsTable(), values,
-                DatabaseHandler.getKeyJId() + " = " + jobId, null);
-
-        Log.d(JobDao.class.getName(), "Rows affected: " + rowsAffected);
-
-        // Database not needed anymore
-        dbHandler.closeDatabase();
-        Log.d(JobDao.class.getName(), "Time Assigned of Job with Id: " + jobId + " Updated");
-
-    }
-
-    private int id;
+    private long id;
     private String parameters;
     private String username;
-    private int agentId;
+    private long agentId;
     private Date time_assigned;
     private boolean periodic;
     private int period;
 
-    private JobDao(int id, String parameters, String username, int agentId, Date time_assigned, boolean periodic, int period) {
+    private JobDao(int id, String parameters, String username, long agentId, Date time_assigned, boolean periodic, int period) {
         this.id = id;
         this.parameters = parameters;
         this.username = username;
@@ -349,10 +363,10 @@ public class JobDao {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private JobDao(int id, String parameters, String username, int agentId, String time_assigned, boolean periodic, int period) {
-        
+    private JobDao(int id, String parameters, String username, long agentId, String time_assigned, boolean periodic, int period) {
+
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
+
         this.id = id;
         this.parameters = parameters;
         this.username = username;
@@ -366,11 +380,11 @@ public class JobDao {
         this.period = period;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -390,7 +404,7 @@ public class JobDao {
         this.username = username;
     }
 
-    public int getAgentId() {
+    public long getAgentId() {
         return agentId;
     }
 
@@ -427,5 +441,4 @@ public class JobDao {
         return "Job [id=" + id + ", parameters=" + parameters + ", username=" + username + ", agentId=" + agentId
                 + ", time_assigned=" + time_assigned + ", periodic=" + periodic + ", period=" + period + "]";
     }
-
 }

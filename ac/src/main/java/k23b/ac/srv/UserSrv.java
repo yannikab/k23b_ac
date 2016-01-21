@@ -1,5 +1,7 @@
 package k23b.ac.srv;
 
+import java.util.Set;
+
 import k23b.ac.dao.DaoException;
 import k23b.ac.dao.JobDao;
 import k23b.ac.dao.UserDao;
@@ -10,21 +12,21 @@ public class UserSrv {
 
         try {
 
-            if (UserDao.findUserbyUsername(username) != null)
+            if (UserDao.findUserByUsername(username) != null)
                 throw new SrvException("Cannot create User. Another User already exists with username: " + username);
 
-            return UserDao.createUser(username, password, false);
+            return UserDao.createUser(username, password);
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while creating User with username: " + username);
         }
     }
 
-    public static UserDao findByUsername(String username) throws SrvException {
+    public static UserDao find(String username) throws SrvException {
 
         try {
 
-            return UserDao.findUserbyUsername(username);
+            return UserDao.findUserByUsername(username);
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while finding User by username: " + username);
@@ -43,6 +45,18 @@ public class UserSrv {
         } catch (DaoException e) {
 
             throw new SrvException("Data access error while deleting user with username: " + username);
+        }
+    }
+
+    public static Set<UserDao> findAll() throws SrvException {
+
+        try {
+
+            return UserDao.findAll();
+
+        } catch (DaoException e) {
+
+            throw new SrvException("Data access error while finding all jobs.");
         }
     }
 

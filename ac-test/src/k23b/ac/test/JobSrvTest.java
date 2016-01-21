@@ -1,18 +1,16 @@
 package k23b.ac.test;
 
-import java.util.Date;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-import k23b.ac.dao.DaoException;
 import k23b.ac.dao.DatabaseHandler;
-import k23b.ac.dao.Job;
 import k23b.ac.dao.JobDao;
-import k23b.ac.dao.User;
 import k23b.ac.dao.UserDao;
+import k23b.ac.srv.JobSrv;
+import k23b.ac.srv.SrvException;
+import k23b.ac.srv.UserSrv;
 
-public class JobDaoTest extends AndroidTestCase {
+public class JobSrvTest extends AndroidTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -38,11 +36,11 @@ public class JobDaoTest extends AndroidTestCase {
 
         try {
 
-            Job j = JobDao.findJobById(326);
+            JobDao j = JobSrv.findById(326);
 
             assertNull(j);
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -52,26 +50,26 @@ public class JobDaoTest extends AndroidTestCase {
 
         try {
 
-            JobDao.deleteJob(345);
+            JobSrv.delete(345);
 
             fail("Succesfully deleted non existent job.");
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
 
     public void testCreateJobWithoutUser() {
 
-        int agentId = 1;
+        long agentId = 1;
 
         try {
 
-            JobDao.createJob("params", "957", agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobSrv.create("957", agentId, "params", true, 60);
 
             fail("Succesfully created job without corresponding user.");
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -80,15 +78,15 @@ public class JobDaoTest extends AndroidTestCase {
 
         String username = "username";
         String password = "password";
-        int agentId = 1;
+        long agentId = 1;
 
         try {
 
-            User u = UserDao.createUser(username, password, false);
+            UserDao u = UserSrv.create(username, password);
 
-            JobDao.createJob("params", u.getUsername(), agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobSrv.create(u.getUsername(), agentId, "params", true, 60);
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -98,15 +96,15 @@ public class JobDaoTest extends AndroidTestCase {
 
         String username = "username";
         String password = "password";
-        int agentId = 1;
+        long agentId = 1;
 
         try {
 
-            User u = UserDao.createUser(username, password, false);
+            UserDao u = UserSrv.create(username, password);
 
-            Job j1 = JobDao.createJob("params", u.getUsername(), agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobDao j1 = JobSrv.create(u.getUsername(), agentId, "params", true, 60);
 
-            Job j2 = JobDao.findJobById(j1.getId());
+            JobDao j2 = JobSrv.findById(j1.getId());
 
             assertEquals(j1.getId(), j2.getId());
             assertEquals(j1.getUsername(), j2.getUsername());
@@ -115,7 +113,7 @@ public class JobDaoTest extends AndroidTestCase {
             assertEquals(j1.getPeriod(), j2.getPeriod());
             assertEquals(j1.getTime_assigned(), j2.getTime_assigned());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -125,19 +123,19 @@ public class JobDaoTest extends AndroidTestCase {
 
         String username = "username";
         String password = "password";
-        int agentId = 1;
+        long agentId = 1;
 
         try {
 
-            User u = UserDao.createUser(username, password, false);
+            UserDao u = UserSrv.create(username, password);
 
-            JobDao.createJob("params", u.getUsername(), agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobSrv.create(u.getUsername(), agentId, "params", true, 60);
 
-            UserDao.deleteUser(u.getUsername());
+            UserSrv.delete(u.getUsername());
 
             fail("Succesfully deleted user which has a corresponding job.");
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -146,11 +144,11 @@ public class JobDaoTest extends AndroidTestCase {
 
         try {
 
-            JobDao.findAllJobsFromUsername("326");
+            JobSrv.findAllJobsFromUsername("326");
 
             fail("Succesfully found jobs for non existent user.");
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -159,27 +157,27 @@ public class JobDaoTest extends AndroidTestCase {
 
         String username = "username";
         String password = "password";
-        int agentId = 1;
+        long agentId = 1;
 
         try {
 
-            User u = UserDao.createUser(username, password, false);
+            UserDao u = UserSrv.create(username, password);
 
-            assertEquals(0, JobDao.findAllJobsFromUsername(username).size());
+            assertEquals(0, JobSrv.findAllJobsFromUsername(username).size());
 
-            JobDao.createJob("params", u.getUsername(), agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobSrv.create(u.getUsername(), agentId, "params", true, 60);
 
-            assertEquals(1, JobDao.findAllJobsFromUsername(username).size());
+            assertEquals(1, JobSrv.findAllJobsFromUsername(username).size());
 
-            JobDao.createJob("params", u.getUsername(), agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobSrv.create(u.getUsername(), agentId, "params", true, 60);
 
-            assertEquals(2, JobDao.findAllJobsFromUsername(username).size());
+            assertEquals(2, JobSrv.findAllJobsFromUsername(username).size());
 
-            JobDao.createJob("params", u.getUsername() + u.getUsername(), agentId, new Date(System.currentTimeMillis()), true, 60);
+            JobSrv.create(u.getUsername() + u.getUsername(), agentId, "params", true, 60);
 
-            assertEquals(2, JobDao.findAllJobsFromUsername(username).size());
+            assertEquals(2, JobSrv.findAllJobsFromUsername(username).size());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -188,20 +186,20 @@ public class JobDaoTest extends AndroidTestCase {
 
         String username = "username";
         String password = "password";
-        int agentId = 1;
+        long agentId = 1;
 
         int count = 100;
 
         try {
 
-            UserDao.createUser(username, password, false);
+            UserSrv.create(username, password);
 
             for (int i = 0; i < count; i++)
-                JobDao.createJob("params", username, agentId, new Date(System.currentTimeMillis()), true, 60);
+                JobSrv.create(username, agentId, "params", true, 60);
 
-            assertEquals(count, JobDao.findAllJobsFromUsername(username).size());
+            assertEquals(count, JobSrv.findAllJobsFromUsername(username).size());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }

@@ -9,11 +9,11 @@ import k23b.ac.dao.UserDao;
 
 public class JobSrv {
 
-    public static JobDao create(int agentId, String username, String params, boolean periodic, int period) throws SrvException {
+    public static JobDao create(String username, long agentId, String params, boolean periodic, int period) throws SrvException {
 
         try {
 
-            UserDao user = UserDao.findUserbyUsername(username);
+            UserDao user = UserDao.findUserByUsername(username);
 
             if (user == null)
                 throw new SrvException("Can not create job. Could not find User with username: " + username);
@@ -21,8 +21,10 @@ public class JobSrv {
             // if (!user.isActive())
             // throw new SrvException("Can not create job. User with username " + username + " is not logged in.");
 
-            JobDao job = JobDao.createJob(params, username, agentId, new Date(), periodic, period);
+            long jobId = JobDao.createJob(params, username, agentId, new Date(), periodic, period);
 
+            JobDao job = JobDao.findJobById(jobId);
+            
             if (job == null)
                 throw new SrvException("Could not create Job for agent with id: " + agentId);
 
@@ -34,7 +36,7 @@ public class JobSrv {
         }
     }
 
-    public static JobDao findById(int jobId) throws SrvException {
+    public static JobDao findById(long jobId) throws SrvException {
 
         try {
 
@@ -50,19 +52,6 @@ public class JobSrv {
     // return JobDao.findAllJobsFromAgentId(agentId);
     // }
 
-    public static Set<JobDao> findAllFromUser(String username) throws SrvException {
-
-        try {
-            if (UserDao.findUserbyUsername(username) == null)
-                throw new SrvException("Cannot find Jobs. No such User with username: " + username);
-
-            return JobDao.findAllJobsFromUsername(username);
-
-        } catch (DaoException e) {
-            throw new SrvException("Data access error while finding Jobs from User with username: " + username);
-        }
-    }
-
     public static void delete(int jobId) throws SrvException {
 
         try {
@@ -74,6 +63,19 @@ public class JobSrv {
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while sending (deleting) Job with id: " + jobId);
+        }
+    }
+
+    public static Set<JobDao> findAllJobsFromUsername(String username) throws SrvException {
+
+        try {
+            if (UserDao.findUserByUsername(username) == null)
+                throw new SrvException("Cannot find Jobs. No such User with username: " + username);
+
+            return JobDao.findAllJobsFromUsername(username);
+
+        } catch (DaoException e) {
+            throw new SrvException("Data access error while finding Jobs from User with username: " + username);
         }
     }
 

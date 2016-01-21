@@ -5,12 +5,12 @@ import java.util.Set;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-import k23b.ac.dao.DaoException;
 import k23b.ac.dao.DatabaseHandler;
-import k23b.ac.dao.User;
 import k23b.ac.dao.UserDao;
+import k23b.ac.srv.SrvException;
+import k23b.ac.srv.UserSrv;
 
-public class UserDaoTest extends AndroidTestCase {
+public class UserSrvTest extends AndroidTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -22,7 +22,7 @@ public class UserDaoTest extends AndroidTestCase {
         assertNotNull(context);
 
         DatabaseHandler.setContext(context);
-        
+
         SQLiteDatabase db = DatabaseHandler.getDBHandler().openDatabase();
 
         DatabaseHandler.getDBHandler().onUpgrade(db, 1, 1);
@@ -38,11 +38,11 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            User u = UserDao.findUserbyUsername("Yannis");
+            UserDao u = UserSrv.find("Yannis");
 
             assertNull(u);
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
 
             fail(e.getMessage());
@@ -56,13 +56,13 @@ public class UserDaoTest extends AndroidTestCase {
             String username = "Yannis";
             String password = "abcde";
 
-            User u = UserDao.createUser(username, password, false);
+            UserDao u = UserSrv.create(username, password);
 
             assertNotNull(u);
             assertEquals(username, u.getUsername());
             assertEquals(password, u.getPassword());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -75,15 +75,15 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            UserDao.createUser(username, password, false);
+            UserSrv.create(username, password);
 
-            User u = UserDao.findUserbyUsername(username);
+            UserDao u = UserSrv.find(username);
 
             assertNotNull(u);
             assertEquals(username, u.getUsername());
             assertEquals(password, u.getPassword());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -95,13 +95,13 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            UserDao.createUser(username, "pass1", false);
+            UserSrv.create(username, "pass1");
 
-            UserDao.createUser(username, "pass2", false);
+            UserSrv.create(username, "pass2");
 
             fail("Succesfully created two users with the same username.");
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -110,11 +110,11 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            UserDao.deleteUser("Yannis");
+            UserSrv.delete("Yannis");
 
             fail("Succesfully deleted non existent user.");
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -126,15 +126,15 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            UserDao.createUser(username, password, false);
+            UserSrv.create(username, password);
 
-            assertNotNull(UserDao.findUserbyUsername(username));
+            assertNotNull(UserSrv.find(username));
 
-            UserDao.deleteUser(username);
+            UserSrv.delete(username);
 
-            assertNull(UserDao.findUserbyUsername(username));
+            assertNull(UserSrv.find(username));
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -144,12 +144,12 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            Set<User> users = UserDao.findAll();
+            Set<UserDao> users = UserSrv.findAll();
 
             assertNotNull(users);
             assertEquals(0, users.size());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
         }
     }
@@ -161,19 +161,19 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            UserDao.createUser(username, password, false);
+            UserSrv.create(username, password);
 
-            Set<User> users = UserDao.findAll();
+            Set<UserDao> users = UserSrv.findAll();
 
             assertNotNull(users);
             assertEquals(1, users.size());
 
-            for (User u : users) {
+            for (UserDao u : users) {
                 assertEquals(username, u.getUsername());
                 assertEquals(password, u.getPassword());
             }
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -186,16 +186,16 @@ public class UserDaoTest extends AndroidTestCase {
 
         try {
 
-            UserDao.createUser(username, password, false);
+            UserSrv.create(username, password);
 
-            UserDao.deleteUser(username);
+            UserSrv.delete(username);
 
-            Set<User> users = UserDao.findAll();
+            Set<UserDao> users = UserSrv.findAll();
 
             assertNotNull(users);
             assertEquals(0, users.size());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
@@ -208,14 +208,14 @@ public class UserDaoTest extends AndroidTestCase {
         try {
 
             for (int i = 0; i < count; i++)
-                UserDao.createUser(String.valueOf(i), String.valueOf(i), false);
+                UserSrv.create(String.valueOf(i), String.valueOf(i));
 
-            Set<User> users = UserDao.findAll();
+            Set<UserDao> users = UserSrv.findAll();
 
             assertNotNull(users);
             assertEquals(count, users.size());
 
-        } catch (DaoException e) {
+        } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());
         }
