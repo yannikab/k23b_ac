@@ -12,12 +12,17 @@ public class UserSrv {
 
         try {
 
-            if (UserDao.findUserByUsername(username) != null)
-                throw new SrvException("Cannot create User. Another User already exists with username: " + username);
+            synchronized (UserDao.class) {
 
-            String name = UserDao.createUser(username, password);
-            
-            return UserDao.findUserByUsername(name);
+                UserDao ud = UserDao.findUserByUsername(username);
+
+                if (ud != null)
+                    return null;
+
+                String name = UserDao.createUser(username, password);
+
+                return UserDao.findUserByUsername(name);
+            }
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while creating User with username: " + username);
@@ -28,7 +33,10 @@ public class UserSrv {
 
         try {
 
-            return UserDao.findUserByUsername(username);
+            synchronized (UserDao.class) {
+
+                return UserDao.findUserByUsername(username);
+            }
 
         } catch (DaoException e) {
             throw new SrvException("Data access error while finding User by username: " + username);
@@ -39,10 +47,23 @@ public class UserSrv {
 
         try {
 
-            if (!JobDao.findAllJobsFromUsername(username).isEmpty())
-                throw new SrvException("Can not delete user. User " + username + " still has jobs in the database.");
+            synchronized (UserDao.class) {
 
-            UserDao.deleteUser(username);
+                UserDao ud = UserDao.findUserByUsername(username);
+
+                if (ud == null)
+                    return;
+
+                synchronized (JobDao.class) {
+
+                    Set<JobDao> jobs = JobDao.findAllJobsFromUsername(username);
+
+                    for (JobDao jd : jobs)
+                        JobDao.deleteJob(jd.getId());
+
+                    UserDao.deleteUser(username);
+                }
+            }
 
         } catch (DaoException e) {
 
@@ -54,7 +75,10 @@ public class UserSrv {
 
         try {
 
-            return UserDao.findAll();
+            synchronized (UserDao.class) {
+
+                return UserDao.findAll();
+            }
 
         } catch (DaoException e) {
 

@@ -117,10 +117,14 @@ public class JobThreadTest extends AndroidTestCase {
 
                         UserDao u = UserSrv.create(username, password);
 
-                        JobDao j = JobSrv.create(username, 1, "params", false, 60);
+                        if (u != null) {
+                            
+                            JobDao j = JobSrv.create(u.getUsername(), 1, "params", false, 60);
 
-                        JobSrv.delete(j.getId());
-
+                            if (j != null)
+                                JobSrv.delete(j.getId());
+                        }
+                        
                         UserSrv.delete(u.getUsername());
                     }
 
