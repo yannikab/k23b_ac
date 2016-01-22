@@ -59,17 +59,18 @@ public class JobThreadTest extends AndroidTestCase {
                 }
             }
         });
-
+        
         Thread consumer = new Thread(new Runnable() {
 
             @Override
             public void run() {
-
-                while (true) {
+            	int count = 300;
+            	
+            	for (int i = 0; i < count; i++) {
 
                     try {
 
-                        Thread.sleep(500);
+                        Thread.sleep(100);
 
                         Set<JobDao> allJobs = JobSrv.findAllJobsFromUsername(username);
 
@@ -93,6 +94,7 @@ public class JobThreadTest extends AndroidTestCase {
         try {
 
             producer.join();
+            consumer.join();
 
         } catch (InterruptedException e) {
             // e.printStackTrace();
@@ -146,7 +148,7 @@ public class JobThreadTest extends AndroidTestCase {
 
                     for (int i = 0; i < count; i++) {
 
-                        Thread.sleep(200);
+                        Thread.sleep(100);
 
                         if (UserSrv.find(username) != null)
                             UserSrv.delete(username);

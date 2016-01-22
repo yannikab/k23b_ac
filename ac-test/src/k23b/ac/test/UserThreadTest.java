@@ -57,12 +57,13 @@ public class UserThreadTest extends AndroidTestCase {
 
             @Override
             public void run() {
-
-                while (true) {
+            	
+            	int count = 100;
+            	for (int i = 0; i < count; i++) {
 
                     try {
 
-                        Thread.sleep(500);
+                        Thread.sleep(100);
 
                         Set<UserDao> allUsers = UserSrv.findAll();
 
@@ -86,6 +87,7 @@ public class UserThreadTest extends AndroidTestCase {
         try {
 
             producer.join();
+            consumer.join();
 
         } catch (InterruptedException e) {
             // e.printStackTrace();
