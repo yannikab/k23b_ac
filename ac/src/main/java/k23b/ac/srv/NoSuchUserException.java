@@ -1,0 +1,12 @@
+package k23b.ac.srv;
+
+public class NoSuchUserException extends SrvException{
+
+    public NoSuchUserException() {
+    }
+
+    public NoSuchUserException(String message) {
+        super(message);
+    }
+
+}
