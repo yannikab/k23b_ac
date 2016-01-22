@@ -352,7 +352,7 @@ public class JobDao {
     private boolean periodic;
     private int period;
 
-    private JobDao(int id, String parameters, String username, long agentId, Date time_assigned, boolean periodic, int period) {
+    protected JobDao(long id, String parameters, String username, long agentId, Date time_assigned, boolean periodic, int period) {
         this.id = id;
         this.parameters = parameters;
         this.username = username;
@@ -363,7 +363,7 @@ public class JobDao {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private JobDao(int id, String parameters, String username, long agentId, String time_assigned, boolean periodic, int period) {
+    private JobDao(long id, String parameters, String username, long agentId, String time_assigned, boolean periodic, int period) {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

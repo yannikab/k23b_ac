@@ -285,7 +285,7 @@ public class UserDao {
     private String password;
     // private boolean active;
 
-    private UserDao(String username, String password, boolean active) {
+    protected UserDao(String username, String password, boolean active) {
         this.username = username;
         this.password = password;
         // this.active = active;
