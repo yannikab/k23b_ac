@@ -1,9 +1,14 @@
 package k23b.ac.views;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -17,9 +22,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import k23b.ac.Logger;
 import k23b.ac.MainActivity;
 import k23b.ac.R;
 import k23b.ac.Settings;
+import k23b.ac.StartFragment;
 import k23b.ac.tasks.UserLoginTask;
 
 public class LoginFragment extends Fragment implements UserLoginTask.LoginCallback {
@@ -80,6 +87,26 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        clearSharedPreferences();
+    }
+
+    private void clearSharedPreferences() {
+
+        if (getActivity() == null)
+            return;
+
+        Logger.info(this.toString(), "Clearing logged in user from shared preferences.");
+
+        SharedPreferences sp = getActivity().getSharedPreferences(StartFragment.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        Editor editor = sp.edit();
+
+        editor.clear();
+
+        editor.putBoolean(StartFragment.PREF_USER_STORED, false);
+
+        editor.commit();
     }
 
     @Override
@@ -151,7 +178,7 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
 
             showProgress(true);
 
-            userLoginTask = new UserLoginTask(this, Settings.getBaseURI(), username, password);
+            userLoginTask = new UserLoginTask(this, Settings.getBaseURI(), username, hashForPassword(password));
 
             userLoginTask.execute((Void) null);
         }
@@ -163,9 +190,29 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         if (userLoginTask == null)
             return;
 
+        Logger.info(this.toString(), "Log in success, storing user in shared preferences and starting main activity.");
+
+        storeSharedPreferences(userLoginTask.getUsername(), userLoginTask.getPassword());
+
         userLoginTask = null;
 
         startMainActivity();
+    }
+
+    private void storeSharedPreferences(String username, String password) {
+
+        if (getActivity() == null)
+            return;
+
+        SharedPreferences sp = getActivity().getSharedPreferences(StartFragment.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        Editor editor = sp.edit();
+
+        editor.putBoolean(StartFragment.PREF_USER_STORED, true);
+        editor.putString(StartFragment.PREF_USER_NAME, username);
+        editor.putString(StartFragment.PREF_USER_PASSWORD, password);
+
+        editor.commit();
     }
 
     private void startMainActivity() {
@@ -173,9 +220,9 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         if (getActivity() == null)
             return;
 
-        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
-        mainIntent.putExtra("user", "Yannis Kabilafkas");
-        startActivity(mainIntent);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+
+        startActivity(intent);
     }
 
     @Override
@@ -185,6 +232,8 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
             return;
 
         userLoginTask = null;
+
+        Logger.info(this.toString(), "Registration pending.");
 
         showProgress(false);
 
@@ -199,6 +248,8 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
 
         userLoginTask = null;
 
+        Logger.info(this.toString(), "Incorrect credentials.");
+
         showProgress(false);
 
         if (getView() == null)
@@ -211,6 +262,21 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     }
 
     @Override
+    public void serviceError() {
+
+        if (userLoginTask == null)
+            return;
+
+        userLoginTask = null;
+
+        Logger.info(this.toString(), "Service error.");
+
+        showProgress(false);
+
+        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void networkError() {
 
         if (userLoginTask == null)
@@ -218,22 +284,11 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
 
         userLoginTask = null;
 
+        Logger.info(this.toString(), "Network error.");
+
         showProgress(false);
 
         Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void cancelled() {
-
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
-        showProgress(false);
-
-        Toast.makeText(getActivity(), getString(R.string.error_login_cancelled), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -248,5 +303,44 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         userLoginTask = null;
 
         super.onDestroy();
+    }
+
+    private String hashForPassword(String password) {
+
+        try {
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            md.update(password.getBytes());
+
+            byte[] digest = md.digest();
+
+            return bytesToHex(digest);
+
+        } catch (NoSuchAlgorithmException e) {
+            // e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    private String bytesToHex(byte[] bytes) {
+
+        char[] hexChars = new char[bytes.length * 2];
+
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+
+        return new String(hexChars);
+    }
+
+    @Override
+    public String toString() {
+
+        return "LoginFragment";
     }
 }

@@ -1,8 +1,5 @@
 package k23b.ac.tasks;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -23,15 +20,25 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
         public void incorrectCredentials();
 
-        public void networkError();
+        public void serviceError();
 
-        public void cancelled();
+        public void networkError();
     }
 
     private final LoginCallback loginCallback;
     private final String baseURI;
     private final String username;
     private final String password;
+
+    public String getUsername() {
+
+        return username;
+    }
+
+    public String getPassword() {
+
+        return password;
+    }
 
     public UserLoginTask(LoginCallback loginCallback, String baseURI, String username, String password) {
 
@@ -47,13 +54,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
         try {
 
-            // try {
-            // Thread.sleep(5000);
-            // } catch (InterruptedException e) {
-            // // e.printStackTrace();
-            // }
-
-            String url = baseURI + "login/" + username + "/" + hashForPassword(password);
+            String url = baseURI + "login/" + username + "/" + password;
 
             RestTemplate restTemplate = new RestTemplate();
 
@@ -61,14 +62,22 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
             String result = restTemplate.getForObject(url, String.class);
 
+            // try {
+            //
+            // Thread.sleep(10000);
+            //
+            // } catch (InterruptedException e) {
+            // // e.printStackTrace();
+            // }
+
             if (result.startsWith("Accepted"))
-                return UserLoginStatus.SUCCESS;
+                return UserLoginStatus.LOGIN_SUCCESS;
             else if (result.startsWith("Pending"))
                 return UserLoginStatus.REGISTRATION_PENDING;
             else if (result.startsWith("Incorrect"))
                 return UserLoginStatus.INCORRECT_CREDENTIALS;
             else
-                return UserLoginStatus.INVALID;
+                return UserLoginStatus.SERVICE_ERROR;
 
         } catch (RestClientException e) {
             Logger.logException(getClass().getSimpleName(), e);
@@ -81,16 +90,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
         switch (status) {
 
-        case INCORRECT_CREDENTIALS:
-            loginCallback.incorrectCredentials();
-            break;
-
-        case NETWORK_ERROR:
-        case INVALID:
-            loginCallback.networkError();
-            break;
-
-        case SUCCESS:
+        case LOGIN_SUCCESS:
             loginCallback.loginSuccess();
             break;
 
@@ -98,49 +98,19 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
             loginCallback.registrationPending();
             break;
 
-        case CANCELLED:
+        case INCORRECT_CREDENTIALS:
+            loginCallback.incorrectCredentials();
+            break;
+
+        case SERVICE_ERROR:
+            loginCallback.serviceError();
+            break;
+
+        case NETWORK_ERROR:
+            loginCallback.networkError();
+
         default:
-            loginCallback.cancelled();
             break;
         }
-    }
-
-    @Override
-    protected void onCancelled() {
-
-        loginCallback.cancelled();
-    }
-
-    private String hashForPassword(String password) {
-
-        try {
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            md.update(password.getBytes());
-
-            byte[] digest = md.digest();
-
-            return bytesToHex(digest);
-
-        } catch (NoSuchAlgorithmException e) {
-            // e.printStackTrace();
-            return "";
-        }
-    }
-
-    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    private String bytesToHex(byte[] bytes) {
-
-        char[] hexChars = new char[bytes.length * 2];
-
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-
-        return new String(hexChars);
     }
 }

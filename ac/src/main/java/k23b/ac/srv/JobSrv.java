@@ -26,7 +26,7 @@ public class JobSrv {
                 // throw new SrvException("Can not create job. User with username " + username + " is not logged in.");
 
                 synchronized (JobDao.class) {
-                  
+
                     long jobId = JobDao.createJob(params, username, agentId, new Date(System.currentTimeMillis()), periodic, period);
 
                     JobDao job = JobDao.findJobById(jobId);
@@ -36,7 +36,6 @@ public class JobSrv {
 
                     return job;
                 }
-                
             }
 
         } catch (DaoException e) {

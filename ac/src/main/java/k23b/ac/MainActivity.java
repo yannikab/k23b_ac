@@ -4,7 +4,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -111,11 +114,38 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
+
+        switch (item.getItemId()) {
+
+        case R.id.action_settings:
+
             return true;
+
+        case R.id.action_logout:
+
+            clearSharedPreferences();
+
+            finish();
+
+            return false;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearSharedPreferences() {
+
+        SharedPreferences sp = getSharedPreferences(StartFragment.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        Logger.info(this.toString(), "Clearing logged in user from shared preferences.");
+
+        Editor editor = sp.edit();
+
+        editor.clear();
+
+        editor.putBoolean(StartFragment.PREF_USER_STORED, false);
+
+        editor.commit();
     }
 
     @Override
@@ -149,5 +179,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         default:
             break;
         }
+    }
+
+    @Override
+    public String toString() {
+        return getLocalClassName();
     }
 }

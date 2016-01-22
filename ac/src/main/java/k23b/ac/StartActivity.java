@@ -1,17 +1,12 @@
 package k23b.ac;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 import k23b.ac.dao.DatabaseHandler;
 
 public class StartActivity extends Activity {
 
-    private static final String LOGIN_ACTION = "k23b.ac.LOGIN_ACTION";
-    private static final int LOGIN_REQUEST = 1;
-
-    private TextView mTextView;
+    private static final String fragmentTag = "retained.start.fragment";
 
     /**
      * Called when the activity is first created.
@@ -23,42 +18,13 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        mTextView = (TextView) findViewById(R.id.text_view);
-
         DatabaseHandler.setContext(this.getApplicationContext());
 
-        startLoginActivity();
-    }
+        if (getFragmentManager().findFragmentByTag(fragmentTag) != null)
+            return;
 
-    private void startLoginActivity() {
-        Intent loginIntent = new Intent();
-        loginIntent.setAction(LOGIN_ACTION);
-        startActivityForResult(loginIntent, LOGIN_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-
-        case LOGIN_REQUEST:
-
-            if (resultCode != RESULT_OK) {
-                mTextView.setText("");
-                break;
-            }
-
-            Bundle bundle = data.getExtras();
-
-            String username = (String) bundle.get("username");
-
-            mTextView.setText(username);
-
-            break;
-
-        default:
-            break;
-        }
+        getFragmentManager().beginTransaction().add(new StartFragment(), fragmentTag).commit();
+        
+        Logger.info(getLocalClassName(), "onCreate()");
     }
 }
