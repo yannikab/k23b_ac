@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.util.Log;
 import k23b.ac.dao.DaoException;
 import k23b.ac.dao.JobDao;
 import k23b.ac.dao.UserDao;
@@ -18,9 +19,10 @@ public class JobSrv {
 
                 UserDao user = UserDao.findUserByUsername(username);
 
-                if (user == null)
-                    return null;
-
+                if (user == null){
+                	Log.e(JobSrv.class.getName() ,"Could not create Job for agent with id: " + agentId+". No such User.");
+                	return null;
+                }
                 // not using active
                 // if (!user.isActive())
                 // throw new SrvException("Can not create job. User with username " + username + " is not logged in.");

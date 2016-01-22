@@ -1,5 +1,7 @@
 package k23b.ac.srv;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import k23b.ac.dao.DaoException;
@@ -8,134 +10,180 @@ import k23b.ac.dao.UserDao;
 
 public class UserSrv {
 
-    public static UserDao create(String username, String password) throws SrvException {
+	public static UserDao create(String username, String password) throws SrvException {
 
-        try {
+		try {
 
-            synchronized (UserDao.class) {
+			synchronized (UserDao.class) {
 
-                UserDao ud = UserDao.findUserByUsername(username);
+				UserDao ud = UserDao.findUserByUsername(username);
 
-                if (ud != null)
-                    return null;
+				if (ud != null)
+					return null;
 
-                String name = UserDao.createUser(username, password);
+				String name = UserDao.createUser(username, password);
 
-                return UserDao.findUserByUsername(name);
-            }
+				return UserDao.findUserByUsername(name);
+			}
 
-        } catch (DaoException e) {
-            throw new SrvException("Data access error while creating User with username: " + username);
-        }
-    }
+		} catch (DaoException e) {
+			throw new SrvException("Data access error while creating User with username: " + username);
+		}
+	}
 
-    public static UserDao find(String username) throws SrvException {
+	public static UserDao createUserWithJobs(UserDao user, List<JobDao> jobList) throws SrvException {
 
-        try {
+		try {
 
-            synchronized (UserDao.class) {
+			synchronized (UserDao.class) {
 
-                return UserDao.findUserByUsername(username);
-            }
+				UserDao ud = UserDao.findUserByUsername(user.getUsername());
+				String createdUser="";
+				if (ud == null) {
+					createdUser = UserDao.createUser(user.getUsername(), user.getPassword());
+					if (createdUser == null)
+						throw new SrvException("User with username: " + user.getUsername() + " with " + jobList.size()
+								+ " Jobs could NOT be Created");
+				}
 
-        } catch (DaoException e) {
-            throw new SrvException("Data access error while finding User by username: " + username);
-        }
-    }
+				synchronized (JobDao.class) {
 
-    public static void delete(String username) throws SrvException {
+					for (JobDao j : jobList) {
+						long jobId = JobDao.createJob(j.getParameters(), ud.getUsername(), j.getAgentId(),
+								j.getTime_assigned(), j.getPeriodic(), j.getPeriod());
 
-        try {
+						JobDao job = JobDao.findJobById(jobId);
 
-            synchronized (UserDao.class) {
+						if (job == null)
+							throw new SrvException("Could not create Job from agent with id: " + j.getAgentId()
+									+ " for User " + user.getUsername());
+					}
+					
+					return (ud == null ? UserDao.findUserByUsername(createdUser) : ud);
+				}
+			}
 
-                UserDao ud = UserDao.findUserByUsername(username);
+		} catch (DaoException e) {
+			throw new SrvException("Data access error while creating User with username: " + user.getUsername()
+					+ " with " + jobList.size() + " Jobs");
+		}
 
-                if (ud == null)
-                    return;
+	}
 
-                synchronized (JobDao.class) {
+	public static UserDao find(String username) throws SrvException {
 
-                    Set<JobDao> jobs = JobDao.findAllJobsFromUsername(username);
+		try {
 
-                    for (JobDao jd : jobs)
-                        JobDao.deleteJob(jd.getId());
+			synchronized (UserDao.class) {
 
-                    UserDao.deleteUser(username);
-                }
-            }
+				return UserDao.findUserByUsername(username);
+			}
 
-        } catch (DaoException e) {
+		} catch (DaoException e) {
+			throw new SrvException("Data access error while finding User by username: " + username);
+		}
+	}
 
-            throw new SrvException("Data access error while deleting user with username: " + username);
-        }
-    }
+	public static void delete(String username) throws SrvException {
 
-    public static Set<UserDao> findAll() throws SrvException {
+		try {
 
-        try {
+			synchronized (UserDao.class) {
 
-            synchronized (UserDao.class) {
+				UserDao ud = UserDao.findUserByUsername(username);
 
-                return UserDao.findAll();
-            }
+				if (ud == null)
+					return;
 
-        } catch (DaoException e) {
+				synchronized (JobDao.class) {
 
-            throw new SrvException("Data access error while finding all jobs.");
-        }
-    }
+					Set<JobDao> jobs = JobDao.findAllJobsFromUsername(username);
 
-    // public static void login(String username, String password) throws SrvException {
-    //
-    // try {
-    //
-    // User u = UserDao.findUserbyUsername(username);
-    //
-    // if (u == null)
-    // throw new SrvException("Can not login User. User does not exist with username: " + username);
-    //
-    // if (!u.getPassword().equals(hashForPassword(password)))
-    // throw new SrvException("Can not login User. Incorrect password.");
-    //
-    // UserDao.setActive(username);
-    //
-    // } catch (DaoException e) {
-    // throw new SrvException("Data access error while logging in User with username: " + username);
-    // }
-    // }
-    //
-    // public static void logout(String username) throws SrvException {
-    //
-    // try {
-    //
-    // User u = UserDao.findUserbyUsername(username);
-    //
-    // if (u == null)
-    // throw new SrvException("Can not logout User. User does not exist with username: " + username);
-    //
-    // UserDao.setInactive(username);
-    //
-    // } catch (DaoException e) {
-    //
-    // throw new SrvException("Data access error while logging out User with username: " + username);
-    // }
-    // }
-    //
-    // public static boolean isLoggedIn(String username) throws SrvException {
-    //
-    // try {
-    //
-    // User u = UserDao.findUserbyUsername(username);
-    //
-    // if (u == null)
-    // throw new SrvException("Can check login status of User. User does not exist with username: " + username);
-    //
-    // // return u.isActive();
-    //
-    // } catch (DaoException e) {
-    // throw new SrvException("Data access error while checking login status of User with username: " + username);
-    // }
-    //
-    // }
+					for (JobDao jd : jobs)
+						JobDao.deleteJob(jd.getId());
+
+					UserDao.deleteUser(username);
+				}
+			}
+
+		} catch (DaoException e) {
+
+			throw new SrvException("Data access error while deleting user with username: " + username);
+		}
+	}
+
+	public static Set<UserDao> findAll() throws SrvException {
+
+		try {
+
+			synchronized (UserDao.class) {
+
+				return UserDao.findAll();
+			}
+
+		} catch (DaoException e) {
+
+			throw new SrvException("Data access error while finding all jobs.");
+		}
+	}
+
+	// public static void login(String username, String password) throws
+	// SrvException {
+	//
+	// try {
+	//
+	// User u = UserDao.findUserbyUsername(username);
+	//
+	// if (u == null)
+	// throw new SrvException("Can not login User. User does not exist with
+	// username: " + username);
+	//
+	// if (!u.getPassword().equals(hashForPassword(password)))
+	// throw new SrvException("Can not login User. Incorrect password.");
+	//
+	// UserDao.setActive(username);
+	//
+	// } catch (DaoException e) {
+	// throw new SrvException("Data access error while logging in User with
+	// username: " + username);
+	// }
+	// }
+	//
+	// public static void logout(String username) throws SrvException {
+	//
+	// try {
+	//
+	// User u = UserDao.findUserbyUsername(username);
+	//
+	// if (u == null)
+	// throw new SrvException("Can not logout User. User does not exist with
+	// username: " + username);
+	//
+	// UserDao.setInactive(username);
+	//
+	// } catch (DaoException e) {
+	//
+	// throw new SrvException("Data access error while logging out User with
+	// username: " + username);
+	// }
+	// }
+	//
+	// public static boolean isLoggedIn(String username) throws SrvException {
+	//
+	// try {
+	//
+	// User u = UserDao.findUserbyUsername(username);
+	//
+	// if (u == null)
+	// throw new SrvException("Can check login status of User. User does not
+	// exist with username: " + username);
+	//
+	// // return u.isActive();
+	//
+	// } catch (DaoException e) {
+	// throw new SrvException("Data access error while checking login status of
+	// User with username: " + username);
+	// }
+	//
+	// }
 }
