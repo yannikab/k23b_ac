@@ -1,8 +1,5 @@
 package k23b.am.srv;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import k23b.am.cc.AdminCC;
 import k23b.am.cc.UserCC;
 import k23b.am.dao.AdminDao;
@@ -32,18 +29,22 @@ public class UserSrv {
      * @param username the user's username.
      * @param password the user's password.
      * @return the created user object containing its generated id, or null if the user was not found after creating it.
-     * @throws SrvException if a user already exists with specified username, the user could not be created, or a data access error occurs.
+     * @throws UserCredentialsException if the username is too long or a user already exists with specified username.
+     * @throws SrvException if the user could not be created or a data access error occurs.
      */
-    public static UserDao create(String username, String password) throws SrvException {
+    public static UserDao create(String username, String password) throws UserCredentialsException, SrvException {
+
+        if (username.length() > 40)
+            throw new SrvException("Can not create user. Username exceeds maximum length: " + username);
 
         try {
 
             synchronized (lock ? UserCC.class : new Object()) {
 
                 if ((UserCC.findByUsername(username) != null))
-                    throw new SrvException("Can not create user. Another user already exists with username: " + username);
+                    throw new UserCredentialsException("Can not create user. Another user already exists with username: " + username);
 
-                long userId = UserCC.create(username, hashForPassword(password), false);
+                long userId = UserCC.create(username, password, false);
 
                 if (userId == 0)
                     throw new SrvException("Could not create user with username: " + username);
@@ -303,38 +304,5 @@ public class UserSrv {
             // e.printStackTrace();
             throw new SrvException("Data access error while checking accept status of user with username: " + username);
         }
-    }
-
-    private static String hashForPassword(String password) throws SrvException {
-
-        try {
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            md.update(password.getBytes());
-
-            byte[] digest = md.digest();
-
-            return bytesToHex(digest);
-
-        } catch (NoSuchAlgorithmException e) {
-            // e.printStackTrace();
-            throw new SrvException(e.getMessage());
-        }
-    }
-
-    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    private static String bytesToHex(byte[] bytes) {
-
-        char[] hexChars = new char[bytes.length * 2];
-
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-
-        return new String(hexChars);
     }
 }

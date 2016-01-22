@@ -1,5 +1,8 @@
 package k23b.am.view;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -64,7 +67,7 @@ public class LoginController {
 
         try {
 
-            AdminSrv.login(username, password);
+            AdminSrv.login(username, hashForPassword(password));
 
             AdminDao a = AdminSrv.findByUsername(username);
 
@@ -102,5 +105,38 @@ public class LoginController {
 
     public void setDialogStage(Stage loginStage) {
         this.loginStage = loginStage;
+    }
+
+    private String hashForPassword(String password) {
+
+        try {
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            md.update(password.getBytes());
+
+            byte[] digest = md.digest();
+
+            return bytesToHex(digest);
+
+        } catch (NoSuchAlgorithmException e) {
+            // e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    private String bytesToHex(byte[] bytes) {
+
+        char[] hexChars = new char[bytes.length * 2];
+
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+
+        return new String(hexChars);
     }
 }

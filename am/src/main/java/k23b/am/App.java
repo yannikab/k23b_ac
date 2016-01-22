@@ -123,7 +123,7 @@ public class App extends Application {
 
         try {
 
-            String password = "12345";
+            String password = "5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5";
             String username;
 
             username = "Yannis";

@@ -1,8 +1,5 @@
 package k23b.am.srv;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import k23b.am.cc.AdminCC;
 import k23b.am.dao.AdminDao;
 import k23b.am.dao.DaoException;
@@ -41,7 +38,7 @@ public class AdminSrv {
                 if ((AdminCC.findByUsername(username) != null))
                     throw new SrvException("Can not create admin. Another admin already exists with username: " + username);
 
-                long adminId = AdminCC.create(username, hashForPassword(password), false);
+                long adminId = AdminCC.create(username, password, false);
 
                 if (adminId == 0)
                     throw new SrvException("Could not create admin with username: " + username);
@@ -117,7 +114,7 @@ public class AdminSrv {
                 if (a == null)
                     throw new SrvException("Can not login admin. Admin does not exist with username: " + username);
 
-                if (!a.getPassword().equals(hashForPassword(password)))
+                if (!a.getPassword().equals(password))
                     throw new SrvException("Can not login admin. Incorrect password.");
 
                 AdminCC.setActive(a.getAdminId(), true);
@@ -183,38 +180,5 @@ public class AdminSrv {
             // e.printStackTrace();
             throw new SrvException("Data access error while checking login status of admin with username: " + username);
         }
-    }
-
-    private static String hashForPassword(String password) throws SrvException {
-
-        try {
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            md.update(password.getBytes());
-
-            byte[] digest = md.digest();
-
-            return bytesToHex(digest);
-
-        } catch (NoSuchAlgorithmException e) {
-            // e.printStackTrace();
-            throw new SrvException(e.getMessage());
-        }
-    }
-
-    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    private static String bytesToHex(byte[] bytes) {
-
-        char[] hexChars = new char[bytes.length * 2];
-
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-
-        return new String(hexChars);
     }
 }

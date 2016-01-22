@@ -107,7 +107,7 @@ public class RootPaneController {
     private void fetchAdmin() {
 
         String username = "Yannis";
-        String password = "12345";
+        String password = "5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5";
 
         try {
 

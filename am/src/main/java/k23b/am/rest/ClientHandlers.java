@@ -62,13 +62,45 @@ public class ClientHandlers {
 
         } catch (UserCredentialsException e) {
 
-            log.info(service, e);
+            log.info(service + e.getMessage());
 
             return Response.status(200).entity("Incorrect Credentials").build();
 
         } catch (SrvException e) {
 
-            log.error(service, e);
+            log.error(service + e.getMessage());
+
+            return Response.status(200).entity("Service Error").build();
+        }
+    }
+
+    @GET
+    @Path("register/{username}/{password}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response register(
+            @PathParam("username") String username,
+            @PathParam("password") String password) {
+
+        String service = new Object() {
+        }.getClass().getEnclosingMethod().getName() + "(): ";
+
+        log.info(service + "User registration requested." + String.format(" (username=%s)", username));
+
+        try {
+
+            UserSrv.create(username, password);
+
+            return Response.status(200).entity("Accepted").build();
+
+        } catch (UserCredentialsException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity("User Exists").build();
+
+        } catch (SrvException e) {
+
+            log.error(service + e.getMessage());
 
             return Response.status(200).entity("Service Error").build();
         }
@@ -117,9 +149,15 @@ public class ClientHandlers {
 
             return Response.status(200).entity(agentContainer).build();
 
+        } catch (UserCredentialsException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity("Incorrect Credentials").build();
+
         } catch (SrvException e) {
 
-            log.error(service, e);
+            log.error(service + e.getMessage());
 
             return Response.status(200).entity(new AgentContainer("Service Error")).build();
         }
@@ -187,9 +225,15 @@ public class ClientHandlers {
 
             return Response.status(200).entity(jobContainer).build();
 
+        } catch (UserCredentialsException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity("Incorrect Credentials").build();
+
         } catch (SrvException e) {
 
-            log.error(service, e);
+            log.error(service + e.getMessage());
 
             return Response.status(200).entity(new JobContainer("Service Error")).build();
         }
@@ -260,9 +304,15 @@ public class ClientHandlers {
 
             return Response.status(200).entity(resultContainer).build();
 
+        } catch (UserCredentialsException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity("Incorrect Credentials").build();
+
         } catch (SrvException e) {
 
-            log.error(service, e);
+            log.error(service + e.getMessage());
 
             return Response.status(200).entity(new ResultContainer("Service Error")).build();
         }
@@ -314,9 +364,15 @@ public class ClientHandlers {
 
             return Response.status(200).entity(resultContainer).build();
 
+        } catch (UserCredentialsException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity("Incorrect Credentials").build();
+
         } catch (SrvException e) {
 
-            log.error(service, e);
+            log.error(service + e.getMessage());
 
             return Response.status(200).entity(new ResultContainer("Service Error")).build();
         }
@@ -355,7 +411,7 @@ public class ClientHandlers {
 
                 } catch (UserCredentialsException e) {
 
-                    log.info(service, e);
+                    log.info(service + e.getMessage());
                     continue;
                 }
 
@@ -369,7 +425,7 @@ public class ClientHandlers {
 
         } catch (SrvException e) {
 
-            log.error(service, e);
+            log.error(service + e.getMessage());
 
             return Response.status(200).entity("Service Error").build();
         }
