@@ -153,7 +153,7 @@ public class ClientHandlers {
 
             log.info(service + e.getMessage());
 
-            return Response.status(200).entity("Incorrect Credentials").build();
+            return Response.status(200).entity(new AgentContainer("Incorrect Credentials")).build();
 
         } catch (SrvException e) {
 
@@ -229,7 +229,7 @@ public class ClientHandlers {
 
             log.info(service + e.getMessage());
 
-            return Response.status(200).entity("Incorrect Credentials").build();
+            return Response.status(200).entity(new JobContainer("Incorrect Credentials")).build();
 
         } catch (SrvException e) {
 
@@ -308,7 +308,7 @@ public class ClientHandlers {
 
             log.info(service + e.getMessage());
 
-            return Response.status(200).entity("Incorrect Credentials").build();
+            return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
 
         } catch (SrvException e) {
 
@@ -368,7 +368,7 @@ public class ClientHandlers {
 
             log.info(service + e.getMessage());
 
-            return Response.status(200).entity("Incorrect Credentials").build();
+            return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
 
         } catch (SrvException e) {
 
