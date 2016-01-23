@@ -9,7 +9,7 @@ import org.simpleframework.xml.Root;
 
 @Root(name = "results")
 public class ResultContainer {
-    
+
     @Attribute(required = true)
     private String status;
 

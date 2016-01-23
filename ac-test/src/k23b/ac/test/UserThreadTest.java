@@ -57,9 +57,9 @@ public class UserThreadTest extends AndroidTestCase {
 
             @Override
             public void run() {
-            	
-            	int count = 100;
-            	for (int i = 0; i < count; i++) {
+
+                int count = 100;
+                for (int i = 0; i < count; i++) {
 
                     try {
 

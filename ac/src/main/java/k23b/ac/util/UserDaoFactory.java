@@ -6,7 +6,7 @@ import k23b.ac.rest.User;
 public class UserDaoFactory extends UserDao {
 
     protected UserDaoFactory(String username, String password) {
-        
+
         super(username, password, false);
     }
 

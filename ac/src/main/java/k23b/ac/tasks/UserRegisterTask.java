@@ -58,7 +58,7 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
             } catch (InterruptedException e) {
                 // e.printStackTrace();
             }
-            
+
             if (result.startsWith("Accepted"))
                 return UserRegisterStatus.REGISTRATION_SUCCESS;
             else if (result.startsWith("User Exists"))

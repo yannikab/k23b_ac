@@ -10,7 +10,7 @@ public class Settings {
 
         setBaseURI("http://192.168.1.15:8080/am/client/");
         Logger.info("Settings", "baseURI: " + getBaseURI());
-        
+
         setJobRequestInterval(20);
         Logger.info("Settings", "jobRequestInterval: " + getJobRequestInterval());
     }

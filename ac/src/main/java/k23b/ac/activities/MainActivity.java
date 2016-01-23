@@ -35,9 +35,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
+
         Logger.info(this.toString(), "onCreate()");
-        
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -174,11 +174,11 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     @Override
     protected void onDestroy() {
-        
+
         Logger.info(this.toString(), "onDestroy()");
 
         super.onDestroy();
-        
+
         // clearUser();
     }
 }

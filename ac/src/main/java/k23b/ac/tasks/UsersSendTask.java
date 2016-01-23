@@ -11,7 +11,7 @@ import k23b.ac.tasks.status.UsersSendStatus;
 import k23b.ac.util.Logger;
 
 public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
-	
+
     public interface UsersSendCallback {
 
         public void sendSuccess();
@@ -22,14 +22,14 @@ public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
 
         public void cancelled();
     }
-    
+
     private final UsersSendCallback usersSendCallBack;
     private final String baseURI;
     private final UserContainer userContainer;
 
-    public UsersSendTask(UsersSendCallback usersSendCallBack , String baseURI, UserContainer userContainer) {
+    public UsersSendTask(UsersSendCallback usersSendCallBack, String baseURI, UserContainer userContainer) {
         super();
-        
+
         this.usersSendCallBack = usersSendCallBack;
         this.baseURI = baseURI;
         this.userContainer = userContainer;
@@ -60,34 +60,35 @@ public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
                 return UsersSendStatus.INVALID;
 
         } catch (RestClientException e) {
-        	Logger.logException(getClass().getSimpleName(), e);
-        	return UsersSendStatus.NETWORK_ERROR;
+            Logger.logException(getClass().getSimpleName(), e);
+            return UsersSendStatus.NETWORK_ERROR;
         }
     }
 
     @Override
     protected void onPostExecute(UsersSendStatus status) {
-    	switch (status) {
+        switch (status) {
 
         case NETWORK_ERROR:
         case INVALID:
             usersSendCallBack.networkError();
             break;
-        
+
         case SERVICE_ERROR:
-        	usersSendCallBack.serviceError();
-        	break;
-            
+            usersSendCallBack.serviceError();
+            break;
+
         case SUCCESS:
             usersSendCallBack.sendSuccess();
             break;
 
         case CANCELLED:
         default:
-        	usersSendCallBack.cancelled();
+            usersSendCallBack.cancelled();
             break;
         }
     }
+
     @Override
     protected void onCancelled() {
         return;

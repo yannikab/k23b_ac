@@ -15,220 +15,211 @@ import k23b.ac.rest.status.JobStatus;
 @Root(name = "job")
 public class Job implements Comparable<Job>, Parcelable {
 
-	@Element(required = true)
-	private long jobId;
+    @Element(required = true)
+    private long jobId;
 
-	@Element(required = true)
-	private long agentId;
+    @Element(required = true)
+    private long agentId;
 
-	@Element(required = true)
-	private long adminId;
+    @Element(required = true)
+    private long adminId;
 
-	@Element(required = true)
-	private Date timeAssigned;
+    @Element(required = true)
+    private Date timeAssigned;
 
-	@Element(required = false)
-	private Date timeSent;
+    @Element(required = false)
+    private Date timeSent;
 
-	@Element(required = true)
-	private String params;
+    @Element(required = true)
+    private String params;
 
-	@Element(required = true)
-	private boolean periodic;
+    @Element(required = true)
+    private boolean periodic;
 
-	@Element(required = false)
-	private int period;
+    @Element(required = false)
+    private int period;
 
-	@Element(required = false)
-	private Date timeStopped;
+    @Element(required = false)
+    private Date timeStopped;
 
-	@Override
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	public int describeContents() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
 
-		// TODO Auto-generated method stub
-		return 0;
-	}
+        dest.writeLong(jobId);
+        dest.writeLong(agentId);
+        dest.writeLong(adminId);
+        dest.writeLong(timeAssigned.getTime());
+        dest.writeLong(timeSent.getTime());
+        dest.writeString(params);
+        dest.writeByte((byte) (periodic ? 1 : 0));
+        dest.writeInt(period);
+        dest.writeLong(timeStopped.getTime());
 
-	@Override
+    }
 
-	public void writeToParcel(Parcel dest, int flags) {
+    public static final Parcelable.Creator<Job> Creator = new Parcelable.Creator<Job>() {
 
-		dest.writeLong(jobId);
-		dest.writeLong(agentId);
-		dest.writeLong(adminId);
-		dest.writeLong(timeAssigned.getTime());
-		dest.writeLong(timeSent.getTime());
-		dest.writeString(params);
-		dest.writeByte((byte) (periodic ? 1 : 0));
-		dest.writeInt(period);
-		dest.writeLong(timeStopped.getTime());
+        @Override
+        public Job createFromParcel(Parcel source) {
+            return new Job(source);
+        }
 
-	}
+        @Override
+        public Job[] newArray(int size) {
+            return new Job[size];
+        }
 
-	public static final Parcelable.Creator<Job> Creator = new Parcelable.Creator<Job>() {
+    };
 
-		@Override
-		public Job createFromParcel(Parcel source) {
+    public Job(Parcel source) {
 
-			return new Job(source);
-		}
+        jobId = source.readLong();
+        agentId = source.readLong();
+        adminId = source.readLong();
+        timeAssigned = new Date(source.readLong());
+        timeSent = new Date(source.readLong());
+        params = source.readString();
+        periodic = (source.readByte() != 0);
+        period = source.readInt();
+        timeStopped = new Date(source.readLong());
 
-		@Override
-		public Job[] newArray(int size) {
+    }
 
-			return new Job[size];
-		}
+    public Job() {
+        super();
+    }
 
-	};
+    public long getJobId() {
+        return jobId;
+    }
 
-	public Job(Parcel source) {
+    public void setJobId(long jobId) {
+        this.jobId = jobId;
+    }
 
-		jobId = source.readLong();
-		agentId = source.readLong();
-		adminId = source.readLong();
-		timeAssigned = new Date(source.readLong());
-		timeSent = new Date(source.readLong());
-		params = source.readString();
-		periodic = (source.readByte() != 0);
-		period = source.readInt();
-		timeStopped = new Date(source.readLong());
+    public long getAgentId() {
+        return agentId;
+    }
 
-	}
+    public void setAgentId(long agentId) {
+        this.agentId = agentId;
+    }
 
-	public Job() {
+    public long getAdminId() {
+        return adminId;
+    }
 
-		super();
+    public void setAdminId(long adminId) {
+        this.adminId = adminId;
+    }
 
-	}
+    public Date getTimeAssigned() {
+        return timeAssigned;
+    }
 
-	public long getJobId() {
-		return jobId;
-	}
+    public void setTimeAssigned(Date timeAssigned) {
+        this.timeAssigned = timeAssigned;
+    }
 
-	public void setJobId(long jobId) {
-		this.jobId = jobId;
-	}
+    public Date getTimeSent() {
+        return timeSent;
+    }
 
-	public long getAgentId() {
-		return agentId;
-	}
+    public void setTimeSent(Date timeSent) {
+        this.timeSent = timeSent;
+    }
 
-	public void setAgentId(long agentId) {
-		this.agentId = agentId;
-	}
+    public String getParams() {
+        return params;
+    }
 
-	public long getAdminId() {
-		return adminId;
-	}
+    public void setParams(String params) {
+        this.params = params;
+    }
 
-	public void setAdminId(long adminId) {
-		this.adminId = adminId;
-	}
+    public boolean getPeriodic() {
+        return periodic;
+    }
 
-	public Date getTimeAssigned() {
-		return timeAssigned;
-	}
+    public void setPeriodic(boolean periodic) {
+        this.periodic = periodic;
+    }
 
-	public void setTimeAssigned(Date timeAssigned) {
-		this.timeAssigned = timeAssigned;
-	}
+    public int getPeriod() {
+        return period;
+    }
 
-	public Date getTimeSent() {
-		return timeSent;
-	}
+    public void setPeriod(int period) {
+        this.period = period;
+    }
 
-	public void setTimeSent(Date timeSent) {
-		this.timeSent = timeSent;
-	}
+    public Date getTimeStopped() {
+        return timeStopped;
+    }
 
-	public String getParams() {
-		return params;
-	}
+    public void setTimeStopped(Date timeStopped) {
+        this.timeStopped = timeStopped;
+    }
 
-	public void setParams(String params) {
-		this.params = params;
-	}
+    public JobStatus getStatus() {
 
-	public boolean getPeriodic() {
-		return periodic;
-	}
+        if (this.getPeriodic() && this.getTimeStopped() != null)
+            return JobStatus.STOPPED;
+        else if (this.getTimeSent() != null)
+            return JobStatus.SENT;
+        else
+            return JobStatus.ASSIGNED;
+    }
 
-	public void setPeriodic(boolean periodic) {
-		this.periodic = periodic;
-	}
+    @SuppressLint("SimpleDateFormat")
+    private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-	public int getPeriod() {
-		return period;
-	}
+    public String getFormattedTimeAssigned() {
 
-	public void setPeriod(int period) {
-		this.period = period;
-	}
+        if (timeAssigned == null)
+            return String.valueOf(timeAssigned);
 
-	public Date getTimeStopped() {
-		return timeStopped;
-	}
+        return dateFormat.format(timeAssigned);
+    }
 
-	public void setTimeStopped(Date timeStopped) {
-		this.timeStopped = timeStopped;
-	}
+    public String getFormattedTimeSent() {
 
-	public JobStatus getStatus() {
+        if (timeSent == null)
+            return String.valueOf(timeSent);
 
-		if (this.getPeriodic() && this.getTimeStopped() != null)
-			return JobStatus.STOPPED;
-		else if (this.getTimeSent() != null)
-			return JobStatus.SENT;
-		else
-			return JobStatus.ASSIGNED;
-	}
+        return dateFormat.format(timeSent);
+    }
 
-	@SuppressLint("SimpleDateFormat")
-	private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    public String getFormattedTimeStopped() {
 
-	public String getFormattedTimeAssigned() {
+        if (timeStopped == null)
+            return String.valueOf(timeStopped);
 
-		if (timeAssigned == null)
-			return String.valueOf(timeAssigned);
+        return dateFormat.format(timeStopped);
+    }
 
-		return dateFormat.format(timeAssigned);
-	}
+    @Override
+    public String toString() {
+        return "Job [jobId=" + jobId + ", agentId=" + agentId + ", adminId=" + adminId + ", timeAssigned=" + timeAssigned + ", timeSent=" + timeSent + ", params=" + params + ", periodic=" + periodic + ", period=" + period + ", timeStopped=" + timeStopped + "]";
+    }
 
-	public String getFormattedTimeSent() {
+    @Override
+    public int compareTo(Job that) {
 
-		if (timeSent == null)
-			return String.valueOf(timeSent);
+        if (this.equals(that))
+            return 0;
 
-		return dateFormat.format(timeSent);
-	}
-
-	public String getFormattedTimeStopped() {
-
-		if (timeStopped == null)
-			return String.valueOf(timeStopped);
-
-		return dateFormat.format(timeStopped);
-	}
-
-	@Override
-	public String toString() {
-		return "Job [jobId=" + jobId + ", agentId=" + agentId + ", adminId=" + adminId + ", timeAssigned="
-				+ timeAssigned + ", timeSent=" + timeSent + ", params=" + params + ", periodic=" + periodic
-				+ ", period=" + period + ", timeStopped=" + timeStopped + "]";
-	}
-
-	@Override
-	public int compareTo(Job that) {
-
-		if (this.equals(that))
-			return 0;
-
-		if (this.getJobId() > that.getJobId())
-			return 1;
-		else if (this.getJobId() < that.getJobId())
-			return -1;
-		else
-			return 0;
-	}
+        if (this.getJobId() > that.getJobId())
+            return 1;
+        else if (this.getJobId() < that.getJobId())
+            return -1;
+        else
+            return 0;
+    }
 }

@@ -138,7 +138,7 @@ public class AgentsFragment extends Fragment implements AgentsCallback, ActionMo
         User u = UserManager.getInstance().getStoredUser(getActivity());
 
         if (u == null) {
-            
+
             Logger.info(this.toString(), "No user logged in, aborting activity.");
             getActivity().finish();
             return;

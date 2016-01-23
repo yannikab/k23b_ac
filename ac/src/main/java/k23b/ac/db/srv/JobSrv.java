@@ -19,9 +19,9 @@ public class JobSrv {
 
                 UserDao user = UserDao.findUserByUsername(username);
 
-                if (user == null){
-                	Log.e(JobSrv.class.getName() ,"Could not create Job for agent with id: " + agentId+". No such User.");
-                	return null;
+                if (user == null) {
+                    Log.e(JobSrv.class.getName(), "Could not create Job for agent with id: " + agentId + ". No such User.");
+                    return null;
                 }
                 // not using active
                 // if (!user.isActive())

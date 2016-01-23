@@ -112,8 +112,8 @@ public class JobDao {
             // job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
             // cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
 
-            long id =cursor.getLong(0); 
-            
+            long id = cursor.getLong(0);
+
             cursor.close();
             // Database not needed anymore
             dbHandler.closeDatabase();
@@ -172,7 +172,7 @@ public class JobDao {
     }
 
     public static void deleteJob(long jobId) throws DaoException {
-        
+
         Log.d(JobDao.class.getName(), "Deleting Job with Id: " + jobId);
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
@@ -222,7 +222,7 @@ public class JobDao {
                 cursor.moveToNext();
             }
         }
-        
+
         Log.d(JobDao.class.getName(), rows + (rows == 1 ? " row " : " rows ") + "selected.");
 
         cursor.close();
@@ -256,7 +256,7 @@ public class JobDao {
                 cursor.moveToNext();
             }
         }
-        
+
         Log.d(JobDao.class.getName(), rows + (rows == 1 ? " row " : " rows ") + "selected.");
 
         cursor.close();

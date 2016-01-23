@@ -68,7 +68,7 @@ public class UserManager {
 
         if (user != null)
             Logger.info(getInstance().toString(), "User: " + String.valueOf(user.getUsername()));
-            
+
         editor.commit();
     }
 

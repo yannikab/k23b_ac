@@ -13,9 +13,9 @@ public class RegisterActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
+
         Logger.info(this.toString(), "onCreate()");
-        
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_register);
@@ -31,7 +31,7 @@ public class RegisterActivity extends Activity {
 
     @Override
     protected void onResume() {
-        
+
         Logger.info(this.toString(), "onResume()");
 
         super.onResume();
@@ -39,7 +39,7 @@ public class RegisterActivity extends Activity {
 
     @Override
     protected void onPause() {
-        
+
         Logger.info(this.toString(), "onPause()");
 
         super.onPause();
@@ -47,7 +47,7 @@ public class RegisterActivity extends Activity {
 
     @Override
     protected void onStop() {
-        
+
         Logger.info(this.toString(), "onStop()");
 
         super.onStop();
@@ -55,7 +55,7 @@ public class RegisterActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        
+
         Logger.info(this.toString(), "onDestroy()");
 
         super.onDestroy();

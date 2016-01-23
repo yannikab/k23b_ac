@@ -59,14 +59,14 @@ public class JobThreadTest extends AndroidTestCase {
                 }
             }
         });
-        
+
         Thread consumer = new Thread(new Runnable() {
 
             @Override
             public void run() {
-            	int count = 300;
-            	
-            	for (int i = 0; i < count; i++) {
+                int count = 300;
+
+                for (int i = 0; i < count; i++) {
 
                     try {
 

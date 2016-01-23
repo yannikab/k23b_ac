@@ -112,7 +112,7 @@ public class UserSrvTest extends AndroidTestCase {
         try {
 
             UserSrv.delete("Yannis");
-            
+
         } catch (SrvException e) {
             // e.printStackTrace();
             fail(e.getMessage());

@@ -4,37 +4,95 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import k23b.ac.R;
-import k23b.ac.R.id;
-import k23b.ac.R.layout;
+import k23b.ac.rest.Job;
+import k23b.ac.rest.User;
+import k23b.ac.util.JobDispatcher;
+import k23b.ac.util.Logger;
+import k23b.ac.util.NetworkManager;
+import k23b.ac.util.UserManager;
 
 public class AssignJobActivity extends Activity {
 
+    long agentId;
+
+    EditText editTextParams;
+
+    RadioButton radioPeriodicNo;
+    RadioButton radioPeriodicYes;
+
+    EditText editTextPeriod;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Logger.info(this.toString(), "onCreate()");
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_assign_job);
 
         Intent intent = getIntent();
 
-        long agentId = intent.getLongExtra("agentId", -1);
+        agentId = intent.getLongExtra("agentId", -1);
 
         String requestHash = intent.getStringExtra("requestHash");
 
         ((TextView) findViewById(R.id.assign_job_hash)).setText(requestHash);
 
-        ((RadioButton) findViewById(R.id.assign_job_radio_periodic_no)).setChecked(true);
-        ((RadioButton) findViewById(R.id.assign_job_radio_periodic_yes)).setChecked(false);
+        editTextParams = (EditText) findViewById(R.id.assign_job_params);
 
-        ((TextView) findViewById(R.id.assign_job_period)).setEnabled(false);
-        ((TextView) findViewById(R.id.assign_job_period)).setText("300");
+        radioPeriodicNo = (RadioButton) findViewById(R.id.assign_job_radio_periodic_no);
+        radioPeriodicYes = (RadioButton) findViewById(R.id.assign_job_radio_periodic_yes);
+
+        editTextPeriod = (EditText) findViewById(R.id.assign_job_period);
+
+        radioPeriodicNo.setChecked(true);
+        radioPeriodicYes.setChecked(false);
+
+        editTextPeriod.setEnabled(false);
+        editTextPeriod.setText("300");
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        Logger.info(this.toString(), "onDestroy()");
+
+        super.onDestroy();
     }
 
     public void onOkPressed(View v) {
 
-        // TODO: verify data, assign job
+        User u = UserManager.getInstance().getStoredUser(this);
+
+        if (u == null) {
+
+            Logger.info(this.toString(), "No user logged in, aborting activity.");
+            finish();
+            return;
+        }
+
+        if (!NetworkManager.networkAvailable(this)) {
+
+            Toast.makeText(this, getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Job j = new Job();
+
+        j.setAgentId(agentId);
+        j.setParams(editTextParams.getText().toString());
+        j.setPeriodic(radioPeriodicYes.isChecked());
+        j.setPeriod(Integer.valueOf(editTextPeriod.getText().toString()));
+
+        u.getJobs().add(j);
+
+        JobDispatcher.getInstance().dispatch(this, u);
 
         Intent data = new Intent();
         setResult(RESULT_OK, data);
