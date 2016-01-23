@@ -1,6 +1,5 @@
 package k23b.ac.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,9 +23,9 @@ public class NetworkManager {
         return instance;
     }
 
-    public static boolean networkAvailable(Activity activity) {
+    public static boolean networkAvailable(Context context) {
 
-        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }
