@@ -50,16 +50,11 @@ public class Job implements Comparable<Job>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeLong(jobId);
+    	
         dest.writeLong(agentId);
-        dest.writeLong(adminId);
-        dest.writeLong(timeAssigned.getTime());
-        dest.writeLong(timeSent.getTime());
         dest.writeString(params);
         dest.writeByte((byte) (periodic ? 1 : 0));
         dest.writeInt(period);
-        dest.writeLong(timeStopped.getTime());
 
     }
 
@@ -79,15 +74,15 @@ public class Job implements Comparable<Job>, Parcelable {
 
     public Job(Parcel source) {
 
-        jobId = source.readLong();
+        jobId = -1;
         agentId = source.readLong();
-        adminId = source.readLong();
-        timeAssigned = new Date(source.readLong());
-        timeSent = new Date(source.readLong());
+        adminId = -1;
+        timeAssigned = null;
+        timeSent = null;
         params = source.readString();
         periodic = (source.readByte() != 0);
         period = source.readInt();
-        timeStopped = new Date(source.readLong());
+        timeStopped = null;
 
     }
 
