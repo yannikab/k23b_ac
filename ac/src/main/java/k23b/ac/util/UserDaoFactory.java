@@ -1,6 +1,6 @@
 package k23b.ac.util;
 
-import k23b.ac.dao.UserDao;
+import k23b.ac.db.dao.UserDao;
 import k23b.ac.rest.User;
 
 public class UserDaoFactory extends UserDao {

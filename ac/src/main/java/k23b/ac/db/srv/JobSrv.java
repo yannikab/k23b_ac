@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.util.Log;
-import k23b.ac.dao.DaoException;
-import k23b.ac.dao.JobDao;
-import k23b.ac.dao.UserDao;
+import k23b.ac.db.dao.DaoException;
+import k23b.ac.db.dao.JobDao;
+import k23b.ac.db.dao.UserDao;
 
 public class JobSrv {
 

@@ -2,7 +2,7 @@ package k23b.ac.util;
 
 import java.util.Date;
 
-import k23b.ac.dao.JobDao;
+import k23b.ac.db.dao.JobDao;
 import k23b.ac.rest.Job;
 
 public class JobDaoFactory extends JobDao {

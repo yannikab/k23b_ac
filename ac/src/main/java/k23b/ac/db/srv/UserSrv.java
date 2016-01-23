@@ -3,9 +3,9 @@ package k23b.ac.db.srv;
 import java.util.List;
 import java.util.Set;
 
-import k23b.ac.dao.DaoException;
-import k23b.ac.dao.JobDao;
-import k23b.ac.dao.UserDao;
+import k23b.ac.db.dao.DaoException;
+import k23b.ac.db.dao.JobDao;
+import k23b.ac.db.dao.UserDao;
 
 public class UserSrv {
 
