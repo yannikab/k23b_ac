@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 import k23b.ac.dao.DatabaseHandler;
 import k23b.ac.dao.UserDao;
-import k23b.ac.srv.SrvException;
-import k23b.ac.srv.UserSrv;
+import k23b.ac.db.srv.SrvException;
+import k23b.ac.db.srv.UserSrv;
 
 public class UserSrvTest extends AndroidTestCase {
 

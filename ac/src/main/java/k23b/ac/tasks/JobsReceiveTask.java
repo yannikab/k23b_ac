@@ -8,9 +8,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
-import k23b.ac.Logger;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.JobContainer;
+import k23b.ac.tasks.status.ReceiveStatus;
+import k23b.ac.util.Logger;
 
 public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 

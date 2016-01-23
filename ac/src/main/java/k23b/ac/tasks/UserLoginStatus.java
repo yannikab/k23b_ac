@@ -1,5 +1,0 @@
-package k23b.ac.tasks;
-
-public enum UserLoginStatus {
-    LOGIN_SUCCESS, REGISTRATION_PENDING, INCORRECT_CREDENTIALS, SERVICE_ERROR, NETWORK_ERROR
-}

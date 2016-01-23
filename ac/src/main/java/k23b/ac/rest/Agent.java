@@ -8,6 +8,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import android.annotation.SuppressLint;
+import k23b.ac.rest.status.AgentStatus;
 
 @Root(name = "agent")
 public class Agent implements Comparable<Agent> {

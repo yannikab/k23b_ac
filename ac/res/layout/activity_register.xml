@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/register_fragment"
-        android:name="k23b.ac.views.RegisterFragment"
+        android:name="k23b.ac.fragments.RegisterFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"

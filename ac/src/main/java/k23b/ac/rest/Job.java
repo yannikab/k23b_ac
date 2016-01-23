@@ -8,6 +8,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import android.annotation.SuppressLint;
+import k23b.ac.rest.status.JobStatus;
 
 @Root(name = "job")
 public class Job implements Comparable<Job> {
