@@ -5,8 +5,8 @@ import java.util.Set;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-import k23b.ac.dao.DatabaseHandler;
-import k23b.ac.dao.UserDao;
+import k23b.ac.db.dao.DatabaseHandler;
+import k23b.ac.db.dao.UserDao;
 import k23b.ac.db.srv.SrvException;
 import k23b.ac.db.srv.UserSrv;
 

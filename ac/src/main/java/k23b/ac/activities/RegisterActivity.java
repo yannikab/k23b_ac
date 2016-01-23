@@ -3,7 +3,6 @@ package k23b.ac.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import k23b.ac.R;
-import k23b.ac.R.layout;
 import k23b.ac.util.Logger;
 
 /**

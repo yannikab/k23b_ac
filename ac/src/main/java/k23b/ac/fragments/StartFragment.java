@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import k23b.ac.R;
-import k23b.ac.R.id;
-import k23b.ac.R.layout;
 import k23b.ac.activities.LoginActivity;
 import k23b.ac.activities.MainActivity;
 import k23b.ac.rest.User;
