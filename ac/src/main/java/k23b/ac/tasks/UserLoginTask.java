@@ -65,7 +65,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
             try {
 
-                Thread.sleep(5000);
+                Thread.sleep(2000);
 
             } catch (InterruptedException e) {
                 // e.printStackTrace();

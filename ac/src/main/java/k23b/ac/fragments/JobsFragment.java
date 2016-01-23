@@ -199,7 +199,7 @@ public class JobsFragment extends Fragment implements AgentsCallback, JobsCallba
 
         showProgress(true);
 
-        agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
+        agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
 
         agentsFetchTask.execute();
     }

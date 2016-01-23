@@ -32,17 +32,17 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     private final String baseURI;
     private final String username;
     private final String password;
-    private final String jobHash;
+    private final String agentHash;
 
     private List<Job> jobs;
 
-    public JobsReceiveTask(JobsCallback jobsCallback, String baseURI, String username, String password, String jobHash) {
+    public JobsReceiveTask(JobsCallback jobsCallback, String baseURI, String username, String password, String agentHash) {
         super();
         this.jobsCallback = jobsCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
-        this.jobHash = jobHash;
+        this.agentHash = agentHash;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
             // Thread.sleep(5000);
 
-            String url = baseURI + "jobs/" + username + "/" + password + "/" + jobHash;
+            String url = baseURI + "jobs/" + username + "/" + password + "/" + agentHash;
 
             RestTemplate restTemplate = new RestTemplate();
 
