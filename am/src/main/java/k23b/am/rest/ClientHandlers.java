@@ -15,6 +15,7 @@ import k23b.am.dao.AdminDao;
 import k23b.am.dao.AgentDao;
 import k23b.am.dao.JobDao;
 import k23b.am.dao.RequestDao;
+import k23b.am.dao.RequestStatus;
 import k23b.am.dao.ResultDao;
 import k23b.am.srv.AdminSrv;
 import k23b.am.srv.AgentSrv;
@@ -142,7 +143,7 @@ public class ClientHandlers {
 
             AgentContainer agentContainer = new AgentContainer("Accepted");
 
-            for (AgentDao ad : AgentSrv.findAllWithAdminId(UserSrv.findByUsername(username).getAdminId()))
+            for (AgentDao ad : AgentSrv.findAllWithRequestStatus(RequestStatus.ACCEPTED))
                 agentContainer.getAgents().add(AgentFactory.fromDao(ad));
 
             log.info(service + "Returning " + agentContainer.getAgents().size() + " agents.");
@@ -203,6 +204,13 @@ public class ClientHandlers {
             if (rd == null) {
 
                 log.info(service + "Request not found.");
+
+                return Response.status(200).entity(new JobContainer("Invalid")).build();
+            }
+
+            if (rd.getRequestStatus() != RequestStatus.ACCEPTED) {
+
+                log.info(service + "Request not accepted.");
 
                 return Response.status(200).entity(new JobContainer("Invalid")).build();
             }
@@ -279,7 +287,14 @@ public class ClientHandlers {
 
             if (rd == null) {
 
-                log.info(service + "Could not find request.");
+                log.info(service + "Request not found.");
+
+                return Response.status(200).entity(new ResultContainer("Invalid")).build();
+            }
+
+            if (rd.getRequestStatus() != RequestStatus.ACCEPTED) {
+
+                log.info(service + "Request not accepted.");
 
                 return Response.status(200).entity(new ResultContainer("Invalid")).build();
             }
@@ -288,7 +303,7 @@ public class ClientHandlers {
 
             if (ad == null) {
 
-                log.info(service + "Could not find agent.");
+                log.info(service + "Agent not found.");
 
                 return Response.status(200).entity(new ResultContainer("Invalid")).build();
             }
