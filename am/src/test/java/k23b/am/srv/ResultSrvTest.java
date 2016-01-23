@@ -2,6 +2,7 @@ package k23b.am.srv;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class ResultSrvTest {
         }
 
         Settings.load();
-        
+
         ConnectionSingleton.setDbUrl(Settings.getDbUrl());
         ConnectionSingleton.setDbUser(Settings.getDbUser());
         ConnectionSingleton.setDbPass(Settings.getDbPass());
@@ -199,9 +200,9 @@ public class ResultSrvTest {
         String password = "abcde";
 
         AdminSrv.create(username, password);
-        
+
         AdminSrv.login(username, password);
-        
+
         return AdminSrv.findByUsername(username);
     }
 
@@ -218,14 +219,14 @@ public class ResultSrvTest {
 
         AgentDao agent = createAgent();
 
-        return JobSrv.create(agent.getAgentId(), agent.getAdminId(), "params", true, 300);
+        return JobSrv.create(agent.getAgentId(), agent.getAdminId(), Date.from(Instant.now()), "params", true, 300);
     }
 
     private JobDao createAndSendJob() throws SrvException {
 
         AgentDao agent = createAgent();
 
-        JobDao job = JobSrv.create(agent.getAgentId(), agent.getAdminId(), "params", true, 300);
+        JobDao job = JobSrv.create(agent.getAgentId(), agent.getAdminId(), Date.from(Instant.now()), "params", true, 300);
 
         JobSrv.send(job.getJobId());
 

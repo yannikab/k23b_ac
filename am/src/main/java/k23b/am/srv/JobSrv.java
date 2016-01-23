@@ -40,7 +40,7 @@ public class JobSrv {
      * @return the created job object containing its generated id, or null if the job was not found after creating it.
      * @throws SrvException if agent id or admin id are invalid, the admin is not logged in, the job could not be created, or a data access error occurs.
      */
-    public static JobDao create(long agentId, long adminId, String params, boolean periodic, int period) throws SrvException {
+    public static JobDao create(long agentId, long adminId, Date timeAssigned, String params, boolean periodic, int period) throws SrvException {
 
         try {
 

@@ -433,7 +433,7 @@ public class ClientHandlers {
                 AdminDao ad = AdminSrv.findByUsername(u.getUsername());
 
                 for (Job j : u.getJobs())
-                    JobSrv.create(j.getAgentId(), ad.getAdminId(), j.getParams(), j.getPeriodic(), j.getPeriod());
+                    JobSrv.create(j.getAgentId(), ad.getAdminId(), j.getTimeAssigned(), j.getParams(), j.getPeriodic(), j.getPeriod());
             }
 
             return Response.status(200).entity("Accepted").build();

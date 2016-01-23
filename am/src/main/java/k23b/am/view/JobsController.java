@@ -3,6 +3,7 @@ package k23b.am.view;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -562,7 +563,7 @@ public class JobsController {
 
         try {
 
-            JobDao j = JobSrv.create(job.getAgentId(), admin.getAdminId(), params, false, 0);
+            JobDao j = JobSrv.create(job.getAgentId(), admin.getAdminId(), Date.from(Instant.now()), params, false, 0);
 
             if (j == null)
                 return;

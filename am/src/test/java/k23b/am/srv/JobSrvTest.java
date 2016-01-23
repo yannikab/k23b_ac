@@ -2,6 +2,8 @@ package k23b.am.srv;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.Instant;
+import java.util.Date;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
@@ -42,7 +44,7 @@ public class JobSrvTest {
         }
 
         Settings.load();
-        
+
         ConnectionSingleton.setDbUrl(Settings.getDbUrl());
         ConnectionSingleton.setDbUser(Settings.getDbUser());
         ConnectionSingleton.setDbPass(Settings.getDbPass());
@@ -80,14 +82,16 @@ public class JobSrvTest {
             String params = "params";
             boolean periodic = true;
             int period = 300;
+            Date date = Date.from(Instant.now());
 
             AgentDao agent = createAgent();
 
-            JobDao job = JobSrv.create(agent.getAgentId(), agent.getAdminId(), params, periodic, period);
+            JobDao job = JobSrv.create(agent.getAgentId(), agent.getAdminId(), date, params, periodic, period);
 
             Assert.assertNotNull(job);
             Assert.assertEquals(job.getAgentId(), agent.getAgentId());
             Assert.assertEquals(job.getAdminId(), agent.getAdminId());
+            // Assert.assertEquals(date, job.getTimeAssigned());
             Assert.assertEquals(params, job.getParams());
             Assert.assertEquals(periodic, job.getPeriodic());
             Assert.assertEquals(period, job.getPeriod());
@@ -107,12 +111,13 @@ public class JobSrvTest {
             String params = "params";
             boolean periodic = true;
             int period = 300;
+            Date date = Date.from(Instant.now());
 
             AgentDao agent = createAgent();
 
-            JobDao job1 = JobSrv.create(agent.getAgentId(), agent.getAdminId(), params + 1, periodic, period);
-            job1 = JobSrv.create(agent.getAgentId(), agent.getAdminId(), params + 2, periodic, period);
-            job1 = JobSrv.create(agent.getAgentId(), agent.getAdminId(), params + 3, periodic, period);
+            JobDao job1 = JobSrv.create(agent.getAgentId(), agent.getAdminId(), date, params + 1, periodic, period);
+            job1 = JobSrv.create(agent.getAgentId(), agent.getAdminId(), date, params + 2, periodic, period);
+            job1 = JobSrv.create(agent.getAgentId(), agent.getAdminId(), date, params + 3, periodic, period);
 
             JobDao job2 = JobSrv.findById(job1.getJobId());
 
@@ -121,6 +126,7 @@ public class JobSrvTest {
             Assert.assertEquals(job2.getAgentId(), job1.getAgentId());
             Assert.assertEquals(job2.getAdminId(), job1.getAdminId());
             Assert.assertEquals(params + 3, job1.getParams());
+            Assert.assertEquals(job2.getTimeAssigned(), job1.getTimeAssigned());
             Assert.assertEquals(job2.getPeriodic(), job1.getPeriodic());
             Assert.assertEquals(job2.getPeriod(), job1.getPeriod());
             Assert.assertEquals(job2.getSent(), job1.getSent());
@@ -142,7 +148,7 @@ public class JobSrvTest {
 
             AdminDao admin = createAdmin();
 
-            JobSrv.create(326, admin.getAdminId(), params, periodic, period);
+            JobSrv.create(326, admin.getAdminId(), Date.from(Instant.now()), params, periodic, period);
 
             Assert.fail("Created agent without admin.");
 
@@ -163,7 +169,7 @@ public class JobSrvTest {
 
             AgentDao agent = createAgent();
 
-            JobSrv.create(agent.getAgentId(), 957, params, periodic, period);
+            JobSrv.create(agent.getAgentId(), 957, Date.from(Instant.now()), params, periodic, period);
 
             Assert.fail("Created agent without admin.");
 
@@ -187,7 +193,7 @@ public class JobSrvTest {
             Assert.assertEquals(0, JobSrv.findAllWithAgentId(agent.getAgentId(), true).size());
             Assert.assertEquals(0, JobSrv.findAllWithAgentId(agent.getAgentId(), false).size());
 
-            JobDao job = JobSrv.create(agent.getAgentId(), agent.getAdminId(), params, periodic, period);
+            JobDao job = JobSrv.create(agent.getAgentId(), agent.getAdminId(), Date.from(Instant.now()), params, periodic, period);
 
             Assert.assertEquals(false, job.getSent());
 

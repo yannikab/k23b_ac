@@ -2,6 +2,7 @@ package k23b.am.view;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,7 +90,7 @@ public class AgentsController {
     private void initialize() {
 
         terminateAgentButton.setDisable(true);
-        
+
         agentIdColumn.setCellValueFactory((cellData) -> {
             return cellData.getValue().getAgentIdProperty();
         });
@@ -265,7 +266,7 @@ public class AgentsController {
 
             String params = "exit";
 
-            JobDao j = JobSrv.create(agent.getAgentId(), admin.getAdminId(), params, false, 0);
+            JobDao j = JobSrv.create(agent.getAgentId(), admin.getAdminId(), Date.from(Instant.now()), params, false, 0);
 
             if (j == null)
                 return;

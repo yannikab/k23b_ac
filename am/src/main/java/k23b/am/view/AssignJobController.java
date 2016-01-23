@@ -1,5 +1,8 @@
 package k23b.am.view;
 
+import java.time.Instant;
+import java.util.Date;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -55,7 +58,7 @@ public class AssignJobController {
             } catch (NumberFormatException e) {
             }
 
-            JobDao j = JobSrv.create(agentId, adminId, parameters, periodic, periodic ? period : 0);
+            JobDao j = JobSrv.create(agentId, adminId, Date.from(Instant.now()), parameters, periodic, periodic ? period : 0);
 
             if (j != null)
                 this.job = new Job(j.getJobId(), j.getAgentId(), admin.getUsername(), j.getTimeAssigned(), j.getTimeSent(), j.getParams(), j.getPeriodic(), j.getPeriod(), j.getTimeStopped());
