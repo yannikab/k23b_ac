@@ -166,7 +166,7 @@ public class ClientHandlers {
     @GET
     @Path("jobs/{username}/{password}/{agentHash}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response agents(
+    public Response jobs(
             @PathParam("username") String username,
             @PathParam("password") String password,
             @PathParam("agentHash") String agentHash) {
