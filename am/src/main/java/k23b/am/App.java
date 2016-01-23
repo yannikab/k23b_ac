@@ -28,6 +28,7 @@ import k23b.am.rest.ResultContainerMessageBodyReader;
 import k23b.am.rest.ResultContainerMessageBodyWriter;
 import k23b.am.srv.AdminSrv;
 import k23b.am.srv.SrvException;
+import k23b.am.srv.UserSrv;
 
 /**
  * The application for the Aggregator Manager
@@ -123,9 +124,9 @@ public class App extends Application {
 
         try {
 
-            String password = "5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5";
             String username;
-
+            String password = "5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5";
+            
             username = "Yannis";
             AdminSrv.create(username, password);
 
@@ -138,6 +139,12 @@ public class App extends Application {
             username = "Takis";
             AdminSrv.create(username, password);
 
+            UserSrv.create("u", "0BFE935E70C321C7CA3AFC75CE0D0CA2F98B5422E008BB31C00C6D7F1F1C0AD6");
+            
+            AdminSrv.login(username, password);
+            
+            UserSrv.accept("u", AdminSrv.findByUsername(username).getAdminId());
+            
         } catch (SrvException e) {
             e.printStackTrace();
         }
