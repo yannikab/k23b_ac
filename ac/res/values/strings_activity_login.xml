@@ -1,16 +1,22 @@
 <resources>
 
-    <string name="title_activity_login">Log in</string>
+
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
+    <string name="prompt_repeat_password">Repeat password</string>
     <string name="action_log_in">Log in</string>
     <string name="action_log_in_short">Log in</string>
     <string name="action_register">Register</string>
+    <string name="action_register_short">Register</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_registration_pending">Registration pending</string>
     <string name="error_incorrect_credentials">Incorrect username or password</string>
+    <string name="error_passwords_do_not_match">Passwords do not match</string>
+    <string name="info_registration_success">Registration successful</string>
+    <string name="error_user_exists">User already exists</string>
     <string name="error_service_error">Service error</string>
     <string name="error_network_error">Network error</string>
+    <string name="error_network_unavailable">Network unavailable</string>
 
 </resources>

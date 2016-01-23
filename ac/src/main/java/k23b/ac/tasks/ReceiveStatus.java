@@ -1,0 +1,5 @@
+package k23b.ac.tasks;
+
+public enum ReceiveStatus {
+    RECEIVE_SUCCESS, REGISTRATION_PENDING, INCORRECT_CREDENTIALS, SERVICE_ERROR, NETWORK_ERROR
+}

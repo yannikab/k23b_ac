@@ -18,17 +18,21 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import k23b.ac.Logger;
 import k23b.ac.MainActivity;
+import k23b.ac.NetworkManager;
 import k23b.ac.R;
 import k23b.ac.Settings;
+import k23b.ac.UserManager;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.Job;
+import k23b.ac.rest.User;
 import k23b.ac.tasks.AgentsReceiveTask;
+import k23b.ac.tasks.AgentsReceiveTask.AgentsCallback;
 import k23b.ac.tasks.JobsReceiveTask;
-import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiver;
-import k23b.ac.tasks.JobsReceiveTask.JobsReceiver;
+import k23b.ac.tasks.JobsReceiveTask.JobsCallback;
 
-public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiver {
+public class JobsFragment extends Fragment implements AgentsCallback, JobsCallback {
 
     private AgentsReceiveTask agentsFetchTask;
 
@@ -45,7 +49,7 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
     public JobsFragment() {
 
         super();
-        
+
         fetchAgents();
     }
 
@@ -137,7 +141,7 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
             actionMode.finish();
             actionMode = null;
         }
-        
+
         showAgents();
 
         showJobs();
@@ -171,6 +175,24 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
         if (agentsFetchTask != null || jobsFetchTask != null)
             return;
 
+        if (getActivity() == null)
+            return;
+
+        User u = UserManager.getInstance().getStoredUser(getActivity());
+
+        if (u == null) {
+
+            Logger.info(this.toString(), "No user logged in, aborting activity.");
+            getActivity().finish();
+            return;
+        }
+
+        if (!NetworkManager.networkAvailable(getActivity())) {
+
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         showProgress(true);
 
         agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C");
@@ -179,7 +201,7 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
     }
 
     @Override
-    public void setAgents(List<Agent> agents) {
+    public void agentsReceived(List<Agent> agents) {
 
         this.agentsFetchTask = null;
 
@@ -211,18 +233,36 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
         if (agentsFetchTask != null || jobsFetchTask != null)
             return;
 
+        if (getActivity() == null)
+            return;
+
+        User u = UserManager.getInstance().getStoredUser(getActivity());
+
+        if (u == null) {
+
+            Logger.info(this.toString(), "No user logged in, aborting activity.");
+            getActivity().finish();
+            return;
+        }
+
+        if (!NetworkManager.networkAvailable(getActivity())) {
+
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (selectedAgent == null)
             return;
 
         showProgress(true);
 
-        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), "Yannis", "36BBE50ED96841D10443BCB670D6554F0A34B761BE67EC9C4A8AD2C0C44CA42C", selectedAgent.getRequestHash());
+        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
 
         jobsFetchTask.execute();
     }
 
     @Override
-    public void setJobs(List<Job> jobs) {
+    public void jobsReceived(List<Job> jobs) {
 
         jobsFetchTask = null;
 
@@ -269,5 +309,43 @@ public class JobsFragment extends Fragment implements AgentsReceiver, JobsReceiv
 
     public void onDestroyActionMode() {
         actionMode = null;
+    }
+
+    @Override
+    public void registrationPending() {
+
+        Logger.info(this.toString(), "Registration pending, aborting activity.");
+
+        if (getActivity() == null)
+            return;
+
+        getActivity().finish();
+    }
+
+    @Override
+    public void incorrectCredentials() {
+
+        Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
+
+        if (getActivity() == null)
+            return;
+
+        getActivity().finish();
+    }
+
+    @Override
+    public void serviceError() {
+
+        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
+
+        showProgress(false);
+    }
+
+    @Override
+    public void networkError() {
+
+        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
+
+        showProgress(false);
     }
 }

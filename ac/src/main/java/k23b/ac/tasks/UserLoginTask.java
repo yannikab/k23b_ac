@@ -62,13 +62,13 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
             String result = restTemplate.getForObject(url, String.class);
 
-            // try {
-            //
-            // Thread.sleep(10000);
-            //
-            // } catch (InterruptedException e) {
-            // // e.printStackTrace();
-            // }
+            try {
+
+                Thread.sleep(5000);
+
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
+            }
 
             if (result.startsWith("Accepted"))
                 return UserLoginStatus.LOGIN_SUCCESS;

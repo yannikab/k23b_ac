@@ -1,9 +1,13 @@
 <resources>
 
+    <string name="title_activity_start">Start</string>
+    <string name="title_activity_login">Log in</string>
+    <string name="title_activity_register">Register</string>
     <string name="title_activity_main">Android Client</string>
     <string name="title_section_agents">Agents</string>
     <string name="title_section_jobs">Jobs</string>
     <string name="title_section_results_agent">Agent Results</string>
     <string name="title_section_results_all">All Results</string>
+    <string name="title_activity_assign_job">Assign Job</string>
 
 </resources>

@@ -4,10 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -34,6 +31,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        
+        Logger.info(this.toString(), "onCreate()");
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -123,7 +123,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
         case R.id.action_logout:
 
-            clearSharedPreferences();
+            Logger.info(this.toString(), "Log out pressed, aborting activity.");
+
+            UserManager.getInstance().clearUser(this);
 
             finish();
 
@@ -131,21 +133,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void clearSharedPreferences() {
-
-        SharedPreferences sp = getSharedPreferences(StartFragment.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-
-        Logger.info(this.toString(), "Clearing logged in user from shared preferences.");
-
-        Editor editor = sp.edit();
-
-        editor.clear();
-
-        editor.putBoolean(StartFragment.PREF_USER_STORED, false);
-
-        editor.commit();
     }
 
     @Override
@@ -182,7 +169,12 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     }
 
     @Override
-    public String toString() {
-        return getLocalClassName();
+    protected void onDestroy() {
+        
+        Logger.info(this.toString(), "onDestroy()");
+
+        super.onDestroy();
+        
+        // clearUser();
     }
 }

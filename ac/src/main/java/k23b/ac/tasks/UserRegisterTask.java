@@ -1,8 +1,5 @@
 package k23b.ac.tasks;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -45,13 +42,7 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
 
         try {
 
-            // try {
-            // Thread.sleep(5000);
-            // } catch (InterruptedException e) {
-            // // e.printStackTrace();
-            // }
-
-            String url = baseURI + "register/" + username + "/" + hashForPassword(password);
+            String url = baseURI + "register/" + username + "/" + password;
 
             RestTemplate restTemplate = new RestTemplate();
 
@@ -59,6 +50,14 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
 
             String result = restTemplate.getForObject(url, String.class);
 
+            try {
+
+                Thread.sleep(5000);
+
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
+            }
+            
             if (result.startsWith("Accepted"))
                 return UserRegisterStatus.REGISTRATION_SUCCESS;
             else if (result.startsWith("User Exists"))
@@ -95,38 +94,5 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
         default:
             break;
         }
-    }
-
-    private String hashForPassword(String password) {
-
-        try {
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            md.update(password.getBytes());
-
-            byte[] digest = md.digest();
-
-            return bytesToHex(digest);
-
-        } catch (NoSuchAlgorithmException e) {
-            // e.printStackTrace();
-            return "";
-        }
-    }
-
-    private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    private String bytesToHex(byte[] bytes) {
-
-        char[] hexChars = new char[bytes.length * 2];
-
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-
-        return new String(hexChars);
     }
 }

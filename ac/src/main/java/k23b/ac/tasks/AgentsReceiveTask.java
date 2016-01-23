@@ -12,27 +12,39 @@ import k23b.ac.Logger;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.AgentContainer;
 
-public class AgentsReceiveTask extends AsyncTask<Void, Void, List<Agent>> {
+public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface AgentsReceiver {
-        public void setAgents(List<Agent> agents);
+    public interface AgentsCallback {
+
+        public void agentsReceived(List<Agent> agents);
+
+        public void registrationPending();
+
+        public void incorrectCredentials();
+
+        public void serviceError();
+
+        public void networkError();
     }
 
-    private final AgentsReceiver receiver;
+    private final AgentsCallback agentsCallback;
     private final String baseURI;
     private final String username;
     private final String password;
 
-    public AgentsReceiveTask(AgentsReceiver receiver, String baseURI, String username, String password) {
+    private List<Agent> agents;
+
+    public AgentsReceiveTask(AgentsCallback agentsCallback, String baseURI, String username, String password) {
         super();
-        this.receiver = receiver;
+
+        this.agentsCallback = agentsCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
     }
 
     @Override
-    protected List<Agent> doInBackground(Void... params) {
+    protected ReceiveStatus doInBackground(Void... params) {
 
         try {
 
@@ -48,23 +60,59 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, List<Agent>> {
 
             Collections.sort(agentContainer.getAgents());
 
-            return agentContainer.getStatus().equals("Accepted") ? agentContainer.getAgents() : null;
+            String status = agentContainer.getStatus();
+
+            if (status.startsWith("Accepted")) {
+
+                this.agents = agentContainer.getAgents();
+
+                return ReceiveStatus.RECEIVE_SUCCESS;
+
+            } else if (status.startsWith("Pending"))
+                return ReceiveStatus.REGISTRATION_PENDING;
+            else if (status.startsWith("Incorrect"))
+                return ReceiveStatus.INCORRECT_CREDENTIALS;
+            else
+                return ReceiveStatus.SERVICE_ERROR;
 
         } catch (RestClientException e) {
             Logger.logException(getClass().getSimpleName(), e);
-            return null;
+            return ReceiveStatus.NETWORK_ERROR;
         }
     }
 
     @Override
-    protected void onPostExecute(final List<Agent> agents) {
+    protected void onPostExecute(final ReceiveStatus status) {
 
-        receiver.setAgents(agents);
+        switch (status) {
+
+        case RECEIVE_SUCCESS:
+            agentsCallback.agentsReceived(agents);
+            break;
+
+        case REGISTRATION_PENDING:
+            agentsCallback.registrationPending();
+            break;
+
+        case INCORRECT_CREDENTIALS:
+            agentsCallback.incorrectCredentials();
+            break;
+
+        case SERVICE_ERROR:
+            agentsCallback.serviceError();
+            break;
+
+        case NETWORK_ERROR:
+            agentsCallback.networkError();
+
+        default:
+            break;
+        }
     }
 
     @Override
     protected void onCancelled() {
 
-        receiver.setAgents(null);
+        agentsCallback.agentsReceived(null);
     }
 }

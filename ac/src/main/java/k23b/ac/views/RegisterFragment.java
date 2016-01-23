@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -21,31 +20,33 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import k23b.ac.Logger;
-import k23b.ac.MainActivity;
 import k23b.ac.NetworkManager;
 import k23b.ac.R;
-import k23b.ac.RegisterActivity;
 import k23b.ac.Settings;
-import k23b.ac.UserManager;
-import k23b.ac.rest.User;
-import k23b.ac.tasks.UserLoginTask;
+import k23b.ac.tasks.UserRegisterTask;
 
-public class LoginFragment extends Fragment implements UserLoginTask.LoginCallback {
+public class RegisterFragment extends Fragment implements UserRegisterTask.RegisterCallback {
 
-    private UserLoginTask userLoginTask = null;
+    private UserRegisterTask userRegisterTask = null;
 
-    public LoginFragment() {
+    public RegisterFragment() {
 
         super();
     }
 
     @Override
     public void onAttach(Activity activity) {
+
+        Logger.info(this.toString(), "onAttach()");
+
         super.onAttach(activity);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        Logger.info(this.toString(), "onCreate()");
+
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
@@ -54,29 +55,20 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        Logger.info(this.toString(), "onCreateView()");
+
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         EditText passwordView = (EditText) view.findViewById(R.id.password);
 
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                if (id == R.id.register || id == EditorInfo.IME_NULL) {
+                    attemptRegister();
                     return true;
                 }
                 return false;
-            }
-        });
-
-        Button logInButton = (Button) view.findViewById(R.id.log_in_button);
-
-        logInButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                attemptLogin();
             }
         });
 
@@ -87,46 +79,55 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
             @Override
             public void onClick(View view) {
 
-                startRegisterActivity();
+                attemptRegister();
             }
         });
+
+        showProgress(userRegisterTask != null);
 
         return view;
     }
 
-    private void startRegisterActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        if (!NetworkManager.networkAvailable(getActivity())) {
-
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        clearEditTexts();
-
-        Intent intent = new Intent(getActivity(), RegisterActivity.class);
-
-        getActivity().startActivity(intent);
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
+        Logger.info(this.toString(), "onActivityCreated()");
+
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onStart() {
+
+        Logger.info(this.toString(), "onStart()");
+
         super.onStart();
 
-        showProgress(userLoginTask != null);
+        showProgress(userRegisterTask != null);
     }
 
     @Override
     public void onResume() {
+
+        Logger.info(this.toString(), "onResume()");
+
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+
+        Logger.info(this.toString(), "onPause()");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+
+        Logger.info(this.toString(), "onStop()");
+
+        super.onStop();
     }
 
     public void showProgress(final boolean show) {
@@ -134,17 +135,35 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         if (getView() == null)
             return;
 
-        getView().findViewById(R.id.login_progress).setVisibility(show ? View.VISIBLE : View.GONE);
-        getView().findViewById(R.id.login_form).setVisibility(show ? View.GONE : View.VISIBLE);
+        getView().findViewById(R.id.register_progress).setVisibility(show ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.register_form).setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+    private void clearEditTexts() {
+
+        if (getView() == null)
+            return;
+
+        EditText usernameView = (EditText) getView().findViewById(R.id.username);
+        EditText passwordView = (EditText) getView().findViewById(R.id.password);
+        EditText repeatPasswordView = (EditText) getView().findViewById(R.id.repeat_password);
+
+        usernameView.setError(null);
+        passwordView.setError(null);
+        repeatPasswordView.setError(null);
+
+        usernameView.setText("");
+        passwordView.setText("");
+        repeatPasswordView.setText("");
     }
 
     private boolean isPasswordValid(String password) {
         return password.length() > 0;
     }
 
-    private void attemptLogin() {
+    private void attemptRegister() {
 
-        if (userLoginTask != null)
+        if (userRegisterTask != null)
             return;
 
         if (getActivity() == null)
@@ -161,12 +180,15 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
 
         EditText usernameView = (EditText) getView().findViewById(R.id.username);
         EditText passwordView = (EditText) getView().findViewById(R.id.password);
+        EditText repeatPasswordView = (EditText) getView().findViewById(R.id.repeat_password);
 
         usernameView.setError(null);
         passwordView.setError(null);
+        repeatPasswordView.setError(null);
 
         String username = usernameView.getText().toString();
         String password = passwordView.getText().toString();
+        String repeatPassword = repeatPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -177,6 +199,14 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
             passwordView.setError(getString(R.string.error_field_required));
+            focusView = passwordView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(repeatPassword)) {
+            repeatPasswordView.setError(getString(R.string.error_field_required));
+            focusView = repeatPasswordView;
+            cancel = true;
+        } else if (!password.equals(repeatPassword)) {
+            passwordView.setError(getString(R.string.error_passwords_do_not_match));
             focusView = passwordView;
             cancel = true;
         } else if (!isPasswordValid(password)) {
@@ -200,105 +230,57 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
 
             showProgress(true);
 
-            userLoginTask = new UserLoginTask(this, Settings.getBaseURI(), username, hashForPassword(password));
+            userRegisterTask = new UserRegisterTask(this, Settings.getBaseURI(), username, hashForPassword(password));
 
-            userLoginTask.execute((Void) null);
+            userRegisterTask.execute((Void) null);
         }
     }
 
     @Override
-    public void loginSuccess() {
+    public void registrationSuccess() {
 
-        if (userLoginTask == null)
+        if (userRegisterTask == null)
             return;
 
-        Logger.info(this.toString(), "Log in success, storing user in shared preferences and starting main activity.");
+        userRegisterTask = null;
 
-        storeUser(userLoginTask.getUsername(), userLoginTask.getPassword());
+        showProgress(false);
 
-        userLoginTask = null;
+        Logger.info(this.toString(), "Registration success.");
 
-        startMainActivity();
+        clearEditTexts();
+
+        Toast.makeText(getActivity(), getString(R.string.info_registration_success), Toast.LENGTH_LONG).show();
     }
 
-    private void clearEditTexts() {
+    @Override
+    public void userExists() {
+
+        if (userRegisterTask == null)
+            return;
+
+        userRegisterTask = null;
+
+        Logger.info(this.toString(), "User exists.");
+
+        showProgress(false);
 
         if (getView() == null)
             return;
 
         EditText usernameView = (EditText) getView().findViewById(R.id.username);
-        EditText passwordView = (EditText) getView().findViewById(R.id.password);
 
-        usernameView.setError(null);
-        passwordView.setError(null);
-
-        usernameView.setText("");
-        passwordView.setText("");
-    }
-
-    private void storeUser(String username, String password) {
-
-        if (getActivity() == null)
-            return;
-
-        UserManager.getInstance().storeUser(getActivity(), new User(username, password));
-    }
-
-    private void startMainActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        clearEditTexts();
-
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-
-        startActivity(intent);
-    }
-
-    @Override
-    public void registrationPending() {
-
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
-        Logger.info(this.toString(), "Registration pending.");
-
-        showProgress(false);
-
-        Toast.makeText(getActivity(), getString(R.string.error_registration_pending), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void incorrectCredentials() {
-
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
-        Logger.info(this.toString(), "Incorrect credentials.");
-
-        showProgress(false);
-
-        if (getView() == null)
-            return;
-
-        EditText passwordView = (EditText) getView().findViewById(R.id.password);
-
-        passwordView.setError(getString(R.string.error_incorrect_credentials));
-        passwordView.requestFocus();
+        usernameView.setError(getString(R.string.error_user_exists));
+        usernameView.requestFocus();
     }
 
     @Override
     public void serviceError() {
 
-        if (userLoginTask == null)
+        if (userRegisterTask == null)
             return;
 
-        userLoginTask = null;
+        userRegisterTask = null;
 
         Logger.info(this.toString(), "Service error.");
 
@@ -310,10 +292,10 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void networkError() {
 
-        if (userLoginTask == null)
+        if (userRegisterTask == null)
             return;
 
-        userLoginTask = null;
+        userRegisterTask = null;
 
         Logger.info(this.toString(), "Network error.");
 
@@ -325,13 +307,17 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void onDetach() {
 
+        Logger.info(this.toString(), "onDetach()");
+
         super.onDetach();
     }
 
     @Override
     public void onDestroy() {
 
-        userLoginTask = null;
+        Logger.info(this.toString(), "onDestroy()");
+
+        userRegisterTask = null;
 
         super.onDestroy();
     }

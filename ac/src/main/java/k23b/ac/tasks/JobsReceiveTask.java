@@ -12,35 +12,46 @@ import k23b.ac.Logger;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.JobContainer;
 
-public class JobsReceiveTask extends AsyncTask<Void, Void, List<Job>> {
+public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface JobsReceiver {
-        public void setJobs(List<Job> jobs);
+    public interface JobsCallback {
+
+        public void jobsReceived(List<Job> jobs);
+
+        public void registrationPending();
+
+        public void incorrectCredentials();
+
+        public void serviceError();
+
+        public void networkError();
     }
 
-    private final JobsReceiver receiver;
+    private final JobsCallback jobsCallback;
     private final String baseURI;
     private final String username;
     private final String password;
-    private final String agentHash;
+    private final String jobHash;
 
-    public JobsReceiveTask(JobsReceiver receiver, String baseURI, String username, String password, String agentHash) {
+    private List<Job> jobs;
+
+    public JobsReceiveTask(JobsCallback jobsCallback, String baseURI, String username, String password, String jobHash) {
         super();
-        this.receiver = receiver;
+        this.jobsCallback = jobsCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
-        this.agentHash = agentHash;
+        this.jobHash = jobHash;
     }
 
     @Override
-    protected List<Job> doInBackground(Void... params) {
+    protected ReceiveStatus doInBackground(Void... params) {
 
         try {
 
             // Thread.sleep(5000);
 
-            String url = baseURI + "jobs/" + username + "/" + password + "/" + agentHash;
+            String url = baseURI + "jobs/" + username + "/" + password + "/" + jobHash;
 
             RestTemplate restTemplate = new RestTemplate();
 
@@ -50,23 +61,60 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, List<Job>> {
 
             Collections.sort(jobContainer.getJobs());
 
-            return jobContainer.getStatus().equals("Accepted") ? jobContainer.getJobs() : null;
+            String status = jobContainer.getStatus();
+
+            if (status.startsWith("Accepted")) {
+
+                this.jobs = jobContainer.getJobs();
+
+                return ReceiveStatus.RECEIVE_SUCCESS;
+
+            } else if (status.startsWith("Pending")) {
+                return ReceiveStatus.REGISTRATION_PENDING;
+            } else if (status.startsWith("Incorrect")) {
+                return ReceiveStatus.INCORRECT_CREDENTIALS;
+            } else {
+                return ReceiveStatus.SERVICE_ERROR;
+            }
 
         } catch (RestClientException e) {
             Logger.logException(getClass().getSimpleName(), e);
-            return null;
+            return ReceiveStatus.NETWORK_ERROR;
         }
     }
 
     @Override
-    protected void onPostExecute(final List<Job> jobs) {
+    protected void onPostExecute(final ReceiveStatus status) {
 
-        receiver.setJobs(jobs);
+        switch (status) {
+
+        case RECEIVE_SUCCESS:
+            jobsCallback.jobsReceived(jobs);
+            break;
+
+        case REGISTRATION_PENDING:
+            jobsCallback.registrationPending();
+            break;
+
+        case INCORRECT_CREDENTIALS:
+            jobsCallback.incorrectCredentials();
+            break;
+
+        case SERVICE_ERROR:
+            jobsCallback.serviceError();
+            break;
+
+        case NETWORK_ERROR:
+            jobsCallback.networkError();
+
+        default:
+            break;
+        }
     }
 
     @Override
     protected void onCancelled() {
 
-        receiver.setJobs(null);
+        jobsCallback.jobsReceived(null);
     }
 }
