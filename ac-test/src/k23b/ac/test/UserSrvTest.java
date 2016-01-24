@@ -1,14 +1,22 @@
 package k23b.ac.test;
 
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 import k23b.ac.db.dao.DatabaseHandler;
+import k23b.ac.db.dao.JobDao;
 import k23b.ac.db.dao.UserDao;
 import k23b.ac.db.srv.SrvException;
 import k23b.ac.db.srv.UserSrv;
+import k23b.ac.rest.Job;
+import k23b.ac.rest.User;
+import k23b.ac.util.JobDaoFactory;
+import k23b.ac.util.UserDaoFactory;
 
 public class UserSrvTest extends AndroidTestCase {
 
@@ -138,6 +146,48 @@ public class UserSrvTest extends AndroidTestCase {
             // e.printStackTrace();
             fail(e.getMessage());
         }
+    }
+    
+    public void testTryDelete(){
+    	
+    	try{
+    		
+    		UserSrv.create("Thanos", "12345");
+    		
+    		assertNotNull(UserSrv.find("Thanos"));
+    		
+    		UserSrv.tryDelete("Thanos");
+    		
+    		assertNull(UserSrv.find("Thanos"));
+
+    		UserDao ud = UserDaoFactory.fromUser(new User("Yannis","12345"));
+    		assertNotNull(ud);
+    		
+    		List<JobDao> jobList = new LinkedList<JobDao>();
+    		Job j = new Job();
+    		j.setJobId(-1);
+    		j.setAgentId(1);
+    		j.setParams("nothing");
+    		j.setTimeAssigned(new Date());
+    		j.setPeriodic(false);
+    		j.setPeriod(0);
+    		JobDao jd = JobDaoFactory.fromJob(j);
+    		assertNotNull(jd);
+    		jobList.add(jd);
+    		
+    		UserSrv.createUserWithJobs(ud, jobList);
+    		
+    		assertNotNull(UserSrv.find("Yannis"));
+    		
+    		UserSrv.tryDelete("Yannis");
+    		
+    		assertNotNull(UserSrv.find("Yannis"));
+    		
+    		
+    	}catch (SrvException e){
+    		fail(e.getMessage());
+    	}
+    	
     }
 
     public void testFindAll() {

@@ -3,6 +3,7 @@ package k23b.ac.db.srv;
 import java.util.List;
 import java.util.Set;
 
+import android.util.Log;
 import k23b.ac.db.dao.DaoException;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.db.dao.UserDao;
@@ -43,6 +44,7 @@ public class UserSrv {
                     if (createdUser == null)
                         throw new SrvException("User with username: " + user.getUsername() + " with " + jobList.size()
                                 + " Jobs could NOT be Created");
+                    ud = UserDao.findUserByUsername(createdUser);
                 }
 
                 synchronized (JobDao.class) {
@@ -109,6 +111,38 @@ public class UserSrv {
 
             throw new SrvException("Data access error while deleting user with username: " + username);
         }
+    }
+    
+    public static void tryDelete(String username) throws SrvException {
+    	
+        try {
+
+            synchronized (UserDao.class) {
+
+                UserDao ud = UserDao.findUserByUsername(username);
+
+                if (ud == null)
+                    return;
+
+                synchronized (JobDao.class) {
+
+                    Set<JobDao> jobs = JobDao.findAllJobsFromUsername(username);
+
+                    if(jobs.isEmpty()){
+                    	UserDao.deleteUser(username);
+                    	Log.d(UserSrv.class.getName(), "No Jobs from User: "+username+". User Deleted Successfully.");
+                    	return;
+                    }
+                    Log.d(UserSrv.class.getName(), "There are still Jobs remaining from User: "+username+". User Deleted Successfully.");
+                }
+            }
+
+        } catch (DaoException e) {
+
+            throw new SrvException("Data access error while deleting user with username: " + username);
+        }
+
+    	
     }
 
     public static Set<UserDao> findAll() throws SrvException {
