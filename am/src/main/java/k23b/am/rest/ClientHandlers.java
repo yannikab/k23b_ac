@@ -17,6 +17,7 @@ import k23b.am.dao.JobDao;
 import k23b.am.dao.RequestDao;
 import k23b.am.dao.RequestStatus;
 import k23b.am.dao.ResultDao;
+import k23b.am.dao.UserDao;
 import k23b.am.srv.AdminSrv;
 import k23b.am.srv.AgentSrv;
 import k23b.am.srv.JobSrv;
@@ -429,9 +430,13 @@ public class ClientHandlers {
                     log.info(service + e.getMessage());
                     continue;
                 }
-
-                AdminDao ad = AdminSrv.findByUsername(u.getUsername());
-
+                
+                UserDao ud = UserSrv.findByUsername(u.getUsername());
+                
+                AdminDao ad = AdminSrv.findById(ud.getAdminId());
+                if(ad == null)
+                	log.error(service + " Admin not Found");
+                	
                 for (Job j : u.getJobs())
                     JobSrv.create(j.getAgentId(), ad.getAdminId(), j.getTimeAssigned(), j.getParams(), j.getPeriodic(), j.getPeriod());
             }

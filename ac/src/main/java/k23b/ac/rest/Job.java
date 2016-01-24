@@ -58,7 +58,7 @@ public class Job implements Comparable<Job>, Parcelable {
 
     }
 
-    public static final Parcelable.Creator<Job> Creator = new Parcelable.Creator<Job>() {
+    public static final Parcelable.Creator<Job> CREATOR = new Parcelable.Creator<Job>() {
 
         @Override
         public Job createFromParcel(Parcel source) {
@@ -77,12 +77,12 @@ public class Job implements Comparable<Job>, Parcelable {
         jobId = -1;
         agentId = source.readLong();
         adminId = -1;
-        timeAssigned = null;
-        timeSent = null;
+        timeAssigned = new Date();
+        timeSent = new Date();
         params = source.readString();
         periodic = (source.readByte() != 0);
         period = source.readInt();
-        timeStopped = null;
+        timeStopped = new Date();
 
     }
 

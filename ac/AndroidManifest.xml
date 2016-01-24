@@ -46,6 +46,9 @@
             android:label="@string/title_activity_assign_job"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
+        <service
+            android:name="k23b.ac.util.JobDispatcher"
+            android:exported="false"/>
     </application>
 
 </manifest>

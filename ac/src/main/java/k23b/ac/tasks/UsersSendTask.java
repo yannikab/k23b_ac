@@ -91,6 +91,7 @@ public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
 
     @Override
     protected void onCancelled() {
-        return;
+    	
+        usersSendCallBack.cancelled();
     }
 }

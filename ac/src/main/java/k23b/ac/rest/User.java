@@ -36,7 +36,7 @@ public class User implements Parcelable {
         dest.writeTypedList(jobs);
     }
 
-    public static final Parcelable.Creator<User> Creator = new Parcelable.Creator<User>() {
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         public User createFromParcel(Parcel in) {
             return new User(in);
         }
@@ -51,7 +51,7 @@ public class User implements Parcelable {
     public User(Parcel source) {
 
         this(source.readString(), source.readString());
-        source.readTypedList(this.jobs, Job.Creator);
+        source.readTypedList(this.jobs, Job.CREATOR);
 
     }
 
