@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="header_agent_id">Id</string>
+    <string name="header_agent_requestHash">Hash</string>
+    <string name="header_agent_timeAccepted">Time Accepted</string>
+    <string name="header_agent_timeJobRequest">Job Request Time</string>
+    <string name="header_agent_timeTerminated">Time Terminated</string>
+    <string name="header_agent_status">Status</string>
+
+</resources>

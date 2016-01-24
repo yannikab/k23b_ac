@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import k23b.ac.R;
 import k23b.ac.rest.Agent;
+import k23b.ac.rest.status.AgentStatus;
 import k23b.ac.util.Settings;
 
 public class AgentsArrayAdapter extends ArrayAdapter<Agent> {
@@ -33,13 +34,17 @@ public class AgentsArrayAdapter extends ArrayAdapter<Agent> {
         TextView textViewTimeTerminated = (TextView) convertView.findViewById(R.id.rowAgentTimeTerminated);
         TextView textViewAgentStatus = (TextView) convertView.findViewById(R.id.rowAgentStatus);
 
+        convertView.setBackgroundColor(getContext().getResources().getColor(position % 2 == 0 ? R.color.row_back : R.color.row_back_alt));
+
         textViewAgentId.setText(String.valueOf(a.getAgentId()));
         textViewRequestHash.setText(String.valueOf(a.getShortRequestHash()));
         textViewTimeAccepted.setText(a.getFormattedTimeAccepted());
         textViewTimeJobRequest.setText(a.getFormattedTimeJobRequest());
         textViewTimeTerminated.setText(a.getFormattedTimeTerminated());
-        textViewAgentStatus.setText(a.getStatus(Settings.getJobRequestInterval()).toString());
-
+        AgentStatus status = a.getStatus(Settings.getJobRequestInterval());
+        textViewAgentStatus.setText(status.toString());
+        textViewAgentStatus.setBackgroundColor(getContext().getResources().getColor(status == AgentStatus.ONLINE ? R.color.cell_agent_online : R.color.cell_agent_offline));
+        
         return convertView;
     }
 }

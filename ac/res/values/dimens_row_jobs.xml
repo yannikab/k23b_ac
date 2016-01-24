@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="weight_job_jobId" format="float" type="dimen">0.5</item>
+    <item name="weight_job_time" format="float" type="dimen">2.0</item>
+    <item name="weight_job_parameters" format="float" type="dimen">2.0</item>
+    <item name="weight_job_periodic" format="float" type="dimen">0.5</item>
+    <item name="weight_job_interval" format="float" type="dimen">0.5</item>
+    <item name="weight_job_status" format="float" type="dimen">1.0</item>
+
+</resources>

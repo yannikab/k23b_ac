@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="row_back">#FFFFFF</color>
+    <color name="row_back_alt">#EFEFEF</color>
+    <color name="row_text">#000000</color>
+    <color name="header_neutral_back">#7F7F7F</color>
+    <color name="header_neutral_back_alt">#8F8F8F</color>
+    <color name="header_agent_back">#009000</color>
+    <color name="header_agent_back_alt">#30C030</color>
+    <color name="header_job_back">#0F0F9F</color>
+    <color name="header_job_back_alt">#3F3FCF</color>
+    <color name="header_text">#FFFFFF</color>
+    <color name="cell_agent_online">#CFEC8C</color>
+    <color name="cell_agent_offline">#D7D7D7</color>
+    <color name="cell_job_assigned">#BAC8EF</color>
+    <color name="cell_job_sent">#D4DEFD</color>
+    <color name="cell_job_stopped">#D7D7D7</color>
+
+</resources>

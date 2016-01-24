@@ -6,58 +6,72 @@
 
     <TextView
         android:id="@+id/rowJobId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_jobId"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
     <TextView
         android:id="@+id/rowJobTimeAssigned"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_time"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
     <TextView
         android:id="@+id/rowJobTimeSent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_time"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
     <TextView
         android:id="@+id/rowJobParameters"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_parameters"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
     <TextView
         android:id="@+id/rowJobPeriodic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_periodic"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
     <TextView
         android:id="@+id/rowJobInterval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_interval"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
     <TextView
         android:id="@+id/rowJobStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="@dimen/weight_job_status"
+        android:gravity="center"
+        android:padding="@dimen/row_job_padding"
+        android:textColor="@color/row_text"
         android:textSize="@dimen/row_job_textSize" />
 
 </LinearLayout>

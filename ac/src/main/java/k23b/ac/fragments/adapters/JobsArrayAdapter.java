@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import k23b.ac.R;
 import k23b.ac.rest.Job;
+import k23b.ac.rest.status.JobStatus;
 
 public class JobsArrayAdapter extends ArrayAdapter<Job> {
 
@@ -33,13 +34,19 @@ public class JobsArrayAdapter extends ArrayAdapter<Job> {
         TextView textViewInterval = (TextView) convertView.findViewById(R.id.rowJobInterval);
         TextView textViewStatus = (TextView) convertView.findViewById(R.id.rowJobStatus);
 
+        convertView.setBackgroundColor(getContext().getResources().getColor(position % 2 == 0 ? R.color.row_back : R.color.row_back_alt));
+
         textViewJobId.setText(String.valueOf(j.getJobId()));
         textViewTimeAssigned.setText(j.getFormattedTimeAssigned());
         textViewTimeSent.setText(j.getFormattedTimeSent());
         textViewParameters.setText(j.getParams());
-        textViewPeriodic.setText(String.valueOf(j.getPeriodic()));
-        textViewInterval.setText(String.valueOf(j.getPeriod()));
+        textViewPeriodic.setText(j.getPeriodic() ? "Yes" : "No");
+        textViewInterval.setText(j.getPeriodic() ? String.valueOf(j.getPeriod()) : "-");
+        JobStatus status = j.getStatus();
+
         textViewStatus.setText(j.getStatus().toString());
+
+        textViewStatus.setBackgroundColor(getContext().getResources().getColor(status == JobStatus.ASSIGNED ? R.color.cell_job_assigned : (status == JobStatus.SENT ? R.color.cell_job_sent : R.color.cell_job_stopped)));
 
         return convertView;
     }

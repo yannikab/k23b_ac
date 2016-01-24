@@ -99,7 +99,7 @@ public class Agent implements Comparable<Agent> {
     public String getFormattedTimeAccepted() {
 
         if (timeAccepted == null)
-            return String.valueOf(timeAccepted);
+            return "-";
 
         return dateFormat.format(timeAccepted);
     }
@@ -107,7 +107,7 @@ public class Agent implements Comparable<Agent> {
     public String getFormattedTimeJobRequest() {
 
         if (timeJobRequest == null)
-            return String.valueOf(timeJobRequest);
+            return "-";
 
         return dateFormat.format(timeJobRequest);
     }
@@ -115,7 +115,7 @@ public class Agent implements Comparable<Agent> {
     public String getFormattedTimeTerminated() {
 
         if (timeTerminated == null)
-            return String.valueOf(timeTerminated);
+            return "-";
 
         return dateFormat.format(timeTerminated);
     }

@@ -22,13 +22,13 @@ import k23b.ac.fragments.adapters.AgentsArrayAdapter;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.User;
 import k23b.ac.tasks.AgentsReceiveTask;
-import k23b.ac.tasks.AgentsReceiveTask.AgentsCallback;
+import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 import k23b.ac.util.UserManager;
 
-public class AgentsFragment extends Fragment implements AgentsCallback, ActionMode.Callback {
+public class AgentsFragment extends Fragment implements AgentsReceiveCallback, ActionMode.Callback {
 
     private AgentsReceiveTask agentsFetchTask;
 

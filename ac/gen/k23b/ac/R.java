@@ -10,6 +10,23 @@ package k23b.ac;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        public static final int cell_agent_offline=0x7f04000b;
+        public static final int cell_agent_online=0x7f04000a;
+        public static final int cell_job_assigned=0x7f04000c;
+        public static final int cell_job_sent=0x7f04000d;
+        public static final int cell_job_stopped=0x7f04000e;
+        public static final int header_agent_back=0x7f040005;
+        public static final int header_agent_back_alt=0x7f040006;
+        public static final int header_job_back=0x7f040007;
+        public static final int header_job_back_alt=0x7f040008;
+        public static final int header_neutral_back=0x7f040003;
+        public static final int header_neutral_back_alt=0x7f040004;
+        public static final int header_text=0x7f040009;
+        public static final int row_back=0x7f040000;
+        public static final int row_back_alt=0x7f040001;
+        public static final int row_text=0x7f040002;
+    }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
@@ -17,19 +34,31 @@ public final class R {
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f040000;
-        public static final int activity_vertical_margin=0x7f040001;
-        public static final int control_margin=0x7f040007;
+        public static final int activity_horizontal_margin=0x7f050000;
+        public static final int activity_vertical_margin=0x7f050001;
+        public static final int control_margin=0x7f050009;
         /** 
          Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html
     
          */
-        public static final int navigation_drawer_width=0x7f040002;
-        public static final int row_agent_textSize=0x7f040005;
-        public static final int row_job_textSize=0x7f040006;
-        public static final int textView_padding=0x7f040004;
-        public static final int textView_textSize=0x7f040003;
+        public static final int navigation_drawer_width=0x7f050002;
+        public static final int row_agent_padding=0x7f050007;
+        public static final int row_agent_textSize=0x7f050005;
+        public static final int row_job_padding=0x7f050008;
+        public static final int row_job_textSize=0x7f050006;
+        public static final int textView_padding=0x7f050004;
+        public static final int textView_textSize=0x7f050003;
+        public static final int weight_agent_agentId=0x7f05000a;
+        public static final int weight_agent_requestHash=0x7f05000b;
+        public static final int weight_agent_status=0x7f05000d;
+        public static final int weight_agent_time=0x7f05000c;
+        public static final int weight_job_interval=0x7f050012;
+        public static final int weight_job_jobId=0x7f05000e;
+        public static final int weight_job_parameters=0x7f050010;
+        public static final int weight_job_periodic=0x7f050011;
+        public static final int weight_job_status=0x7f050013;
+        public static final int weight_job_time=0x7f05000f;
     }
     public static final class drawable {
         public static final int drawer_shadow=0x7f020000;
@@ -37,68 +66,71 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
-        public static final int action_agent_assign_job=0x7f080038;
-        public static final int action_agent_terminate=0x7f080034;
-        public static final int action_agents_refresh=0x7f080035;
-        public static final int action_job_reassign=0x7f08003a;
-        public static final int action_job_stop=0x7f080039;
-        public static final int action_jobs_refresh=0x7f08003b;
-        public static final int action_logout=0x7f080037;
-        public static final int action_results_agent=0x7f08003c;
-        public static final int action_results_all=0x7f08003d;
-        public static final int action_settings=0x7f080036;
-        public static final int agents_listView=0x7f080011;
-        public static final int agents_progress=0x7f08000f;
-        public static final int agents_view=0x7f080010;
-        public static final int assign_job_assign=0x7f080009;
-        public static final int assign_job_cancel=0x7f080008;
-        public static final int assign_job_hash=0x7f080002;
-        public static final int assign_job_params=0x7f080003;
-        public static final int assign_job_period=0x7f080006;
-        public static final int assign_job_radio_periodic_no=0x7f080004;
-        public static final int assign_job_radio_periodic_yes=0x7f080005;
-        public static final int assign_job_relative_layout=0x7f080001;
-        public static final int assign_job_scroll_view=0x7f080000;
-        public static final int buttonsContainer=0x7f080007;
-        public static final int container=0x7f08000c;
-        public static final int drawer_layout=0x7f08000b;
-        public static final int jobs_listView_agents=0x7f080015;
-        public static final int jobs_listView_jobs=0x7f080018;
-        public static final int jobs_progress=0x7f080012;
-        public static final int jobs_textView_agents=0x7f080014;
-        public static final int jobs_textView_jobs=0x7f080017;
-        public static final int jobs_view_agents=0x7f080013;
-        public static final int jobs_view_jobs=0x7f080016;
-        public static final int log_in_button=0x7f08001e;
-        public static final int login=0x7f08001d;
-        public static final int login_form=0x7f080019;
-        public static final int login_fragment=0x7f08000a;
-        public static final int login_progress=0x7f080021;
-        public static final int navigation_drawer=0x7f08000d;
-        public static final int password=0x7f08001c;
-        public static final int register=0x7f080023;
-        public static final int register_button=0x7f080020;
-        public static final int register_form=0x7f08001a;
-        public static final int register_fragment=0x7f08000e;
-        public static final int register_linear_layout=0x7f08001f;
-        public static final int register_progress=0x7f080025;
-        public static final int repeat_password=0x7f080024;
-        public static final int rowAgentId=0x7f080027;
-        public static final int rowAgentRequestHash=0x7f080028;
-        public static final int rowAgentStatus=0x7f08002c;
-        public static final int rowAgentTimeAccepted=0x7f080029;
-        public static final int rowAgentTimeJobRequest=0x7f08002a;
-        public static final int rowAgentTimeTerminated=0x7f08002b;
-        public static final int rowJobId=0x7f08002d;
-        public static final int rowJobInterval=0x7f080032;
-        public static final int rowJobParameters=0x7f080030;
-        public static final int rowJobPeriodic=0x7f080031;
-        public static final int rowJobStatus=0x7f080033;
-        public static final int rowJobTimeAssigned=0x7f08002e;
-        public static final int rowJobTimeSent=0x7f08002f;
-        public static final int section_label=0x7f080022;
-        public static final int start_progress=0x7f080026;
-        public static final int username=0x7f08001b;
+        public static final int action_agent_assign_job=0x7f09003b;
+        public static final int action_agent_terminate=0x7f090037;
+        public static final int action_agents_refresh=0x7f090038;
+        public static final int action_job_reassign=0x7f09003d;
+        public static final int action_job_stop=0x7f09003c;
+        public static final int action_jobs_refresh=0x7f09003e;
+        public static final int action_logout=0x7f09003a;
+        public static final int action_results_agent=0x7f09003f;
+        public static final int action_results_all=0x7f090040;
+        public static final int action_settings=0x7f090039;
+        public static final int agents_listView=0x7f090011;
+        public static final int agents_progress=0x7f09000f;
+        public static final int agents_view=0x7f090010;
+        public static final int assign_job_assign=0x7f090009;
+        public static final int assign_job_cancel=0x7f090008;
+        public static final int assign_job_hash=0x7f090002;
+        public static final int assign_job_params=0x7f090003;
+        public static final int assign_job_period=0x7f090006;
+        public static final int assign_job_radio_periodic_no=0x7f090004;
+        public static final int assign_job_radio_periodic_yes=0x7f090005;
+        public static final int assign_job_relative_layout=0x7f090001;
+        public static final int assign_job_scroll_view=0x7f090000;
+        public static final int buttonsContainer=0x7f090007;
+        public static final int container=0x7f09000c;
+        public static final int drawer_layout=0x7f09000b;
+        public static final int jobs_listView_agents=0x7f090015;
+        public static final int jobs_listView_jobs=0x7f090018;
+        public static final int jobs_progress=0x7f090012;
+        public static final int jobs_textView_agents=0x7f090014;
+        public static final int jobs_textView_jobs=0x7f090017;
+        public static final int jobs_view_agents=0x7f090013;
+        public static final int jobs_view_jobs=0x7f090016;
+        public static final int log_in_button=0x7f09001e;
+        public static final int login=0x7f09001d;
+        public static final int login_form=0x7f090019;
+        public static final int login_fragment=0x7f09000a;
+        public static final int login_progress=0x7f090021;
+        public static final int msg=0x7f090026;
+        public static final int navigation_drawer=0x7f09000d;
+        public static final int password=0x7f09001c;
+        public static final int register=0x7f090023;
+        public static final int register_button=0x7f090020;
+        public static final int register_form=0x7f09001a;
+        public static final int register_fragment=0x7f09000e;
+        public static final int register_linear_layout=0x7f09001f;
+        public static final int register_progress=0x7f090025;
+        public static final int repeat_password=0x7f090024;
+        public static final int rowAgentId=0x7f09002a;
+        public static final int rowAgentRequestHash=0x7f09002b;
+        public static final int rowAgentStatus=0x7f09002f;
+        public static final int rowAgentTimeAccepted=0x7f09002c;
+        public static final int rowAgentTimeJobRequest=0x7f09002d;
+        public static final int rowAgentTimeTerminated=0x7f09002e;
+        public static final int rowJobId=0x7f090030;
+        public static final int rowJobInterval=0x7f090035;
+        public static final int rowJobParameters=0x7f090033;
+        public static final int rowJobPeriodic=0x7f090034;
+        public static final int rowJobStatus=0x7f090036;
+        public static final int rowJobTimeAssigned=0x7f090031;
+        public static final int rowJobTimeSent=0x7f090032;
+        public static final int section_label=0x7f090022;
+        public static final int sendmsg=0x7f090027;
+        public static final int start_progress=0x7f090029;
+        public static final int username=0x7f09001b;
+        public static final int webview=0x7f090028;
     }
     public static final class layout {
         public static final int activity_assign_job=0x7f030000;
@@ -119,60 +151,73 @@ public final class R {
         public static final int row_jobs=0x7f03000f;
     }
     public static final class menu {
-        public static final int agent_actions=0x7f070000;
-        public static final int agents=0x7f070001;
-        public static final int global=0x7f070002;
-        public static final int job_actions_agent=0x7f070003;
-        public static final int job_actions_job=0x7f070004;
-        public static final int jobs=0x7f070005;
-        public static final int main=0x7f070006;
-        public static final int results_agent=0x7f070007;
-        public static final int results_all=0x7f070008;
+        public static final int agent_actions=0x7f080000;
+        public static final int agents=0x7f080001;
+        public static final int global=0x7f080002;
+        public static final int job_actions_agent=0x7f080003;
+        public static final int job_actions_job=0x7f080004;
+        public static final int jobs=0x7f080005;
+        public static final int main=0x7f080006;
+        public static final int results_agent=0x7f080007;
+        public static final int results_all=0x7f080008;
     }
     public static final class string {
-        public static final int action_agent_assign_job=0x7f05000a;
-        public static final int action_agent_terminate=0x7f050009;
-        public static final int action_agents_refresh=0x7f050005;
-        public static final int action_job_reassign=0x7f05000c;
-        public static final int action_job_stop=0x7f05000b;
-        public static final int action_jobs_refresh=0x7f050006;
-        public static final int action_log_in=0x7f050014;
-        public static final int action_log_in_short=0x7f050015;
-        public static final int action_logout=0x7f050004;
-        public static final int action_register=0x7f050016;
-        public static final int action_register_short=0x7f050017;
-        public static final int action_results_agent=0x7f050007;
-        public static final int action_results_all=0x7f050008;
-        public static final int action_settings=0x7f050003;
-        public static final int agents=0x7f05000d;
-        public static final int app_name=0x7f050000;
-        public static final int error_field_required=0x7f050019;
-        public static final int error_incorrect_credentials=0x7f05001b;
-        public static final int error_invalid_password=0x7f050018;
-        public static final int error_network_error=0x7f050020;
-        public static final int error_network_unavailable=0x7f050021;
-        public static final int error_passwords_do_not_match=0x7f05001c;
-        public static final int error_registration_pending=0x7f05001a;
-        public static final int error_service_error=0x7f05001f;
-        public static final int error_user_exists=0x7f05001e;
-        public static final int info_registration_success=0x7f05001d;
-        public static final int jobs=0x7f05000e;
-        public static final int navigation_drawer_close=0x7f050002;
-        public static final int navigation_drawer_open=0x7f050001;
-        public static final int prompt_password=0x7f050012;
-        public static final int prompt_repeat_password=0x7f050013;
-        public static final int prompt_username=0x7f050011;
-        public static final int results_agent=0x7f05000f;
-        public static final int results_all=0x7f050010;
-        public static final int title_activity_assign_job=0x7f05002a;
-        public static final int title_activity_login=0x7f050023;
-        public static final int title_activity_main=0x7f050025;
-        public static final int title_activity_register=0x7f050024;
-        public static final int title_activity_start=0x7f050022;
-        public static final int title_section_agents=0x7f050026;
-        public static final int title_section_jobs=0x7f050027;
-        public static final int title_section_results_agent=0x7f050028;
-        public static final int title_section_results_all=0x7f050029;
+        public static final int action_agent_assign_job=0x7f06000a;
+        public static final int action_agent_terminate=0x7f060009;
+        public static final int action_agents_refresh=0x7f060005;
+        public static final int action_job_reassign=0x7f06000c;
+        public static final int action_job_stop=0x7f06000b;
+        public static final int action_jobs_refresh=0x7f060006;
+        public static final int action_log_in=0x7f060014;
+        public static final int action_log_in_short=0x7f060015;
+        public static final int action_logout=0x7f060004;
+        public static final int action_register=0x7f060016;
+        public static final int action_register_short=0x7f060017;
+        public static final int action_results_agent=0x7f060007;
+        public static final int action_results_all=0x7f060008;
+        public static final int action_settings=0x7f060003;
+        public static final int agents=0x7f06000d;
+        public static final int app_name=0x7f060000;
+        public static final int error_field_required=0x7f060019;
+        public static final int error_incorrect_credentials=0x7f06001b;
+        public static final int error_invalid_password=0x7f060018;
+        public static final int error_network_error=0x7f060020;
+        public static final int error_network_unavailable=0x7f060021;
+        public static final int error_passwords_do_not_match=0x7f06001c;
+        public static final int error_registration_pending=0x7f06001a;
+        public static final int error_service_error=0x7f06001f;
+        public static final int error_user_exists=0x7f06001e;
+        public static final int header_agent_id=0x7f06002b;
+        public static final int header_agent_requestHash=0x7f06002c;
+        public static final int header_agent_status=0x7f060030;
+        public static final int header_agent_timeAccepted=0x7f06002d;
+        public static final int header_agent_timeJobRequest=0x7f06002e;
+        public static final int header_agent_timeTerminated=0x7f06002f;
+        public static final int header_job_id=0x7f060031;
+        public static final int header_job_interval=0x7f060036;
+        public static final int header_job_parameters=0x7f060034;
+        public static final int header_job_periodic=0x7f060035;
+        public static final int header_job_status=0x7f060037;
+        public static final int header_job_timeAssigned=0x7f060032;
+        public static final int header_job_timeSent=0x7f060033;
+        public static final int info_registration_success=0x7f06001d;
+        public static final int jobs=0x7f06000e;
+        public static final int navigation_drawer_close=0x7f060002;
+        public static final int navigation_drawer_open=0x7f060001;
+        public static final int prompt_password=0x7f060012;
+        public static final int prompt_repeat_password=0x7f060013;
+        public static final int prompt_username=0x7f060011;
+        public static final int results_agent=0x7f06000f;
+        public static final int results_all=0x7f060010;
+        public static final int title_activity_assign_job=0x7f06002a;
+        public static final int title_activity_login=0x7f060023;
+        public static final int title_activity_main=0x7f060025;
+        public static final int title_activity_register=0x7f060024;
+        public static final int title_activity_start=0x7f060022;
+        public static final int title_section_agents=0x7f060026;
+        public static final int title_section_jobs=0x7f060027;
+        public static final int title_section_results_agent=0x7f060028;
+        public static final int title_section_results_all=0x7f060029;
     }
     public static final class style {
         /** 
@@ -196,10 +241,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
+        public static final int AppTheme=0x7f070001;
     }
 }

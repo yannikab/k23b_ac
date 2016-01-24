@@ -28,15 +28,15 @@ import k23b.ac.rest.Agent;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.tasks.AgentsReceiveTask;
-import k23b.ac.tasks.AgentsReceiveTask.AgentsCallback;
+import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.tasks.JobsReceiveTask;
-import k23b.ac.tasks.JobsReceiveTask.JobsCallback;
+import k23b.ac.tasks.JobsReceiveTask.JobsReceiveCallback;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 import k23b.ac.util.UserManager;
 
-public class JobsFragment extends Fragment implements AgentsCallback, JobsCallback {
+public class JobsFragment extends Fragment implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
 
     private AgentsReceiveTask agentsFetchTask;
 
@@ -301,17 +301,8 @@ public class JobsFragment extends Fragment implements AgentsCallback, JobsCallba
         getView().findViewById(R.id.jobs_view_jobs).setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-    public void showAgent(Agent agent) {
-
-        Toast.makeText(getActivity(), String.valueOf(agent.getAgentId()), Toast.LENGTH_LONG).show();
-    }
-
-    public void showJob(Job job) {
-
-        Toast.makeText(getActivity(), String.valueOf(job.getParams()), Toast.LENGTH_LONG).show();
-    }
-
-    public void onDestroyActionMode() {
+    public void destroyActionMode() {
+        
         actionMode = null;
     }
 

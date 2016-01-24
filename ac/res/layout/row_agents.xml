@@ -1,55 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/rowAgentId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="1"
-        android:textSize="@dimen/row_agent_textSize" />
+    <TableRow>
 
-    <TextView
-        android:id="@+id/rowAgentRequestHash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="2"
-        android:textSize="@dimen/row_agent_textSize" />
+        <TextView
+            android:id="@+id/rowAgentId"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_agent_agentId"
+            android:gravity="center"
+            android:padding="@dimen/row_agent_padding"
+            android:textColor="@color/row_text"
+            android:textSize="@dimen/row_agent_textSize" />
 
-    <TextView
-        android:id="@+id/rowAgentTimeAccepted"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="4"
-        android:textSize="@dimen/row_agent_textSize" />
+        <TextView
+            android:id="@+id/rowAgentRequestHash"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_agent_requestHash"
+            android:gravity="center"
+            android:padding="@dimen/row_agent_padding"
+            android:textColor="@color/row_text"
+            android:textSize="@dimen/row_agent_textSize" />
 
-    <TextView
-        android:id="@+id/rowAgentTimeJobRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="4"
-        android:textSize="@dimen/row_agent_textSize" />
+        <TextView
+            android:id="@+id/rowAgentTimeAccepted"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_agent_time"
+            android:gravity="center"
+            android:padding="@dimen/row_agent_padding"
+            android:textColor="@color/row_text"
+            android:textSize="@dimen/row_agent_textSize" />
 
-    <TextView
-        android:id="@+id/rowAgentTimeTerminated"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="4"
-        android:textSize="@dimen/row_agent_textSize" />
+        <TextView
+            android:id="@+id/rowAgentTimeJobRequest"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_agent_time"
+            android:gravity="center"
+            android:padding="@dimen/row_agent_padding"
+            android:textColor="@color/row_text"
+            android:textSize="@dimen/row_agent_textSize" />
 
-    <TextView
-        android:id="@+id/rowAgentStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="2"
-        android:textSize="@dimen/row_agent_textSize" />
+        <TextView
+            android:id="@+id/rowAgentTimeTerminated"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_agent_time"
+            android:gravity="center"
+            android:padding="@dimen/row_agent_padding"
+            android:textColor="@color/row_text"
+            android:textSize="@dimen/row_agent_textSize" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/rowAgentStatus"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_agent_status"
+            android:gravity="center"
+            android:padding="@dimen/row_agent_padding"
+            android:textColor="@color/row_text"
+            android:textSize="@dimen/row_agent_textSize" />
+    </TableRow>
+
+</TableLayout>

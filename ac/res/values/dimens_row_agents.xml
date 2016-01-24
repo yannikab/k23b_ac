@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="weight_agent_agentId" format="float" type="dimen">0.5</item>
+    <item name="weight_agent_requestHash" format="float" type="dimen">1.0</item>
+    <item name="weight_agent_time" format="float" type="dimen">2.0</item>
+    <item name="weight_agent_status" format="float" type="dimen">1.0</item>
+
+</resources>

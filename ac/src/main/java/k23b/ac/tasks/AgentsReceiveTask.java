@@ -15,7 +15,7 @@ import k23b.ac.util.Logger;
 
 public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface AgentsCallback {
+    public interface AgentsReceiveCallback {
 
         public void agentsReceived(List<Agent> agents);
 
@@ -28,17 +28,17 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         public void networkError();
     }
 
-    private final AgentsCallback agentsCallback;
+    private final AgentsReceiveCallback agentsReceiveCallback;
     private final String baseURI;
     private final String username;
     private final String password;
 
     private List<Agent> agents;
 
-    public AgentsReceiveTask(AgentsCallback agentsCallback, String baseURI, String username, String password) {
+    public AgentsReceiveTask(AgentsReceiveCallback agentsReceiveCallback, String baseURI, String username, String password) {
         super();
 
-        this.agentsCallback = agentsCallback;
+        this.agentsReceiveCallback = agentsReceiveCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
@@ -88,23 +88,23 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         switch (status) {
 
         case RECEIVE_SUCCESS:
-            agentsCallback.agentsReceived(agents);
+            agentsReceiveCallback.agentsReceived(agents);
             break;
 
         case REGISTRATION_PENDING:
-            agentsCallback.registrationPending();
+            agentsReceiveCallback.registrationPending();
             break;
 
         case INCORRECT_CREDENTIALS:
-            agentsCallback.incorrectCredentials();
+            agentsReceiveCallback.incorrectCredentials();
             break;
 
         case SERVICE_ERROR:
-            agentsCallback.serviceError();
+            agentsReceiveCallback.serviceError();
             break;
 
         case NETWORK_ERROR:
-            agentsCallback.networkError();
+            agentsReceiveCallback.networkError();
 
         default:
             break;
@@ -114,6 +114,6 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onCancelled() {
 
-        agentsCallback.agentsReceived(null);
+        agentsReceiveCallback.agentsReceived(null);
     }
 }

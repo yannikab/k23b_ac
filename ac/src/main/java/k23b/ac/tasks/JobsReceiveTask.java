@@ -15,7 +15,7 @@ import k23b.ac.util.Logger;
 
 public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface JobsCallback {
+    public interface JobsReceiveCallback {
 
         public void jobsReceived(List<Job> jobs);
 
@@ -28,7 +28,7 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         public void networkError();
     }
 
-    private final JobsCallback jobsCallback;
+    private final JobsReceiveCallback jobsReceiveCallback;
     private final String baseURI;
     private final String username;
     private final String password;
@@ -36,9 +36,9 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     private List<Job> jobs;
 
-    public JobsReceiveTask(JobsCallback jobsCallback, String baseURI, String username, String password, String agentHash) {
+    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password, String agentHash) {
         super();
-        this.jobsCallback = jobsCallback;
+        this.jobsReceiveCallback = jobsReceiveCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
@@ -90,23 +90,23 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         switch (status) {
 
         case RECEIVE_SUCCESS:
-            jobsCallback.jobsReceived(jobs);
+            jobsReceiveCallback.jobsReceived(jobs);
             break;
 
         case REGISTRATION_PENDING:
-            jobsCallback.registrationPending();
+            jobsReceiveCallback.registrationPending();
             break;
 
         case INCORRECT_CREDENTIALS:
-            jobsCallback.incorrectCredentials();
+            jobsReceiveCallback.incorrectCredentials();
             break;
 
         case SERVICE_ERROR:
-            jobsCallback.serviceError();
+            jobsReceiveCallback.serviceError();
             break;
 
         case NETWORK_ERROR:
-            jobsCallback.networkError();
+            jobsReceiveCallback.networkError();
 
         default:
             break;
@@ -116,6 +116,6 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onCancelled() {
 
-        jobsCallback.jobsReceived(null);
+        jobsReceiveCallback.jobsReceived(null);
     }
 }

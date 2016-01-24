@@ -178,7 +178,7 @@ public class Job implements Comparable<Job>, Parcelable {
     public String getFormattedTimeAssigned() {
 
         if (timeAssigned == null)
-            return String.valueOf(timeAssigned);
+            return "-";
 
         return dateFormat.format(timeAssigned);
     }
@@ -186,7 +186,7 @@ public class Job implements Comparable<Job>, Parcelable {
     public String getFormattedTimeSent() {
 
         if (timeSent == null)
-            return String.valueOf(timeSent);
+            return "-";
 
         return dateFormat.format(timeSent);
     }
@@ -194,7 +194,7 @@ public class Job implements Comparable<Job>, Parcelable {
     public String getFormattedTimeStopped() {
 
         if (timeStopped == null)
-            return String.valueOf(timeStopped);
+            return "-";
 
         return dateFormat.format(timeStopped);
     }

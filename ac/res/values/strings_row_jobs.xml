@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="header_job_id">Id</string>
+    <string name="header_job_timeAssigned">Time Assigned</string>
+    <string name="header_job_timeSent">Time Sent</string>
+    <string name="header_job_parameters">Parameters</string>
+    <string name="header_job_periodic">Per.</string>
+    <string name="header_job_interval">Int.</string>
+    <string name="header_job_status">Status</string>
+
+</resources>

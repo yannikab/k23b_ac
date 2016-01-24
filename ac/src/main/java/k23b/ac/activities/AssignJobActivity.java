@@ -7,13 +7,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
-import k23b.ac.util.JobDispatcher;
 import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.UserManager;
 
 public class AssignJobActivity extends Activity {
@@ -77,12 +74,6 @@ public class AssignJobActivity extends Activity {
             return;
         }
 
-        if (!NetworkManager.networkAvailable(this)) {
-
-            Toast.makeText(this, getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
-            return;
-        }
-
         Job j = new Job();
 
         j.setAgentId(agentId);
@@ -92,7 +83,7 @@ public class AssignJobActivity extends Activity {
 
         u.getJobs().add(j);
 
-        JobDispatcher.getInstance().dispatch(this, u);
+        // JobDispatcher.getInstance().dispatch(this, u);
 
         Intent data = new Intent();
         setResult(RESULT_OK, data);
