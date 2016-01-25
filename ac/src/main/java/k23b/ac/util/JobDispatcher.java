@@ -2,7 +2,11 @@ package k23b.ac.util;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -15,210 +19,192 @@ import k23b.ac.db.srv.UserSrv;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.rest.UserContainer;
-import k23b.ac.tasks.UsersSendTask;
-import k23b.ac.util.BlockingQueue.IBlockingQueue;
-import k23b.ac.util.BlockingQueue.WaitNotifyQueue;
+import k23b.ac.tasks.status.UsersSendStatus;
 
-public class JobDispatcher extends IntentService implements UsersSendTask.UsersSendCallback {
+public class JobDispatcher extends IntentService {
 
-	private static UsersSendTask usersSendTask;
-	private static JobDispatcher instance;
-	private static Context context;
-	private static IBlockingQueue<UserContainer> jobDispatcherCache;
+    private static JobDispatcher instance;
+    private static UserContainer jobDispatcherCache;
 
-	public JobDispatcher() {
-		super("JobDispatcher");
-	}
+    public JobDispatcher() {
+        super("JobDispatcher");
+    }
 
-	public static JobDispatcher getInstance() {
+    public static JobDispatcher getInstance() {
 
-		synchronized (JobDispatcher.class) {
-			if (instance == null) {
-				jobDispatcherCache = new WaitNotifyQueue<UserContainer>("jobDispatcherCache");
-				usersSendTask = null;
-				instance = new JobDispatcher();
-			}
-		}
-		return instance;
-	}
+        synchronized (JobDispatcher.class) {
+            if (instance == null) {
+                jobDispatcherCache = null;
+                instance = new JobDispatcher();
+            }
+        }
+        return instance;
+    }
 
-	public void dispatch(Context context, User userObject) {
+    public void dispatch(Context context, User userObject) {
 
-		Log.d(JobDispatcher.class.getName(), "Dispatch called from an Activity");
+        Log.d(JobDispatcher.class.getName(), "Dispatch called from an Activity");
 
-		JobDispatcher.setContext(context);
+        Intent sendJobIntent = new Intent(context, JobDispatcher.class);
+        sendJobIntent.putExtra("userObject", (User) userObject);
 
-		Intent sendJobIntent = new Intent(context, JobDispatcher.class);
-		sendJobIntent.putExtra("userObject", (User) userObject);
+        context.startService(sendJobIntent);
+    }
 
-		context.startService(sendJobIntent);
-	}
+    @Override
+    protected void onHandleIntent(Intent jobIntent) {
 
-	@Override
-	protected void onHandleIntent(Intent jobIntent) {
+        Log.d(JobDispatcher.class.getName(), "Got the Intent");
 
-		Log.d(JobDispatcher.class.getName(), "Got the Intent");
+        User userObject = (User) jobIntent.getParcelableExtra("userObject");
+        dispatchJob(userObject);
 
-		User userObject = (User) jobIntent.getParcelableExtra("userObject");
-		dispatchJob(userObject);
+    }
 
-	}
+    public void dispatchJob(User user) {
 
-	public static void dispatchJob(User user) {
+        Log.d(JobDispatcher.class.getName(), "DispatchJob Called");
+        // check to see if there is a network connection
+        if (!NetworkManager.networkAvailable(JobDispatcher.this)) {
 
-		Log.d(JobDispatcher.class.getName(), "DispatchJob Called");
-		// check to see if there is a network connection
-		if (!NetworkManager.networkAvailable(context)) {
+            Log.d(JobDispatcher.class.getName(), "No active Network Connection Found!");
+            // if not insert the job in the DB
+            instance.saveIntoDB(user);
+            return;
+        }
+        Log.d(JobDispatcher.class.getName(), "Active Network Connection Found!");
+        // else send the UserContainer to the UsersSendTask
 
-			Log.d(JobDispatcher.class.getName(), "No active Network Connection Found!");
-			// if not insert the job in the DB
-			instance.saveIntoDB(user);
-		}
-		Log.d(JobDispatcher.class.getName(), "Active Network Connection Found!");
-		// else send the UserContainer to the UsersSendTask
+        UserContainer uc = new UserContainer();
+        uc.getUsers().add(user);
 
-		UserContainer uc = new UserContainer();
-		uc.getUsers().add(user);
+        // Store the new User request for Job Dispatch in the cache
 
-		// Store the new User request for Job Dispatch in the cache
-		try {
-			jobDispatcherCache.put(uc);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        jobDispatcherCache = uc;
 
-		// Execute the Asynchronous Task
-		usersSendTask = new UsersSendTask(getInstance(), Settings.getBaseURI(), uc);
-		usersSendTask.execute();
+        // Send the UserContainer using RESTful Web Services
+        UsersSendStatus status = usersSend(Settings.getBaseURI(), uc);
 
-	}
+        switch (status) {
 
-	public static void setContext(Context context) {
-		JobDispatcher.context = context;
-	}
+        case NETWORK_ERROR:
+        case INVALID:
+            networkError();
+            break;
 
-	public void saveIntoDB(User user) {
+        case SERVICE_ERROR:
+            serviceError();
+            break;
 
-		try {
+        case SUCCESS:
+            sendSuccess();
+            break;
 
-			UserDao ud = UserDaoFactory.fromUser(user);
-			List<JobDao> jdList = new LinkedList<JobDao>();
-			for (Job j : user.getJobs())
-				jdList.add(JobDaoFactory.fromJob(j));
+        case CANCELLED:
+        default:
+            cancelled();
+            break;
+        }
+    }
 
-			UserDao createdUd = UserSrv.createUserWithJobs(ud, jdList);
-			Log.d(JobDispatcher.class.getName(),
-					"Created User: " + createdUd.getUsername() + " with " + jdList.size() + " Jobs");
+    UsersSendStatus usersSend(String baseURI, UserContainer userContainer) {
 
-		} catch (SrvException e) {
-			Log.e(JobDispatcher.class.getName(), e.getMessage());
-		}
+        try {
+            String url = baseURI + "users/";
 
-	}
+            RestTemplate restTemplate = new RestTemplate();
 
-	@Override
-	public void sendSuccess() {
+            restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
 
-		Log.d(JobDispatcher.class.getName(), "Users were sent successfully!");
-		synchronized (JobDispatcher.class) {
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-			if (usersSendTask == null)
-				return;
+            String response = restTemplate.postForObject(url, userContainer, String.class);
 
-			if (jobDispatcherCache.size() != 0)
-				try {
-					jobDispatcherCache.get();
-					
-				} catch (InterruptedException e) {
-					Log.e(JobDispatcher.class.getName(), "Interrupted on Get");
-				}
+            if (response.startsWith("Accepted"))
+                return UsersSendStatus.SUCCESS;
+            else if (response.startsWith("Service Error"))
+                return UsersSendStatus.SERVICE_ERROR;
+            else
+                return UsersSendStatus.INVALID;
 
-			usersSendTask = null;
-		}
-	}
+        } catch (RestClientException e) {
+            Logger.logException(getClass().getSimpleName(), e);
+            return UsersSendStatus.NETWORK_ERROR;
+        }
+    }
 
-	@Override
-	public void serviceError() {
+    public void saveIntoDB(User user) {
 
-		Log.e(JobDispatcher.class.getName(), "Service Error, User Container was not Sent");
-		synchronized (JobDispatcher.class) {
+        try {
 
-			if (usersSendTask == null)
-				return;
+            UserDao ud = UserDaoFactory.fromUser(user);
+            List<JobDao> jdList = new LinkedList<JobDao>();
+            for (Job j : user.getJobs())
+                jdList.add(JobDaoFactory.fromJob(j));
 
-			while (jobDispatcherCache.size() != 0) {
+            UserDao createdUd = UserSrv.createUserWithJobs(ud, jdList);
+            Log.d(JobDispatcher.class.getName(),
+                    "Created User: " + createdUd.getUsername() + " with " + jdList.size() + " Jobs");
 
-				try {
-					UserContainer uc = jobDispatcherCache.get();
+        } catch (SrvException e) {
+            Log.e(JobDispatcher.class.getName(), e.getMessage());
+        }
 
-					for (User user : uc.getUsers())
-						instance.saveIntoDB(user);
+    }
 
-				} catch (InterruptedException e) {
-					Log.e(JobDispatcher.class.getName(), "Interrupted on Get");
-				}
+    public void sendSuccess() {
 
-			}
+        Log.d(JobDispatcher.class.getName(), "Users were sent successfully!");
+        synchronized (JobDispatcher.class) {
 
-			usersSendTask = null;
-		}
-	}
+            if (jobDispatcherCache != null)
+                jobDispatcherCache = null;
+        }
+    }
 
-	@Override
-	public void networkError() {
+    public void serviceError() {
 
-		Log.e(JobDispatcher.class.getName(), "Network Error, User Container was not Sent");
-		synchronized (JobDispatcher.class) {
+        Log.e(JobDispatcher.class.getName(), "Service Error, User Container was not Sent");
+        synchronized (JobDispatcher.class) {
 
-			if (usersSendTask == null)
-				return;
+            if (jobDispatcherCache != null) {
 
-			while (jobDispatcherCache.size() != 0) {
+                for (User user : jobDispatcherCache.getUsers())
+                    instance.saveIntoDB(user);
 
-				try {
-					UserContainer uc = jobDispatcherCache.get();
+                jobDispatcherCache = null;
+            }
+        }
+    }
 
-					for (User user : uc.getUsers())
-						instance.saveIntoDB(user);
-					
-				} catch (InterruptedException e) {
-					Log.e(JobDispatcher.class.getName(), "Interrupted on Get");
-				}
+    public void networkError() {
 
-			}
+        Log.e(JobDispatcher.class.getName(), "Network Error, User Container was not Sent");
+        synchronized (JobDispatcher.class) {
 
-			usersSendTask = null;
-		}
-	}
+            if (jobDispatcherCache != null) {
 
-	@Override
-	public void cancelled() {
+                for (User user : jobDispatcherCache.getUsers())
+                    instance.saveIntoDB(user);
 
-		Log.e(JobDispatcher.class.getName(), "UsersSendTask Cancelled, User Container was not Sent");
-		synchronized (JobDispatcher.class) {
+                jobDispatcherCache = null;
+            }
+        }
+    }
 
-			if (usersSendTask == null)
-				return;
+    public void cancelled() {
 
-			while (jobDispatcherCache.size() != 0) {
+        Log.e(JobDispatcher.class.getName(), "UsersSendTask Cancelled, User Container was not Sent");
+        synchronized (JobDispatcher.class) {
 
-				UserContainer uc;
-				try {
-					uc = jobDispatcherCache.get();
+            if (jobDispatcherCache != null) {
 
-					for (User user : uc.getUsers())
-						instance.saveIntoDB(user);
+                for (User user : jobDispatcherCache.getUsers())
+                    instance.saveIntoDB(user);
 
-				} catch (InterruptedException e) {
-					Log.e(JobDispatcher.class.getName(), "Interrupted on Get");
-				}
-
-			}
-
-			usersSendTask = null;
-		}
-
-	}
+                jobDispatcherCache = null;
+            }
+        }
+    }
 
 }
