@@ -36,8 +36,8 @@ public class UserDao {
 
             if (rowId < 0) {
                 dbHandler.closeDatabase();
-                Log.e(UserDao.class.getName(), "Error while inserting UserDao with Username: " + username + ", Password: "
-                        + password + " and Active: " + active);
+                Log.e(UserDao.class.getName(), "Error while inserting UserDao with Username: " + username
+                        + ", Password: " + password + " and Active: " + active);
                 throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: "
                         + password + " and Active: " + active);
             }
@@ -45,8 +45,8 @@ public class UserDao {
         } catch (SQLException e) {
             dbHandler.closeDatabase();
             Log.e(UserDao.class.getName(), e.getMessage());
-            throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: " + password
-                    + " and Active: " + active + " | " + e.getMessage());
+            throw new DaoException("Error while inserting UserDao with Username: " + username + ", Password: "
+                    + password + " and Active: " + active + " | " + e.getMessage());
         }
 
         Cursor cursor = db.query(DatabaseHandler.getUsersTable(), userTableColumns,
@@ -67,7 +67,8 @@ public class UserDao {
                 Log.d(UserDao.class.getName(),
                         "Created UserDao with Username: " + username + " and Password: " + password + " successfully!");
 
-                // user = new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false));
+                // user = new UserDao(cursor.getString(0), cursor.getString(1),
+                // (cursor.getInt(2) == 1 ? true : false));
 
                 cursor.close();
                 // Database not needed anymore
@@ -84,8 +85,8 @@ public class UserDao {
 
         Log.e(UserDao.class.getName(), "Created UserDao with Username: " + username + ", Password: " + password
                 + " and Active: " + active + " NOT FOUND !");
-        throw new DaoException("Created UserDao with Username: " + username + ", Password: " + password + " and Active: "
-                + active + " NOT FOUND !");
+        throw new DaoException("Created UserDao with Username: " + username + ", Password: " + password
+                + " and Active: " + active + " NOT FOUND !");
 
     }
 
@@ -138,7 +139,8 @@ public class UserDao {
         // if (!jobSet.isEmpty()) {
         // dbHandler.closeDatabase();
         // throw new DaoException(
-        // "Trying to delete UserDao with Username: " + username + " while there are some jobs from him left.");
+        // "Trying to delete UserDao with Username: " + username + " while there
+        // are some jobs from him left.");
         // }
 
         int rowsAffected = db.delete(DatabaseHandler.getUsersTable(),
@@ -170,7 +172,8 @@ public class UserDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                userSet.add(new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
+                userSet.add(
+                        new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
                 rows++;
                 cursor.moveToNext();
             }
@@ -202,7 +205,8 @@ public class UserDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                userSet.add(new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
+                userSet.add(
+                        new UserDao(cursor.getString(0), cursor.getString(1), (cursor.getInt(2) == 1 ? true : false)));
                 rows++;
                 cursor.moveToNext();
             }

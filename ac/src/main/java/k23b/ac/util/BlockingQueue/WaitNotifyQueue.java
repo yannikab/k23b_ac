@@ -46,7 +46,7 @@ public class WaitNotifyQueue<E> implements IBlockingQueue<E> {
 
         if (maxSize > 0) {
 
-        	Log.d(WaitNotifyQueue.class.getName(), ": setting maximum size to " + maxSize + ".");
+            Log.d(WaitNotifyQueue.class.getName(), ": setting maximum size to " + maxSize + ".");
 
             this.maxSize = maxSize;
         }
@@ -61,7 +61,8 @@ public class WaitNotifyQueue<E> implements IBlockingQueue<E> {
     public void put(E item) throws InterruptedException {
 
         if (Thread.interrupted()) {
-        	Log.d(WaitNotifyQueue.class.getName(), ": put() called from interrupted thread, throwing InterruptedException.");
+            Log.d(WaitNotifyQueue.class.getName(),
+                    ": put() called from interrupted thread, throwing InterruptedException.");
             throw new InterruptedException();
         }
 
@@ -84,7 +85,8 @@ public class WaitNotifyQueue<E> implements IBlockingQueue<E> {
     public E get() throws InterruptedException {
 
         if (Thread.interrupted()) {
-        	Log.d(WaitNotifyQueue.class.getName(), ": get() called from interrupted thread, throwing InterruptedException.");
+            Log.d(WaitNotifyQueue.class.getName(),
+                    ": get() called from interrupted thread, throwing InterruptedException.");
             throw new InterruptedException();
         }
 

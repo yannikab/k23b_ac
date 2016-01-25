@@ -11,7 +11,8 @@ import k23b.ac.db.dao.UserDao;
 
 public class JobSrv {
 
-    public static JobDao create(String username, long agentId, String params, boolean periodic, int period) throws SrvException {
+    public static JobDao create(String username, long agentId, String params, boolean periodic, int period)
+            throws SrvException {
 
         try {
 
@@ -20,16 +21,19 @@ public class JobSrv {
                 UserDao user = UserDao.findUserByUsername(username);
 
                 if (user == null) {
-                    Log.e(JobSrv.class.getName(), "Could not create Job for agent with id: " + agentId + ". No such User.");
+                    Log.e(JobSrv.class.getName(),
+                            "Could not create Job for agent with id: " + agentId + ". No such User.");
                     return null;
                 }
                 // not using active
                 // if (!user.isActive())
-                // throw new SrvException("Can not create job. User with username " + username + " is not logged in.");
+                // throw new SrvException("Can not create job. User with
+                // username " + username + " is not logged in.");
 
                 synchronized (JobDao.class) {
 
-                    long jobId = JobDao.createJob(params, username, agentId, new Date(System.currentTimeMillis()), periodic, period);
+                    long jobId = JobDao.createJob(params, username, agentId, new Date(System.currentTimeMillis()),
+                            periodic, period);
 
                     JobDao job = JobDao.findJobById(jobId);
 
@@ -115,12 +119,14 @@ public class JobSrv {
     // Job job = JobDao.findJobById(jobId);
     //
     // if (job == null)
-    // throw new SrvException("Cannot set Time Assigned. No such Job with id: " + jobId);
+    // throw new SrvException("Cannot set Time Assigned. No such Job with id: "
+    // + jobId);
     //
     // JobDao.setTimeAssigned(jobId, new Date());
     //
     // } catch (DaoException e) {
-    // throw new SrvException("Data access error while setting Time Assigned for Job with id: " + jobId);
+    // throw new SrvException("Data access error while setting Time Assigned for
+    // Job with id: " + jobId);
     // }
     //
     // }

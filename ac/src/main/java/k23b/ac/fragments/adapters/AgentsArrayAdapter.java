@@ -44,7 +44,7 @@ public class AgentsArrayAdapter extends ArrayAdapter<Agent> {
         AgentStatus status = a.getStatus(Settings.getJobRequestInterval());
         textViewAgentStatus.setText(status.toString());
         textViewAgentStatus.setBackgroundColor(getContext().getResources().getColor(status == AgentStatus.ONLINE ? R.color.cell_agent_online : R.color.cell_agent_offline));
-        
+
         return convertView;
     }
 }

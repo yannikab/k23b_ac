@@ -36,7 +36,8 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     private List<Job> jobs;
 
-    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password, String agentHash) {
+    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password,
+            String agentHash) {
         super();
         this.jobsReceiveCallback = jobsReceiveCallback;
         this.baseURI = baseURI;

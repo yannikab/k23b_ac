@@ -112,9 +112,9 @@ public class UserSrv {
             throw new SrvException("Data access error while deleting user with username: " + username);
         }
     }
-    
+
     public static void tryDelete(String username) throws SrvException {
-    	
+
         try {
 
             synchronized (UserDao.class) {
@@ -128,12 +128,14 @@ public class UserSrv {
 
                     Set<JobDao> jobs = JobDao.findAllJobsFromUsername(username);
 
-                    if(jobs.isEmpty()){
-                    	UserDao.deleteUser(username);
-                    	Log.d(UserSrv.class.getName(), "No Jobs from User: "+username+". User Deleted Successfully.");
-                    	return;
+                    if (jobs.isEmpty()) {
+                        UserDao.deleteUser(username);
+                        Log.d(UserSrv.class.getName(),
+                                "No Jobs from User: " + username + ". User Deleted Successfully.");
+                        return;
                     }
-                    Log.d(UserSrv.class.getName(), "There are still Jobs remaining from User: "+username+". User Deleted Successfully.");
+                    Log.d(UserSrv.class.getName(),
+                            "There are still Jobs remaining from User: " + username + ". User was not Deleted.");
                 }
             }
 
@@ -142,7 +144,6 @@ public class UserSrv {
             throw new SrvException("Data access error while deleting user with username: " + username);
         }
 
-    	
     }
 
     public static Set<UserDao> findAll() throws SrvException {

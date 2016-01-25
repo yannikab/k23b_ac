@@ -23,7 +23,8 @@ public class JobDao {
 
     // I might need to return only an ID
     @SuppressLint("SimpleDateFormat")
-    public static long createJob(String parameters, String username, long agentId, Date time_assigned, boolean periodic, int period) throws DaoException {
+    public static long createJob(String parameters, String username, long agentId, Date time_assigned, boolean periodic,
+            int period) throws DaoException {
 
         Log.d(JobDao.class.getName(),
                 "Creating Job with Parameters: " + parameters + " Username: " + username + " AgentId: " + agentId
@@ -109,8 +110,10 @@ public class JobDao {
                             + cursor.getString(4) + " Periodic: " + cursor.getInt(5) + " Period: " + cursor.getInt(6)
                             + " successfully!");
 
-            // job = new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
-            // cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6));
+            // job = new JobDao(cursor.getInt(0), cursor.getString(1),
+            // cursor.getString(2), cursor.getInt(3),
+            // cursor.getString(4), (cursor.getInt(5) == 1 ? true : false),
+            // cursor.getInt(6));
 
             long id = cursor.getLong(0);
 
@@ -277,17 +280,10 @@ public class JobDao {
         SQLiteDatabase db = dbHandler.openDatabase();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM ")
-                .append(DatabaseHandler.getJobsTable())
-                .append(" a INNER JOIN ")
-                .append(DatabaseHandler.getUsersTable())
-                .append(" b ON a.")
-                .append(DatabaseHandler.getKeyJUsername())
-                .append("=b.")
-                .append(DatabaseHandler.getKeyUUsername())
-                .append(" WHERE b.")
-                .append(DatabaseHandler.getKeyUActive())
-                .append("=?");
+        sb.append("SELECT * FROM ").append(DatabaseHandler.getJobsTable()).append(" a INNER JOIN ")
+                .append(DatabaseHandler.getUsersTable()).append(" b ON a.").append(DatabaseHandler.getKeyJUsername())
+                .append("=b.").append(DatabaseHandler.getKeyUUsername()).append(" WHERE b.")
+                .append(DatabaseHandler.getKeyUActive()).append("=?");
 
         Cursor cursor = db.rawQuery(sb.toString(), new String[] { String.valueOf(1) });
 
@@ -313,11 +309,14 @@ public class JobDao {
 
     }
 
-    // public static void setTimeAssigned(int jobId, Date timeAssigned) throws DaoException {
+    // public static void setTimeAssigned(int jobId, Date timeAssigned) throws
+    // DaoException {
     //
-    // Log.d(JobDao.class.getName(), "Updating Time Assigned of Job with Id: " + jobId);
+    // Log.d(JobDao.class.getName(), "Updating Time Assigned of Job with Id: " +
+    // jobId);
     //
-    // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd
+    // HH:mm:ss");
     // String time = dateFormat.format(timeAssigned);
     //
     // ContentValues values = new ContentValues();
@@ -340,7 +339,8 @@ public class JobDao {
     //
     // // Database not needed anymore
     // dbHandler.closeDatabase();
-    // Log.d(JobDao.class.getName(), "Time Assigned of Job with Id: " + jobId + " Updated");
+    // Log.d(JobDao.class.getName(), "Time Assigned of Job with Id: " + jobId +
+    // " Updated");
     //
     // }
 
@@ -352,7 +352,8 @@ public class JobDao {
     private boolean periodic;
     private int period;
 
-    protected JobDao(long id, String parameters, String username, long agentId, Date time_assigned, boolean periodic, int period) {
+    protected JobDao(long id, String parameters, String username, long agentId, Date time_assigned, boolean periodic,
+            int period) {
         this.id = id;
         this.parameters = parameters;
         this.username = username;
@@ -363,7 +364,8 @@ public class JobDao {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private JobDao(long id, String parameters, String username, long agentId, String time_assigned, boolean periodic, int period) {
+    private JobDao(long id, String parameters, String username, long agentId, String time_assigned, boolean periodic,
+            int period) {
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

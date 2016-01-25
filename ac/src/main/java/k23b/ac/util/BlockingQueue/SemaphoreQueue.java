@@ -6,7 +6,6 @@ import java.util.concurrent.Semaphore;
 
 import android.util.Log;
 
-
 /**
  * Includes an unsynchronized queue where the synchronized {@link #put(Object) put} and {@link #get() get} are done using two Semaphores.
  *
@@ -57,7 +56,7 @@ public class SemaphoreQueue<E> implements IBlockingQueue<E> {
 
         if (maxSize > 0) {
 
-        	Log.d(SemaphoreQueue.class.getName(), ": setting maximum size to " + maxSize + ".");
+            Log.d(SemaphoreQueue.class.getName(), ": setting maximum size to " + maxSize + ".");
 
             available = new Semaphore(maxSize);
         }
@@ -72,7 +71,8 @@ public class SemaphoreQueue<E> implements IBlockingQueue<E> {
     public void put(E item) throws InterruptedException {
 
         if (Thread.interrupted()) {
-        	Log.d(SemaphoreQueue.class.getName(), ": put() called from interrupted thread, throwing InterruptedException.");
+            Log.d(SemaphoreQueue.class.getName(),
+                    ": put() called from interrupted thread, throwing InterruptedException.");
             throw new InterruptedException();
         }
 
@@ -93,7 +93,8 @@ public class SemaphoreQueue<E> implements IBlockingQueue<E> {
     public E get() throws InterruptedException {
 
         if (Thread.interrupted()) {
-        	Log.d(SemaphoreQueue.class.getName(), ": get() called from interrupted thread, throwing InterruptedException.");
+            Log.d(SemaphoreQueue.class.getName(),
+                    ": get() called from interrupted thread, throwing InterruptedException.");
             throw new InterruptedException();
         }
 

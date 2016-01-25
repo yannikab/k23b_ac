@@ -36,7 +36,8 @@ import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 import k23b.ac.util.UserManager;
 
-public class JobsFragment extends Fragment implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
+public class JobsFragment extends Fragment
+        implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
 
     private AgentsReceiveTask agentsFetchTask;
 
@@ -106,7 +107,8 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
                 Agent agent = (Agent) parent.getAdapter().getItem(position);
 
-                actionMode = JobsFragment.this.getActivity().startActionMode(new JobsActionsAgent(JobsFragment.this, agent));
+                actionMode = JobsFragment.this.getActivity()
+                        .startActionMode(new JobsActionsAgent(JobsFragment.this, agent));
 
                 view.setSelected(true);
 
@@ -126,7 +128,8 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
                 Job job = (Job) parent.getAdapter().getItem(position);
 
-                actionMode = JobsFragment.this.getActivity().startActionMode(new JobsActionsJob(JobsFragment.this, job));
+                actionMode = JobsFragment.this.getActivity()
+                        .startActionMode(new JobsActionsJob(JobsFragment.this, job));
 
                 view.setSelected(true);
 
@@ -260,7 +263,8 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         showProgress(true);
 
-        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
+        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(),
+                selectedAgent.getRequestHash());
 
         jobsFetchTask.execute();
     }
@@ -302,7 +306,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
     }
 
     public void destroyActionMode() {
-        
+
         actionMode = null;
     }
 
