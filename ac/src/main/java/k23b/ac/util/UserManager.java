@@ -34,7 +34,7 @@ public class UserManager {
         return instance;
     }
 
-    private User getUser(Activity activity) {
+    private synchronized User getUser(Activity activity) {
 
         SharedPreferences sp = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -56,7 +56,7 @@ public class UserManager {
         return new User(username, password);
     }
 
-    private void setUser(Activity activity, User user) {
+    private synchronized void setUser(Activity activity, User user) {
 
         SharedPreferences sp = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 

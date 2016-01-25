@@ -80,7 +80,7 @@ public class AssignJobActivity extends Activity {
         j.setAgentId(agentId);
         j.setParams(editTextParams.getText().toString());
         j.setPeriodic(radioPeriodicYes.isChecked());
-        j.setPeriod(Integer.valueOf(editTextPeriod.getText().toString()));
+        j.setPeriod(j.getPeriodic() ? Integer.valueOf(editTextPeriod.getText().toString()) : 0);
 
         u.getJobs().add(j);
 
