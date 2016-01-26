@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
             Logger.info(this.toString(), "Log out pressed, aborting activity.");
 
-            UserManager.getInstance().clearUser(this);
+            UserManager.getInstance().clearUser();
 
             finish();
 

@@ -1,6 +1,8 @@
 package k23b.ac.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +11,10 @@ import android.view.ViewGroup;
 import k23b.ac.R;
 import k23b.ac.activities.LoginActivity;
 import k23b.ac.activities.MainActivity;
+import k23b.ac.db.dao.DatabaseHandler;
 import k23b.ac.rest.User;
 import k23b.ac.tasks.UserLoginTask;
+import k23b.ac.threads.SenderService;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
@@ -19,6 +23,37 @@ import k23b.ac.util.UserManager;
 public class StartFragment extends Fragment implements UserLoginTask.LoginCallback {
 
     private UserLoginTask userLoginTask = null;
+
+    private boolean initialized = false;
+
+    @Override
+    public void onAttach(Activity activity) {
+
+        Logger.info(this.toString(), "onAttach()");
+
+        super.onAttach(activity);
+
+        if (initialized)
+            return;
+
+        initialized = true;
+
+        Logger.info(this.toString(), "Initializing.");
+
+        Settings.getBaseURI();
+
+        final Context context = activity.getApplicationContext();
+
+        UserManager.getInstance().setContext(context);
+
+        NetworkManager.setContext(context);
+
+        DatabaseHandler.setContext(context);
+
+        Intent intent = new Intent(context, SenderService.class);
+
+        context.startService(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +74,11 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onStart() {
 
         Logger.info(this.toString(), "onStart()");
@@ -53,10 +93,7 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
 
     private void checkStatus() {
 
-        if (getActivity() == null)
-            return;
-
-        User u = UserManager.getInstance().getStoredUser(getActivity());
+        User u = UserManager.getInstance().getStoredUser();
 
         if (u == null) {
 
@@ -66,7 +103,7 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
             return;
         }
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Logger.info(this.toString(), "Network unavailable, starting log in activity.");
 

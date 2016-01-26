@@ -14,6 +14,7 @@ import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.rest.UserContainer;
 import k23b.ac.tasks.UsersSendTask;
+import k23b.ac.util.JobFactory;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 
@@ -21,7 +22,8 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
 
     private static UsersSendTask usersSendTask;
     private static UserContainer outgoingUserContainer;
-    private Context context;
+
+    private int interval;
 
     @Override
     public void run() {
@@ -30,7 +32,7 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
 
         while (!isInterrupted()) {
 
-            if (NetworkManager.networkAvailable(context)) {
+            if (NetworkManager.isNetworkAvailable()) {
 
                 Log.d(SenderThread.class.getName(), "Network Available!");
 
@@ -38,7 +40,7 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
             }
 
             try {
-                Thread.sleep(Settings.getSenderThreadInterval() * 1000);
+                Thread.sleep(interval * 1000);
             } catch (InterruptedException e) {
 
                 Log.d(SenderThread.class.getName(), "Interrupted while Sleeping.");
@@ -53,12 +55,15 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
 
     }
 
-    public SenderThread(Context context) {
+    public SenderThread(int interval) {
         super();
 
-        this.context = context;
         usersSendTask = null;
         outgoingUserContainer = null;
+
+        this.interval = interval;
+
+        this.setName("Sender");
     }
 
     private void sendUserContainer() {
@@ -75,21 +80,9 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
 
                 outgoingUserContainer.getUsers().add(user);
 
-                for (JobDao jd : jobSet) {
+                for (JobDao jd : jobSet)
+                    user.getJobs().add(JobFactory.fromDao(jd));
 
-                    Job j = new Job();
-                    j.setAgentId(jd.getAgentId());
-                    j.setAdminId(-1);
-                    j.setJobId(jd.getId());
-                    j.setParams(jd.getParameters());
-                    j.setTimeAssigned(jd.getTime_assigned());
-                    j.setTimeSent(new Date());
-                    j.setTimeStopped(new Date());
-                    j.setPeriodic(jd.getPeriodic());
-                    j.setPeriod(jd.getPeriod());
-
-                    user.getJobs().add(j);
-                }
             }
 
             if (usersSendTask != null)

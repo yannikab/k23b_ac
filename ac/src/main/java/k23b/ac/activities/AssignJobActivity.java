@@ -66,7 +66,7 @@ public class AssignJobActivity extends Activity {
 
     public void onOkPressed(View v) {
 
-        User u = UserManager.getInstance().getStoredUser(this);
+        User u = UserManager.getInstance().getStoredUser();
 
         if (u == null) {
 

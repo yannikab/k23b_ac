@@ -36,8 +36,7 @@ import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 import k23b.ac.util.UserManager;
 
-public class JobsFragment extends Fragment
-        implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
+public class JobsFragment extends Fragment implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
 
     private AgentsReceiveTask agentsFetchTask;
 
@@ -51,6 +50,8 @@ public class JobsFragment extends Fragment
 
     private ActionMode actionMode;
 
+    boolean initialized = false;
+
     public JobsFragment() {
 
         super();
@@ -63,6 +64,13 @@ public class JobsFragment extends Fragment
         super.onAttach(activity);
 
         ((MainActivity) activity).onSectionAttached(2);
+
+        if (initialized)
+            return;
+
+        initialized = true;
+
+        fetchAgents();
     }
 
     @Override
@@ -107,8 +115,7 @@ public class JobsFragment extends Fragment
 
                 Agent agent = (Agent) parent.getAdapter().getItem(position);
 
-                actionMode = JobsFragment.this.getActivity()
-                        .startActionMode(new JobsActionsAgent(JobsFragment.this, agent));
+                actionMode = JobsFragment.this.getActivity().startActionMode(new JobsActionsAgent(JobsFragment.this, agent));
 
                 view.setSelected(true);
 
@@ -128,8 +135,7 @@ public class JobsFragment extends Fragment
 
                 Job job = (Job) parent.getAdapter().getItem(position);
 
-                actionMode = JobsFragment.this.getActivity()
-                        .startActionMode(new JobsActionsJob(JobsFragment.this, job));
+                actionMode = JobsFragment.this.getActivity().startActionMode(new JobsActionsJob(JobsFragment.this, job));
 
                 view.setSelected(true);
 
@@ -185,7 +191,7 @@ public class JobsFragment extends Fragment
         if (getActivity() == null)
             return;
 
-        User u = UserManager.getInstance().getStoredUser(getActivity());
+        User u = UserManager.getInstance().getStoredUser();
 
         if (u == null) {
 
@@ -194,7 +200,7 @@ public class JobsFragment extends Fragment
             return;
         }
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
             return;
@@ -243,7 +249,7 @@ public class JobsFragment extends Fragment
         if (getActivity() == null)
             return;
 
-        User u = UserManager.getInstance().getStoredUser(getActivity());
+        User u = UserManager.getInstance().getStoredUser();
 
         if (u == null) {
 
@@ -252,7 +258,7 @@ public class JobsFragment extends Fragment
             return;
         }
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
             return;
@@ -263,8 +269,7 @@ public class JobsFragment extends Fragment
 
         showProgress(true);
 
-        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(),
-                selectedAgent.getRequestHash());
+        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
 
         jobsFetchTask.execute();
     }

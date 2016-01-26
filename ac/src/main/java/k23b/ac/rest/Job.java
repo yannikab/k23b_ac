@@ -16,31 +16,31 @@ import k23b.ac.rest.status.JobStatus;
 public class Job implements Comparable<Job>, Parcelable {
 
     @Element(required = true)
-    private long jobId;
+    protected long jobId;
 
     @Element(required = true)
-    private long agentId;
+    protected long agentId;
 
     @Element(required = true)
-    private long adminId;
+    protected long adminId;
 
     @Element(required = true)
-    private Date timeAssigned;
+    protected Date timeAssigned;
 
     @Element(required = false)
-    private Date timeSent;
-
-    @Element(required = true)
-    private String params;
-
-    @Element(required = true)
-    private boolean periodic;
+    protected Date timeSent;
 
     @Element(required = false)
-    private int period;
+    protected String params;
+
+    @Element(required = true)
+    protected boolean periodic;
 
     @Element(required = false)
-    private Date timeStopped;
+    protected int period;
+
+    @Element(required = false)
+    protected Date timeStopped;
 
     @Override
     public int describeContents() {

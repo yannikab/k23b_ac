@@ -9,6 +9,7 @@ import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
+import k23b.ac.util.JobDispatcher;
 import k23b.ac.util.Logger;
 import k23b.ac.util.UserManager;
 
@@ -49,7 +50,7 @@ public class JobsActionsJob implements ActionMode.Callback {
         if (callback.getActivity() == null)
             return false;
 
-        User u = UserManager.getInstance().getStoredUser(callback.getActivity());
+        User u = UserManager.getInstance().getStoredUser();
 
         if (u == null) {
 
@@ -93,7 +94,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         u.getJobs().add(job);
 
-        // JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
+        JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
         Toast.makeText(callback.getActivity(), String.valueOf(job.getParams()), Toast.LENGTH_LONG).show();
     }
@@ -111,7 +112,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         u.getJobs().add(job);
 
-        // JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
+        JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
         Toast.makeText(callback.getActivity(), String.valueOf(j.getParams()), Toast.LENGTH_LONG).show();
     }

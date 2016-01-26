@@ -65,7 +65,7 @@ public class JobDispatcher extends IntentService {
 
         Log.d(JobDispatcher.class.getName(), "DispatchJob Called");
         // check to see if there is a network connection
-        if (!NetworkManager.networkAvailable(JobDispatcher.this)) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Log.d(JobDispatcher.class.getName(), "No active Network Connection Found!");
             // if not insert the job in the DB

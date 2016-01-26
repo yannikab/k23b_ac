@@ -99,7 +99,7 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         if (getActivity() == null)
             return;
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
             return;
@@ -150,7 +150,7 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         if (getActivity() == null)
             return;
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
             return;
@@ -242,7 +242,7 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         if (getActivity() == null)
             return;
 
-        UserManager.getInstance().storeUser(getActivity(), new User(username, password));
+        UserManager.getInstance().storeUser(new User(username, password));
     }
 
     private void startMainActivity() {

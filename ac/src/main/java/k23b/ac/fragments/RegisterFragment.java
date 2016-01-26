@@ -169,7 +169,7 @@ public class RegisterFragment extends Fragment implements UserRegisterTask.Regis
         if (getActivity() == null)
             return;
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
             return;

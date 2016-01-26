@@ -13,10 +13,14 @@ public class UserManager {
     private static final String PREF_USER_NAME = "user.name";
     private static final String PREF_USER_PASSWORD = "user.password";
 
+    private Context context;
+
     private static UserManager instance;
 
     private UserManager() {
         super();
+
+        this.context = null;
     }
 
     public static UserManager getInstance() {
@@ -34,9 +38,25 @@ public class UserManager {
         return instance;
     }
 
-    private synchronized User getUser(Activity activity) {
+    public void setContext(Context context) {
 
-        SharedPreferences sp = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        synchronized (UserManager.class) {
+
+            if (this.context == null)
+                this.context = context;
+        }
+    }
+
+    private synchronized User getUser() {
+
+        if (context == null) {
+
+            Logger.info(this.toString(), "No context set, can not retrieve stored user.");
+
+            return null;
+        }
+
+        SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         boolean userStored = sp.getBoolean(PREF_USER_STORED, false);
         String username = sp.getString(PREF_USER_NAME, null);
@@ -47,7 +67,7 @@ public class UserManager {
 
         if (username == null || password == null) {
 
-            setUser(activity, null);
+            setUser(null);
             return null;
         }
 
@@ -56,9 +76,16 @@ public class UserManager {
         return new User(username, password);
     }
 
-    private synchronized void setUser(Activity activity, User user) {
+    private synchronized void setUser(User user) {
 
-        SharedPreferences sp = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        if (this.context == null) {
+
+            Logger.info(this.toString(), "No context set, user will not be stored.");
+
+            return;
+        }
+
+        SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         Editor editor = sp.edit();
 
@@ -72,32 +99,32 @@ public class UserManager {
         editor.commit();
     }
 
-    public boolean isUserStored(Activity activity) {
+    public boolean isUserStored() {
 
         Logger.info(getInstance().toString(), "Checking if a user is stored.");
 
-        return getUser(activity) != null;
+        return getUser() != null;
     }
 
-    public User getStoredUser(Activity activity) {
+    public User getStoredUser() {
 
         Logger.info(getInstance().toString(), "Getting stored user.");
 
-        return getUser(activity);
+        return getUser();
     }
 
-    public void storeUser(Activity activity, User user) {
+    public void storeUser(User user) {
 
         Logger.info(getInstance().toString(), "Storing user.");
 
-        setUser(activity, user);
+        setUser(user);
     }
 
-    public void clearUser(Activity activity) {
+    public void clearUser() {
 
         Logger.info(getInstance().toString(), "Clearing stored user.");
 
-        setUser(activity, null);
+        setUser(null);
     }
 
     @Override

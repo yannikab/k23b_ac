@@ -50,7 +50,7 @@ public class JobsActionsAgent implements ActionMode.Callback {
         if (callback.getActivity() == null)
             return false;
 
-        if (!UserManager.getInstance().isUserStored(callback.getActivity())) {
+        if (!UserManager.getInstance().isUserStored()) {
 
             Logger.info(this.toString(), "No user logged in, aborting activity.");
             callback.getActivity().finish();

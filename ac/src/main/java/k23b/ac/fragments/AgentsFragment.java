@@ -20,9 +20,11 @@ import k23b.ac.R;
 import k23b.ac.activities.MainActivity;
 import k23b.ac.fragments.adapters.AgentsArrayAdapter;
 import k23b.ac.rest.Agent;
+import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.tasks.AgentsReceiveTask;
 import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
+import k23b.ac.util.JobDispatcher;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
@@ -30,13 +32,15 @@ import k23b.ac.util.UserManager;
 
 public class AgentsFragment extends Fragment implements AgentsReceiveCallback, ActionMode.Callback {
 
-    private AgentsReceiveTask agentsFetchTask;
+    private AgentsReceiveTask agentsReceiveTask;
 
     private List<Agent> agents;
 
     private Agent selectedAgent;
 
     private ActionMode actionMode;
+
+    boolean initialized = false;
 
     public AgentsFragment() {
 
@@ -50,6 +54,13 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
         super.onAttach(activity);
 
         ((MainActivity) activity).onSectionAttached(1);
+
+        if (initialized)
+            return;
+
+        initialized = true;
+
+        fetchAgents();
     }
 
     @Override
@@ -103,7 +114,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
         showAgents();
 
-        showProgress(agentsFetchTask != null);
+        showProgress(agentsReceiveTask != null);
     }
 
     @Override
@@ -129,13 +140,13 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
     private void fetchAgents() {
 
-        if (agentsFetchTask != null)
+        if (agentsReceiveTask != null)
             return;
 
         if (getActivity() == null)
             return;
 
-        User u = UserManager.getInstance().getStoredUser(getActivity());
+        User u = UserManager.getInstance().getStoredUser();
 
         if (u == null) {
 
@@ -144,7 +155,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
             return;
         }
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        if (!NetworkManager.isNetworkAvailable()) {
 
             Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
             return;
@@ -152,15 +163,15 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
         showProgress(true);
 
-        agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
+        agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
 
-        agentsFetchTask.execute();
+        agentsReceiveTask.execute();
     }
 
     @Override
     public void agentsReceived(List<Agent> agents) {
 
-        this.agentsFetchTask = null;
+        this.agentsReceiveTask = null;
 
         this.agents = agents;
 
@@ -238,9 +249,18 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
+        User u = UserManager.getInstance().getStoredUser();
+
+        if (u == null) {
+
+            Logger.info(this.toString(), "No user logged in, aborting activity.");
+            getActivity().finish();
+            return false;
+        }
+
         switch (item.getItemId()) {
         case R.id.action_agent_terminate:
-            terminateAgent();
+            terminateAgent(u);
             mode.finish();
             return true;
         default:
@@ -254,18 +274,21 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
         this.selectedAgent = null;
     }
 
-    private void terminateAgent() {
+    private void terminateAgent(User u) {
 
         if (getActivity() == null)
             return;
 
-        if (!NetworkManager.networkAvailable(getActivity())) {
+        Job job = new Job();
+        job.setAgentId(selectedAgent.getAgentId());
+        job.setParams("exit");
+        job.setPeriodic(false);
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
-            return;
-        }
+        u.getJobs().add(job);
 
-        Toast.makeText(getActivity(), String.valueOf(selectedAgent.getAgentId()), Toast.LENGTH_LONG).show();
+        JobDispatcher.getInstance().dispatch(getActivity(), u);
+
+        Toast.makeText(getActivity(), String.valueOf(job.getParams()), Toast.LENGTH_LONG).show();
     }
 
     @Override
