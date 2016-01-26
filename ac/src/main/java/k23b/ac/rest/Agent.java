@@ -148,9 +148,9 @@ public class Agent implements Comparable<Agent> {
         if (this.equals(that))
             return 0;
 
-        if (this.getAgentId() > that.getAgentId())
+        if (this.agentId > that.agentId)
             return 1;
-        else if (this.getAgentId() < that.getAgentId())
+        else if (this.agentId < that.agentId)
             return -1;
         else
             return 0;

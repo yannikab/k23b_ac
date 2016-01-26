@@ -8,8 +8,9 @@ public class Settings {
 
     static {
 
-         setBaseURI("http://192.168.1.15:8080/am/client/");
-//        setBaseURI("http://192.168.2.7:8080/am/client/");
+        setBaseURI("http://192.168.1.9:8080/am/client/");
+        // setBaseURI("http://192.168.2.7:8080/am/client/");
+
         Logger.info("Settings", "baseURI: " + getBaseURI());
 
         setJobRequestInterval(20);

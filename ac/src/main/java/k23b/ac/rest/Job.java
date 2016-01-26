@@ -212,9 +212,9 @@ public class Job implements Comparable<Job>, Parcelable {
         if (this.equals(that))
             return 0;
 
-        if (this.getJobId() > that.getJobId())
+        if (this.jobId > that.jobId)
             return 1;
-        else if (this.getJobId() < that.getJobId())
+        else if (this.jobId < that.jobId)
             return -1;
         else
             return 0;

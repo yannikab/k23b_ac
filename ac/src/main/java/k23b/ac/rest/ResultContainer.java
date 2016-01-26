@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 @Root(name = "results")
@@ -13,7 +13,7 @@ public class ResultContainer {
     @Attribute(required = true)
     private String status;
 
-    @Element(name = "result", required = false)
+    @ElementList(inline = true, required = false)
     private List<Result> results;
 
     public ResultContainer(String status) {
