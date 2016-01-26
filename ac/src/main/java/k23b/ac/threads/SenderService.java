@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import k23b.ac.util.Logger;
-import k23b.ac.util.Settings;
 
 public class SenderService extends Service {
 
@@ -24,17 +23,29 @@ public class SenderService extends Service {
 
         Logger.info(this.toString(), "onCreate()");
 
-        senderThread = new SenderThread(Settings.getSenderThreadInterval());
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        int interval = intent.getIntExtra("interval", 60);
+
+        Logger.info(this.toString(), String.format("Starting job sender thread. (interval=%d)", interval));
+
+        senderThread = new SenderThread(interval);
 
         senderThread.start();
 
-        super.onCreate();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
 
         Logger.info(this.toString(), "onTaskRemoved()");
+
+        super.onTaskRemoved(rootIntent);
 
         Logger.info(this.toString(), "Stopping job sender thread.");
 
@@ -50,9 +61,7 @@ public class SenderService extends Service {
         }
 
         Logger.info(this.toString(), "Sender service stopping.");
-        
-        stopSelf();
 
-        super.onTaskRemoved(rootIntent);
+        stopSelf();
     }
 }

@@ -1,9 +1,7 @@
 package k23b.ac.threads;
 
-import java.util.Date;
 import java.util.Set;
 
-import android.content.Context;
 import android.util.Log;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.db.dao.UserDao;

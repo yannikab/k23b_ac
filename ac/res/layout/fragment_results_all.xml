@@ -2,13 +2,159 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:baselineAligned="false"
+    android:orientation="horizontal" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:padding="5dp"
-        android:text="@string/results_all" />
+    <RelativeLayout
+        android:id="@+id/results_all_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/results_all_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/textView_padding"
+            android:text="@string/results_all"
+            android:textSize="@dimen/textView_textSize"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/textView_padding"
+                android:text="@string/number_of_results"
+                android:textSize="@dimen/textView_textSize" />
+
+            <EditText
+                android:id="@+id/results_number_editText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/results_refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_results_refresh" />
+        </LinearLayout>
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="@dimen/weight_result_resultId"
+                    android:background="@color/header_result_back"
+                    android:gravity="center"
+                    android:padding="@dimen/row_result_padding"
+                    android:text="@string/header_result_resultId"
+                    android:textColor="@color/header_text"
+                    android:textSize="@dimen/row_result_textSize" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="@dimen/weight_result_jobId"
+                    android:background="@color/header_result_back_alt"
+                    android:gravity="center"
+                    android:padding="@dimen/row_result_padding"
+                    android:text="@string/header_result_jobId"
+                    android:textColor="@color/header_text"
+                    android:textSize="@dimen/row_result_textSize" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="@dimen/weight_result_timeReceived"
+                    android:background="@color/header_result_back"
+                    android:gravity="center"
+                    android:padding="@dimen/row_result_padding"
+                    android:text="@string/header_result_timeReceived"
+                    android:textColor="@color/header_text"
+                    android:textSize="@dimen/row_result_textSize" />
+            </TableRow>
+        </TableLayout>
+
+        <ListView
+            android:id="@+id/results_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/output_controls"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:visibility="visible" >
+
+            <TextView
+                android:id="@+id/textViewResultId"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Output for result 326"
+                android:textSize="@dimen/textView_textSize" />
+
+            <Button
+                android:id="@+id/button_expand_all"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="@string/action_expand_all" />
+
+            <Button
+                android:id="@+id/button_collapse_all"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/action_collapse_all" />
+        </LinearLayout>
+
+        <WebView
+            android:id="@+id/webview_results_all"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
 
 </LinearLayout>

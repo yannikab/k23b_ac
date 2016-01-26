@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="weight_result_resultId" format="float" type="dimen">0.6</item>
+    <item name="weight_result_jobId" format="float" type="dimen">0.4</item>
+    <item name="weight_result_timeReceived" format="float" type="dimen">1.5</item>
+
+</resources>

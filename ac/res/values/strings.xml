@@ -8,6 +8,8 @@
     <string name="action_logout">Log out</string>
     <string name="action_agents_refresh">Refresh</string>
     <string name="action_jobs_refresh">Refresh</string>
+    <string name="action_results_refresh">Refresh</string>
+    <string name="number_of_results">Number of results:</string>
     <string name="action_results_agent">Results</string>
     <string name="action_results_all">All Results</string>
     <string name="action_agent_terminate">Terminate</string>

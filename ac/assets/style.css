@@ -1,0 +1,7 @@
+body {font-size: 18px; margin: 0px; }
+ul li { margin: 4px 0 4px 0; }
+
+ul {
+    -webkit-margin-before: 6px;
+    -webkit-margin-after: 6px;
+}

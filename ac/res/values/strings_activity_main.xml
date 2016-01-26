@@ -9,5 +9,7 @@
     <string name="title_section_results_agent">Agent Results</string>
     <string name="title_section_results_all">All Results</string>
     <string name="title_activity_assign_job">Assign Job</string>
+    <string name="action_collapse_all">Collapse All</string>
+    <string name="action_expand_all">Expand All</string>
 
 </resources>

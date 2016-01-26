@@ -13,8 +13,10 @@
     <dimen name="textView_padding">5dp</dimen>
     <dimen name="row_agent_textSize">20sp</dimen>
     <dimen name="row_job_textSize">20sp</dimen>
+    <dimen name="row_result_textSize">20sp</dimen>
     <dimen name="row_agent_padding">2dp</dimen>
     <dimen name="row_job_padding">2dp</dimen>
+    <dimen name="row_result_padding">2dp</dimen>
     <dimen name="control_margin">16dp</dimen>
 
 </resources>

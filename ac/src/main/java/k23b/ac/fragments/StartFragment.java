@@ -40,8 +40,6 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
 
         Logger.info(this.toString(), "Initializing.");
 
-        Settings.getBaseURI();
-
         final Context context = activity.getApplicationContext();
 
         UserManager.getInstance().setContext(context);
@@ -51,6 +49,8 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
         DatabaseHandler.setContext(context);
 
         Intent intent = new Intent(context, SenderService.class);
+
+        intent.putExtra("interval", Settings.getSenderThreadInterval());
 
         context.startService(intent);
     }
