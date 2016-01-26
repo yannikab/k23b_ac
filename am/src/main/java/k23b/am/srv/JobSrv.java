@@ -42,6 +42,12 @@ public class JobSrv {
      */
     public static JobDao create(long agentId, long adminId, Date timeAssigned, String params, boolean periodic, int period) throws SrvException {
 
+        if (timeAssigned == null)
+            throw new SrvException(new IllegalArgumentException("Date timeAssigned is null."));
+        
+        if (params == null)
+            throw new SrvException(new IllegalArgumentException("String params is null."));
+            
         try {
 
             synchronized (lock ? AgentCC.class : new Object()) {

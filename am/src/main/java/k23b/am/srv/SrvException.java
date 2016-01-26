@@ -12,4 +12,8 @@ public class SrvException extends Exception {
     public SrvException(String message) {
         super(message);
     }
+
+    public SrvException(Throwable cause) {
+        super(cause);
+    }
 }
