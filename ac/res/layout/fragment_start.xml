@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="@dimen/textView_padding"
-            android:text="@string/message_start_authenticating"
+            android:text="@string/message_authenticating"
             android:textSize="@dimen/progress_message_textSize" />
 
         <ProgressBar

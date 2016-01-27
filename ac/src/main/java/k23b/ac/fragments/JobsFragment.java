@@ -38,9 +38,9 @@ import k23b.ac.util.UserManager;
 
 public class JobsFragment extends Fragment implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
 
-    private AgentsReceiveTask agentsFetchTask;
+    private AgentsReceiveTask agentsReceiveTask;
 
-    private JobsReceiveTask jobsFetchTask;
+    private JobsReceiveTask jobsReceiveTask;
 
     private List<Agent> agents;
 
@@ -53,10 +53,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
     boolean initialized = false;
 
     public JobsFragment() {
-
         super();
-
-        fetchAgents();
     }
 
     @Override
@@ -159,7 +156,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         showJobs();
 
-        showProgress(agentsFetchTask != null || jobsFetchTask != null);
+        showProgress(agentsReceiveTask != null || jobsReceiveTask != null);
     }
 
     @Override
@@ -174,9 +171,13 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         switch (item.getItemId()) {
         case R.id.action_jobs_refresh:
+
             fetchAgents();
+
             break;
+
         default:
+
             break;
         }
 
@@ -185,7 +186,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
     private void fetchAgents() {
 
-        if (agentsFetchTask != null || jobsFetchTask != null)
+        if (agentsReceiveTask != null || jobsReceiveTask != null)
             return;
 
         if (getActivity() == null)
@@ -208,15 +209,15 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         showProgress(true);
 
-        agentsFetchTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
+        agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
 
-        agentsFetchTask.execute();
+        agentsReceiveTask.execute();
     }
 
     @Override
     public void agentsReceived(List<Agent> agents) {
 
-        this.agentsFetchTask = null;
+        this.agentsReceiveTask = null;
 
         this.agents = agents;
 
@@ -236,14 +237,14 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         if (getView() == null)
             return;
 
-        ListView agentsListView = (ListView) getView().findViewById(R.id.jobs_listView_agents);
+        ListView agentsListView = (ListView) getView().findViewById(R.id.results_agent_listView_agents);
 
         agentsListView.setAdapter(agents == null ? null : new AgentsArrayAdapter(getActivity(), this.agents));
     }
 
     private void fetchJobs() {
 
-        if (agentsFetchTask != null || jobsFetchTask != null)
+        if (agentsReceiveTask != null || jobsReceiveTask != null)
             return;
 
         if (getActivity() == null)
@@ -269,15 +270,13 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         showProgress(true);
 
-        jobsFetchTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
+        jobsReceiveTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
 
-        jobsFetchTask.execute();
+        jobsReceiveTask.execute();
     }
 
     @Override
     public void jobsReceived(List<Job> jobs) {
-
-        jobsFetchTask = null;
 
         this.jobs = jobs;
 
@@ -320,16 +319,18 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         Logger.info(this.toString(), "Registration pending, aborting activity.");
 
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
+        abortActivity();
     }
 
     @Override
     public void incorrectCredentials() {
 
         Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
+
+        abortActivity();
+    }
+
+    private void abortActivity() {
 
         if (getActivity() == null)
             return;
@@ -351,5 +352,17 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
 
         showProgress(false);
+    }
+
+    @Override
+    public void removeAgentsTask() {
+
+        this.jobsReceiveTask = null;
+    }
+
+    @Override
+    public void removeJobsTask() {
+
+        this.jobsReceiveTask = null;
     }
 }

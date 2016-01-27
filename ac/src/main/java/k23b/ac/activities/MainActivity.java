@@ -88,16 +88,16 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
         switch (number) {
         case 1:
-            mTitle = getString(R.string.title_section_agents);
+            mTitle = getString(R.string.title_fragment_agents);
             break;
         case 2:
-            mTitle = getString(R.string.title_section_jobs);
+            mTitle = getString(R.string.title_fragment_jobs);
             break;
         case 3:
-            mTitle = getString(R.string.title_section_results_agent);
+            mTitle = getString(R.string.title_fragment_results_agent);
             break;
         case 4:
-            mTitle = getString(R.string.title_section_results_all);
+            mTitle = getString(R.string.title_fragment_results_all);
             break;
         }
     }

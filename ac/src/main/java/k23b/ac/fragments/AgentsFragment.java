@@ -43,10 +43,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     boolean initialized = false;
 
     public AgentsFragment() {
-
         super();
-
-        fetchAgents();
     }
 
     @Override
@@ -128,10 +125,14 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+
         case R.id.action_agents_refresh:
+
             fetchAgents();
             break;
+
         default:
+
             break;
         }
 
@@ -170,8 +171,6 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
     @Override
     public void agentsReceived(List<Agent> agents) {
-
-        this.agentsReceiveTask = null;
 
         this.agents = agents;
 
@@ -236,6 +235,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
         MenuInflater inflater = mode.getMenuInflater();
         inflater.inflate(R.menu.agent_actions, menu);
         return true;
@@ -243,6 +243,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
         return false;
     }
 
@@ -259,17 +260,23 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
         }
 
         switch (item.getItemId()) {
+
         case R.id.action_agent_terminate:
+
             terminateAgent(u);
             mode.finish();
+
             return true;
+
         default:
+
             return false;
         }
     }
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+
         this.actionMode = null;
         this.selectedAgent = null;
     }
@@ -296,16 +303,18 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
 
         Logger.info(this.toString(), "Registration pending, aborting activity.");
 
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
+        abortActivity();
     }
 
     @Override
     public void incorrectCredentials() {
 
         Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
+
+        abortActivity();
+    }
+
+    private void abortActivity() {
 
         if (getActivity() == null)
             return;
@@ -327,5 +336,11 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
         Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
 
         showProgress(false);
+    }
+
+    @Override
+    public void removeAgentsTask() {
+
+        this.agentsReceiveTask = null;
     }
 }

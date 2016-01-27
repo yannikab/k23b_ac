@@ -26,6 +26,8 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         public void serviceError();
 
         public void networkError();
+
+        public void removeJobsTask();
     }
 
     private final JobsReceiveCallback jobsReceiveCallback;
@@ -36,9 +38,9 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     private List<Job> jobs;
 
-    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password,
-            String agentHash) {
+    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password, String agentHash) {
         super();
+
         this.jobsReceiveCallback = jobsReceiveCallback;
         this.baseURI = baseURI;
         this.username = username;
@@ -88,6 +90,8 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onPostExecute(final ReceiveStatus status) {
 
+        jobsReceiveCallback.removeJobsTask();
+
         switch (status) {
 
         case RECEIVE_SUCCESS:
@@ -116,6 +120,8 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     @Override
     protected void onCancelled() {
+
+        jobsReceiveCallback.removeJobsTask();
 
         jobsReceiveCallback.jobsReceived(null);
     }

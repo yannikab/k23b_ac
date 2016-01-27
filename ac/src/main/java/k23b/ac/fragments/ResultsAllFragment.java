@@ -2,7 +2,6 @@ package k23b.ac.fragments;
 
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -15,9 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -32,13 +29,12 @@ import k23b.ac.rest.Result;
 import k23b.ac.rest.User;
 import k23b.ac.tasks.ResultsReceiveTask;
 import k23b.ac.tasks.ResultsReceiveTask.ResultsReceiveCallback;
-import k23b.ac.util.AssetManager;
 import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 import k23b.ac.util.UserManager;
-import k23b.ac.util.XmlTreeConverter;
+import k23b.ac.util.WebViewManager;
 
 public class ResultsAllFragment extends Fragment implements ResultsReceiveCallback {
 
@@ -50,27 +46,18 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
     private ActionMode actionMode;
 
-    private String htmlHeaderString;
-    private String htmlFooterString;
-
-    private static final String headerAsset = "header.html";
-    private static final String footerAsset = "footer.html";
-
-    private static final XmlTreeConverter xmlTreeConverter = new XmlTreeConverter();
+    private WebViewManager webviewManager;
 
     private static final int defaultNumberOfResults = 50;
 
-    boolean initialized = false;
-
     private int numberOfResults;
+
+    boolean initialized = false;
 
     public ResultsAllFragment() {
         super();
 
         Logger.debug(this.toString(), "Instantiating.");
-
-        htmlHeaderString = AssetManager.loadAsset(headerAsset);
-        htmlFooterString = AssetManager.loadAsset(footerAsset);
 
         numberOfResults = defaultNumberOfResults;
     }
@@ -102,7 +89,6 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         this.numberOfResults = savedInstanceState.getInt("numberOfResults");
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -110,12 +96,12 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
         View view = inflater.inflate(R.layout.fragment_results_all, container, false);
 
-        final EditText results_number_editText = (EditText) view.findViewById(R.id.results_number_editText);
-        
+        final EditText results_number_editText = (EditText) view.findViewById(R.id.results_all_editText_number);
+
         results_number_editText.setFilters(new InputFilter[] { new InputFilterMinMax("1", "999") });
         results_number_editText.setText(String.valueOf(numberOfResults));
 
-        final Button buttonRefreshResults = (Button) view.findViewById(R.id.results_refresh_button);
+        final Button buttonRefreshResults = (Button) view.findViewById(R.id.results_all_button_refresh);
 
         buttonRefreshResults.setOnClickListener(new OnClickListener() {
 
@@ -126,7 +112,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
             }
         });
 
-        final ListView resultsListView = (ListView) view.findViewById(R.id.results_listView);
+        final ListView resultsListView = (ListView) view.findViewById(R.id.results_all_listView_results);
 
         resultsListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -145,46 +131,33 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         });
 
         final WebView outputWebView = (WebView) view.findViewById(R.id.webview_results_all);
-        
-        outputWebView.setWebViewClient(new WebViewClient() {
 
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
+        this.webviewManager = new WebViewManager(outputWebView);
 
-        outputWebView.setInitialScale(125);
-
-        WebSettings webSettings = outputWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setDefaultTextEncodingName("utf-8");
-
-        final Button buttonExpandAll = (Button) view.findViewById(R.id.button_expand_all);
+        final Button buttonExpandAll = (Button) view.findViewById(R.id.results_all_button_expand_all);
 
         buttonExpandAll.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                outputWebView.loadUrl("javascript:expandTree('tree')");
+                webviewManager.expandAll();
             }
         });
 
-        final Button buttonCollapseAll = (Button) view.findViewById(R.id.button_collapse_all);
+        final Button buttonCollapseAll = (Button) view.findViewById(R.id.results_all_button_collapse_all);
 
         buttonCollapseAll.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                outputWebView.loadUrl("javascript:collapseTree('tree')");
+                webviewManager.collapseAll();
             }
         });
 
         final View outputControls = view.findViewById(R.id.output_controls);
-        
+
         outputControls.setVisibility(View.GONE);
 
         return view;
@@ -237,14 +210,15 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-        
+
         case R.id.action_results_all:
-            
+
             fetchResults();
+
             break;
-            
+
         default:
-            
+
             break;
         }
 
@@ -264,7 +238,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         if (u == null) {
 
             Logger.info(this.toString(), "No user logged in, aborting activity.");
-            
+
             abortActivity();
             return;
         }
@@ -278,7 +252,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         if (getView() == null)
             return;
 
-        EditText results_number_editText = (EditText) getView().findViewById(R.id.results_number_editText);
+        EditText results_number_editText = (EditText) getView().findViewById(R.id.results_all_editText_number);
 
         int number = 0;
 
@@ -305,8 +279,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         if (getView() == null)
             return;
 
-        final WebView outputWebView = (WebView) getView().findViewById(R.id.webview_results_all);
-        outputWebView.loadUrl("about:blank");
+        webviewManager.clearOutput();
 
         final View outputControls = getView().findViewById(R.id.output_controls);
         outputControls.setVisibility(View.GONE);
@@ -325,7 +298,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         showResults();
 
         clearOutput();
-        
+
         showProgress(false);
 
         if (getActivity() == null)
@@ -339,7 +312,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         if (getView() == null)
             return;
 
-        ListView resultsListView = (ListView) getView().findViewById(R.id.results_listView);
+        ListView resultsListView = (ListView) getView().findViewById(R.id.results_all_listView_results);
 
         resultsListView.setAdapter(results == null ? null : new ResultsArrayAdapter(getActivity(), this.results));
     }
@@ -353,20 +326,14 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
             return;
 
         final TextView textViewResultId = (TextView) getView().findViewById(R.id.textViewResultId);
-        
+
         textViewResultId.setText("Output for result " + selectedResult.getResultId());
 
         final View outputControls = getView().findViewById(R.id.output_controls);
-        
+
         outputControls.setVisibility(View.VISIBLE);
 
-        String content = xmlTreeConverter.stringForXml(selectedResult.getJobResult());
-
-        String htmlString = htmlHeaderString + content + htmlFooterString;
-
-        final WebView outputWebView = (WebView) getView().findViewById(R.id.webview_results_all);
-        
-        outputWebView.loadDataWithBaseURL("file:///android_asset/", htmlString, "text/html", "utf-8", null);
+        webviewManager.displayOutput(selectedResult.getJobResult());
     }
 
     private void showProgress(final boolean show) {

@@ -8,16 +8,16 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
-import k23b.ac.rest.Agent;
-import k23b.ac.rest.AgentContainer;
+import k23b.ac.rest.ResultContainer;
+import k23b.ac.rest.Result;
 import k23b.ac.tasks.status.ReceiveStatus;
 import k23b.ac.util.Logger;
 
-public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
+public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface AgentsReceiveCallback {
+    public interface ResultsAgentReceiveCallback {
 
-        public void agentsReceived(List<Agent> agents);
+        public void resultsReceived(List<Result> results);
 
         public void registrationPending();
 
@@ -27,23 +27,27 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
         public void networkError();
 
-        public void removeAgentsTask();
+        public void removeResultsTask();
     }
 
-    private final AgentsReceiveCallback agentsReceiveCallback;
+    private final ResultsAgentReceiveCallback resultsAgentReceiveCallback;
     private final String baseURI;
     private final String username;
     private final String password;
+    private final String agentHash;
+    private final int number;
 
-    private List<Agent> agents;
+    private List<Result> results;
 
-    public AgentsReceiveTask(AgentsReceiveCallback agentsReceiveCallback, String baseURI, String username, String password) {
+    public ResultsAgentReceiveTask(ResultsAgentReceiveCallback resultsAgentReceiveCallback, String baseURI, String username, String password, String agentHash, int number) {
         super();
 
-        this.agentsReceiveCallback = agentsReceiveCallback;
+        this.resultsAgentReceiveCallback = resultsAgentReceiveCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
+        this.agentHash = agentHash;
+        this.number = number;
     }
 
     @Override
@@ -51,28 +55,21 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
         try {
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            String url = baseURI + "agents/" + username + "/" + password;
+            String url = baseURI + String.format("results/agent/%s/%s/%s/%d", username, password, agentHash, number);
 
             RestTemplate restTemplate = new RestTemplate();
 
             restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
 
-            AgentContainer agentContainer = restTemplate.getForObject(url, AgentContainer.class);
+            ResultContainer resultContainer = restTemplate.getForObject(url, ResultContainer.class);
 
-            Collections.sort(agentContainer.getAgents());
+            Collections.sort(resultContainer.getResults());
 
-            String status = agentContainer.getStatus();
+            String status = resultContainer.getStatus();
 
             if (status.startsWith("Accepted")) {
 
-                this.agents = agentContainer.getAgents();
+                this.results = resultContainer.getResults();
 
                 return ReceiveStatus.RECEIVE_SUCCESS;
 
@@ -92,28 +89,28 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onPostExecute(final ReceiveStatus status) {
 
-        agentsReceiveCallback.removeAgentsTask();
+        resultsAgentReceiveCallback.removeResultsTask();
 
         switch (status) {
 
         case RECEIVE_SUCCESS:
-            agentsReceiveCallback.agentsReceived(agents);
+            resultsAgentReceiveCallback.resultsReceived(results);
             break;
 
         case REGISTRATION_PENDING:
-            agentsReceiveCallback.registrationPending();
+            resultsAgentReceiveCallback.registrationPending();
             break;
 
         case INCORRECT_CREDENTIALS:
-            agentsReceiveCallback.incorrectCredentials();
+            resultsAgentReceiveCallback.incorrectCredentials();
             break;
 
         case SERVICE_ERROR:
-            agentsReceiveCallback.serviceError();
+            resultsAgentReceiveCallback.serviceError();
             break;
 
         case NETWORK_ERROR:
-            agentsReceiveCallback.networkError();
+            resultsAgentReceiveCallback.networkError();
 
         default:
             break;
@@ -123,8 +120,8 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onCancelled() {
 
-        agentsReceiveCallback.removeAgentsTask();
+        resultsAgentReceiveCallback.removeResultsTask();
 
-        agentsReceiveCallback.agentsReceived(null);
+        resultsAgentReceiveCallback.resultsReceived(null);
     }
 }

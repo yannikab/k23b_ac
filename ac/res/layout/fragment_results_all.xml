@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/textView_padding"
-            android:text="@string/results_all"
+            android:text="@string/results"
             android:textSize="@dimen/textView_textSize"
             android:visibility="gone" />
 
@@ -66,7 +66,7 @@
                 android:textSize="@dimen/textView_textSize" />
 
             <EditText
-                android:id="@+id/results_number_editText"
+                android:id="@+id/results_all_editText_number"
                 android:layout_width="55dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -75,7 +75,7 @@
                 android:inputType="number" />
 
             <Button
-                android:id="@+id/results_refresh_button"
+                android:id="@+id/results_all_button_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -125,7 +125,7 @@
         </TableLayout>
 
         <ListView
-            android:id="@+id/results_listView"
+            android:id="@+id/results_all_listView_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
         </ListView>
@@ -158,16 +158,15 @@
                 android:textSize="@dimen/textView_textSize" />
 
             <Button
-                android:id="@+id/button_expand_all"
+                android:id="@+id/results_all_button_expand_all"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/action_results_expand_all" />
 
             <Button
-                android:id="@+id/button_collapse_all"
+                android:id="@+id/results_all_button_collapse_all"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="@string/action_results_collapse_all" />
         </LinearLayout>
 
