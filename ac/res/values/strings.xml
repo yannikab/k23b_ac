@@ -9,7 +9,6 @@
     <string name="action_agents_refresh">Refresh</string>
     <string name="action_jobs_refresh">Refresh</string>
     <string name="action_results_refresh">Refresh</string>
-    <string name="number_of_results">Number of results:</string>
     <string name="action_results_agent">Results</string>
     <string name="action_results_all">All Results</string>
     <string name="action_agent_terminate">Terminate</string>
@@ -20,5 +19,8 @@
     <string name="jobs">Jobs</string>
     <string name="results_agent">Results</string>
     <string name="results_all">All Results</string>
+    <string name="error_service_error">Service error</string>
+    <string name="error_network_error">Network error</string>
+    <string name="error_network_unavailable">Network unavailable</string>
 
 </resources>

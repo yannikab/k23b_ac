@@ -15,6 +15,7 @@ import k23b.ac.db.dao.DatabaseHandler;
 import k23b.ac.rest.User;
 import k23b.ac.tasks.UserLoginTask;
 import k23b.ac.threads.SenderService;
+import k23b.ac.util.AssetManager;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
@@ -46,6 +47,8 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
 
         NetworkManager.setContext(context);
 
+        AssetManager.setContext(context);
+        
         DatabaseHandler.setContext(context);
 
         Intent intent = new Intent(context, SenderService.class);

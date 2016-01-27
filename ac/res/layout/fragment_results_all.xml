@@ -11,11 +11,28 @@
         android:layout_height="match_parent"
         android:visibility="gone" >
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
+        <LinearLayout
+            android:id="@+id/start_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/textView_padding"
+                android:text="@string/message_results_getting"
+                android:textSize="@dimen/progress_message_textSize" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
@@ -40,25 +57,28 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:padding="@dimen/textView_padding"
-                android:text="@string/number_of_results"
+                android:text="@string/message_results_number"
                 android:textSize="@dimen/textView_textSize" />
 
             <EditText
                 android:id="@+id/results_number_editText"
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:imeOptions="actionDone"
                 android:inputType="number" />
 
             <Button
                 android:id="@+id/results_refresh_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_gravity="center"
                 android:text="@string/action_results_refresh" />
         </LinearLayout>
 
@@ -127,28 +147,28 @@
 
             <TextView
                 android:id="@+id/textViewResultId"
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Output for result 326"
+                android:text="@string/message_results_title_sample"
                 android:textSize="@dimen/textView_textSize" />
 
             <Button
                 android:id="@+id/button_expand_all"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="@string/action_expand_all" />
+                android:text="@string/action_results_expand_all" />
 
             <Button
                 android:id="@+id/button_collapse_all"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:text="@string/action_collapse_all" />
+                android:text="@string/action_results_collapse_all" />
         </LinearLayout>
 
         <WebView

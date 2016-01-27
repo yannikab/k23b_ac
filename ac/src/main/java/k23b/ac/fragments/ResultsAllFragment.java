@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import k23b.ac.rest.User;
 import k23b.ac.tasks.ResultsReceiveTask;
 import k23b.ac.tasks.ResultsReceiveTask.ResultsReceiveCallback;
 import k23b.ac.util.AssetManager;
+import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
@@ -56,31 +58,38 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
     private static final XmlTreeConverter xmlTreeConverter = new XmlTreeConverter();
 
+    private static final int defaultNumberOfResults = 50;
+
     boolean initialized = false;
+
+    private int numberOfResults;
 
     public ResultsAllFragment() {
         super();
+
+        Logger.debug(this.toString(), "Instantiating.");
+
+        htmlHeaderString = AssetManager.loadAsset(headerAsset);
+        htmlFooterString = AssetManager.loadAsset(footerAsset);
+
+        numberOfResults = defaultNumberOfResults;
     }
 
     @Override
     public void onAttach(Activity activity) {
+
+        Logger.debug(this.toString(), "onAttach()");
+
         super.onAttach(activity);
 
         ((MainActivity) activity).onSectionAttached(4);
-
-        if (initialized)
-            return;
-
-        initialized = true;
-
-        fetchResults();
-
-        htmlHeaderString = AssetManager.loadAsset(activity.getApplicationContext(), headerAsset);
-        htmlFooterString = AssetManager.loadAsset(activity.getApplicationContext(), footerAsset);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        Logger.debug(this.toString(), "onCreate()");
+
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
@@ -89,16 +98,22 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
         if (savedInstanceState == null)
             return;
+
+        this.numberOfResults = savedInstanceState.getInt("numberOfResults");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Logger.debug(this.toString(), "onCreateView()");
+
         View view = inflater.inflate(R.layout.fragment_results_all, container, false);
 
-        EditText results_number_editText = (EditText) view.findViewById(R.id.results_number_editText);
-        results_number_editText.setText("10");
+        final EditText results_number_editText = (EditText) view.findViewById(R.id.results_number_editText);
+        
+        results_number_editText.setFilters(new InputFilter[] { new InputFilterMinMax("1", "999") });
+        results_number_editText.setText(String.valueOf(numberOfResults));
 
         final Button buttonRefreshResults = (Button) view.findViewById(R.id.results_refresh_button);
 
@@ -111,7 +126,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
             }
         });
 
-        ListView resultsListView = (ListView) view.findViewById(R.id.results_listView);
+        final ListView resultsListView = (ListView) view.findViewById(R.id.results_listView);
 
         resultsListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -130,6 +145,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         });
 
         final WebView outputWebView = (WebView) view.findViewById(R.id.webview_results_all);
+        
         outputWebView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -167,7 +183,8 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
             }
         });
 
-        View outputControls = view.findViewById(R.id.output_controls);
+        final View outputControls = view.findViewById(R.id.output_controls);
+        
         outputControls.setVisibility(View.GONE);
 
         return view;
@@ -175,6 +192,9 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
+        Logger.debug(this.toString(), "onActivityCreated()");
+
         super.onActivityCreated(savedInstanceState);
 
         if (actionMode != null) {
@@ -187,6 +207,23 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         showOutput();
 
         showProgress(resultsReceiveTask != null);
+
+        if (initialized)
+            return;
+
+        initialized = true;
+
+        fetchResults();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        Logger.debug(this.toString(), "onSaveInstanceState()");
+
+        outState.putInt("numberOfResults", numberOfResults);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -200,10 +237,14 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+        
         case R.id.action_results_all:
+            
             fetchResults();
             break;
+            
         default:
+            
             break;
         }
 
@@ -223,7 +264,8 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         if (u == null) {
 
             Logger.info(this.toString(), "No user logged in, aborting activity.");
-            getActivity().finish();
+            
+            abortActivity();
             return;
         }
 
@@ -238,29 +280,58 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
         EditText results_number_editText = (EditText) getView().findViewById(R.id.results_number_editText);
 
-        int number = Integer.valueOf(results_number_editText.getText().toString());
+        int number = 0;
+
+        try {
+
+            number = Integer.valueOf(results_number_editText.getText().toString());
+
+        } catch (NumberFormatException e) {
+
+            return;
+        }
 
         showProgress(true);
+
+        clearOutput();
 
         resultsReceiveTask = new ResultsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), number);
 
         resultsReceiveTask.execute();
     }
 
+    private void clearOutput() {
+
+        if (getView() == null)
+            return;
+
+        final WebView outputWebView = (WebView) getView().findViewById(R.id.webview_results_all);
+        outputWebView.loadUrl("about:blank");
+
+        final View outputControls = getView().findViewById(R.id.output_controls);
+        outputControls.setVisibility(View.GONE);
+
+        final TextView textViewResultId = (TextView) getView().findViewById(R.id.textViewResultId);
+        textViewResultId.setText("");
+    }
+
     @Override
     public void resultsReceived(List<Result> results) {
 
-        this.resultsReceiveTask = null;
-
         this.results = results;
-
-        showResults();
 
         this.selectedResult = null;
 
-        showOutput();
+        showResults();
 
+        clearOutput();
+        
         showProgress(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), results.size() + (results.size() == 1 ? " result" : " results") + " received", Toast.LENGTH_LONG).show();
     }
 
     private void showResults() {
@@ -275,32 +346,26 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
     private void showOutput() {
 
-        if (getView() == null)
-            return;
-
-        final WebView outputWebView = (WebView) getView().findViewById(R.id.webview_results_all);
-
-        outputWebView.loadUrl("about:blank");
-
-        TextView textViewResultId = (TextView) getView().findViewById(R.id.textViewResultId);
-
-        View outputControls = getView().findViewById(R.id.output_controls);
-
-        textViewResultId.setText("");
-
-        outputControls.setVisibility(View.GONE);
-
         if (selectedResult == null)
             return;
 
+        if (getView() == null)
+            return;
+
+        final TextView textViewResultId = (TextView) getView().findViewById(R.id.textViewResultId);
+        
         textViewResultId.setText("Output for result " + selectedResult.getResultId());
 
+        final View outputControls = getView().findViewById(R.id.output_controls);
+        
         outputControls.setVisibility(View.VISIBLE);
 
         String content = xmlTreeConverter.stringForXml(selectedResult.getJobResult());
 
         String htmlString = htmlHeaderString + content + htmlFooterString;
 
+        final WebView outputWebView = (WebView) getView().findViewById(R.id.webview_results_all);
+        
         outputWebView.loadDataWithBaseURL("file:///android_asset/", htmlString, "text/html", "utf-8", null);
     }
 
@@ -318,16 +383,18 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
         Logger.info(this.toString(), "Registration pending, aborting activity.");
 
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
+        abortActivity();
     }
 
     @Override
     public void incorrectCredentials() {
 
         Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
+
+        abortActivity();
+    }
+
+    private void abortActivity() {
 
         if (getActivity() == null)
             return;
@@ -349,5 +416,11 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
 
         showProgress(false);
+    }
+
+    @Override
+    public void removeResultsTask() {
+
+        this.resultsReceiveTask = null;
     }
 }

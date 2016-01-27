@@ -10,36 +10,53 @@ import android.content.Context;
 
 public class AssetManager {
 
-    public static String loadAsset(Context context, String filename) {
+    private static Context context;
 
-        BufferedReader br = null;
+    public static void setContext(Context context) {
 
-        try {
+        synchronized (AssetManager.class) {
 
-            InputStream is = context.getAssets().open(filename);
+            if (AssetManager.context == null)
+                AssetManager.context = context;
+        }
+    }
 
-            InputStreamReader isr = new InputStreamReader(is);
+    public static String loadAsset(String filename) {
 
-            br = new BufferedReader(isr);
+        synchronized (AssetManager.class) {
 
-            String line;
+            if (context == null)
+                return null;
 
-            StringWriter sw = new StringWriter();
+            BufferedReader br = null;
 
-            String separator = System.getProperty("line.separator");
+            try {
 
-            while ((line = br.readLine()) != null) {
-                sw.append(line);
-                sw.append(separator);
+                InputStream is = context.getAssets().open(filename);
+
+                InputStreamReader isr = new InputStreamReader(is);
+
+                br = new BufferedReader(isr);
+
+                String line;
+
+                StringWriter sw = new StringWriter();
+
+                String separator = System.getProperty("line.separator");
+
+                while ((line = br.readLine()) != null) {
+                    sw.append(line);
+                    sw.append(separator);
+                }
+
+                return sw.toString();
+
+            } catch (IOException e) {
+                // e.printStackTrace();
+                Logger.error(AssetManager.class.getSimpleName(), e.getMessage());
+
+                return null;
             }
-
-            return sw.toString();
-
-        } catch (IOException e) {
-            // e.printStackTrace();
-            Logger.error(AssetManager.class.getSimpleName(), e.getMessage());
-
-            return null;
         }
     }
 }

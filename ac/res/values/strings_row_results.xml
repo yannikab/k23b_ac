@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="header_result_resultId">Result</string>
-    <string name="header_result_jobId">Job</string>
-    <string name="header_result_timeReceived">Time Received</string>
-
-</resources>

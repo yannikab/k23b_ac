@@ -15,14 +15,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Reconnecting to server" />
+            android:padding="@dimen/textView_padding"
+            android:text="@string/message_start_authenticating"
+            android:textSize="@dimen/progress_message_textSize" />
 
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/control_margin" />
+            android:layout_gravity="center" />
     </LinearLayout>
 
 </RelativeLayout>

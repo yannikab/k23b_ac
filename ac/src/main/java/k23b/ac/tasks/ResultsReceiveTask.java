@@ -26,6 +26,8 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         public void serviceError();
 
         public void networkError();
+
+        public void removeResultsTask();
     }
 
     private final ResultsReceiveCallback resultsReceiveCallback;
@@ -85,6 +87,8 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onPostExecute(final ReceiveStatus status) {
 
+        resultsReceiveCallback.removeResultsTask();
+
         switch (status) {
 
         case RECEIVE_SUCCESS:
@@ -113,6 +117,8 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     @Override
     protected void onCancelled() {
+
+        resultsReceiveCallback.removeResultsTask();
 
         resultsReceiveCallback.resultsReceived(null);
     }
