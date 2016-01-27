@@ -2,6 +2,11 @@ package k23b.ac.threads;
 
 import java.util.Set;
 
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
 import android.util.Log;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.db.dao.UserDao;
@@ -11,17 +16,19 @@ import k23b.ac.db.srv.UserSrv;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.rest.UserContainer;
-import k23b.ac.tasks.UsersSendTask;
+import k23b.ac.tasks.status.UsersSendStatus;
 import k23b.ac.util.JobFactory;
+import k23b.ac.util.Logger;
 import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
+import k23b.ac.util.observerPattern.Observable;
+import k23b.ac.util.observerPattern.Observer;
 
-public class SenderThread extends Thread implements UsersSendTask.UsersSendCallback {
-
-    private static UsersSendTask usersSendTask;
-    private static UserContainer outgoingUserContainer;
+public class SenderThread extends Thread implements Observer {
 
     private int interval;
+    private Object monitor;
+    private static UserContainer outgoingUserContainer;
 
     @Override
     public void run() {
@@ -29,15 +36,18 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
         Log.d(SenderThread.class.getName(), "Sender Thread running");
 
         while (!isInterrupted()) {
+            try {
 
-            if (NetworkManager.isNetworkAvailable()) {
-
+                if (!NetworkManager.isNetworkAvailable()) {
+                    synchronized (monitor) {
+                        Log.d(SenderThread.class.getName(), "Network Unavailable: SenderThread waiting");
+                        monitor.wait();
+                    }
+                }
                 Log.d(SenderThread.class.getName(), "Network Available!");
 
                 sendUserContainer();
-            }
 
-            try {
                 Thread.sleep(interval * 1000);
             } catch (InterruptedException e) {
 
@@ -48,16 +58,28 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
         }
         // make one last check on the DB and try to send any potential
         // UserContainer
-        sendUserContainer();
+        if (NetworkManager.isNetworkAvailable())
+            sendUserContainer();
+
         Log.d(SenderThread.class.getName(), "Finished.");
 
+    }
+
+    @Override
+    public void update(Observable observable, boolean data) {
+        if (data) {
+            synchronized (monitor) {
+                monitor.notify();
+                Log.d(SenderThread.class.getName(), "Unblocking the Thread");
+            }
+        }
     }
 
     public SenderThread(int interval) {
         super();
 
-        usersSendTask = null;
         outgoingUserContainer = null;
+        monitor = new Object();
 
         this.interval = interval;
 
@@ -83,9 +105,6 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
 
             }
 
-            if (usersSendTask != null)
-                Log.e(SenderThread.class.getName(), "usersSendTask is NOT null , data will be lost");
-
             if (!outgoingUserContainer.getUsers().isEmpty()) {
 
                 Log.d(SenderThread.class.getName(), outgoingUserContainer.getUsers().size() + " Users to send to AM");
@@ -93,8 +112,28 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
                     Log.d(SenderThread.class.getName(),
                             u.getJobs().size() + " Jobs from User: " + u.getUsername() + " to send to AM");
 
-                usersSendTask = new UsersSendTask(this, Settings.getBaseURI(), outgoingUserContainer);
-                usersSendTask.execute();
+                UsersSendStatus status = usersSend(Settings.getBaseURI(), outgoingUserContainer);
+
+                switch (status) {
+
+                case NETWORK_ERROR:
+                case INVALID:
+                    networkError();
+                    break;
+
+                case SERVICE_ERROR:
+                    serviceError();
+                    break;
+
+                case SUCCESS:
+                    sendSuccess();
+                    break;
+
+                case CANCELLED:
+                default:
+                    cancelled();
+                    break;
+                }
             } else
                 outgoingUserContainer = null;
 
@@ -103,14 +142,10 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
         }
     }
 
-    @Override
     public void sendSuccess() {
 
         Log.d(SenderThread.class.getName(), "Users were sent successfully!");
         synchronized (SenderThread.class) {
-
-            if (usersSendTask == null)
-                return;
 
             for (User user : outgoingUserContainer.getUsers()) {
 
@@ -133,50 +168,52 @@ public class SenderThread extends Thread implements UsersSendTask.UsersSendCallb
                 }
             }
 
-            usersSendTask = null;
             outgoingUserContainer = null;
         }
-
     }
 
-    @Override
+    UsersSendStatus usersSend(String baseURI, UserContainer userContainer) {
+
+        try {
+            String url = baseURI + "users/";
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
+
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+
+            String response = restTemplate.postForObject(url, userContainer, String.class);
+
+            if (response.startsWith("Accepted"))
+                return UsersSendStatus.SUCCESS;
+            else if (response.startsWith("Service Error"))
+                return UsersSendStatus.SERVICE_ERROR;
+            else
+                return UsersSendStatus.INVALID;
+
+        } catch (RestClientException e) {
+            Logger.logException(getClass().getSimpleName(), e);
+            return UsersSendStatus.NETWORK_ERROR;
+        }
+    }
+
     public void serviceError() {
 
-        if (usersSendTask == null)
-            return;
-
         Log.e(SenderThread.class.getName(), "Service Error, User Container was not Sent");
-        synchronized (SenderThread.class) {
-
-            usersSendTask = null;
-        }
+        outgoingUserContainer = null;
     }
 
-    @Override
     public void networkError() {
 
-        if (usersSendTask == null)
-            return;
-
         Log.e(SenderThread.class.getName(), "Network Error, User Container was not Sent");
-        synchronized (SenderThread.class) {
-
-            usersSendTask = null;
-        }
+        outgoingUserContainer = null;
     }
 
-    @Override
     public void cancelled() {
 
-        if (usersSendTask == null)
-            return;
-
         Log.e(SenderThread.class.getName(), "UsersSendTask Cancelled, User Container was not Sent");
-        synchronized (SenderThread.class) {
-
-            usersSendTask = null;
-        }
-
+        outgoingUserContainer = null;
     }
 
 }

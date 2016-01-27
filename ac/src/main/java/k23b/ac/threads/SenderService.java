@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import k23b.ac.util.Logger;
+import k23b.ac.util.NetworkManager;
 
 public class SenderService extends Service {
 
@@ -35,6 +36,8 @@ public class SenderService extends Service {
 
         senderThread = new SenderThread(interval);
 
+        NetworkManager.getInstance().registerObserver(senderThread);
+
         senderThread.start();
 
         return super.onStartCommand(intent, flags, startId);
@@ -59,6 +62,8 @@ public class SenderService extends Service {
             // e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+
+        NetworkManager.getInstance().unregisterObserver(senderThread);
 
         Logger.info(this.toString(), "Sender service stopping.");
 
