@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import k23b.ac.services.AssetManager;
 
 public class WebViewManager {
 

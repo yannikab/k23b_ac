@@ -7,8 +7,8 @@ import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
 import k23b.ac.rest.UserContainer;
+import k23b.ac.services.Logger;
 import k23b.ac.tasks.status.UsersSendStatus;
-import k23b.ac.util.Logger;
 
 public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
 

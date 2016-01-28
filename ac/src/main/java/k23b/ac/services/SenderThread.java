@@ -1,4 +1,4 @@
-package k23b.ac.threads;
+package k23b.ac.services;
 
 import java.util.Set;
 
@@ -7,6 +7,8 @@ import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
 import android.util.Log;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.db.dao.UserDao;
@@ -16,15 +18,13 @@ import k23b.ac.db.srv.UserSrv;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.rest.UserContainer;
+import k23b.ac.services.observer.Observable;
+import k23b.ac.services.observer.Observer;
 import k23b.ac.tasks.status.UsersSendStatus;
 import k23b.ac.util.JobFactory;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
-import k23b.ac.util.observerPattern.Observable;
-import k23b.ac.util.observerPattern.Observer;
 
-public class SenderThread extends Thread implements Observer {
+public class SenderThread extends Thread implements Observer<State> {
 
     private int interval;
     private Object monitor;
@@ -36,19 +36,25 @@ public class SenderThread extends Thread implements Observer {
         Log.d(SenderThread.class.getName(), "Sender Thread running");
 
         while (!isInterrupted()) {
+            
             try {
 
                 synchronized (monitor) {
+                    
                     while (!NetworkManager.isNetworkAvailable()) {
+                        
                         Log.d(SenderThread.class.getName(), "Network Unavailable: SenderThread waiting");
+                        
                         monitor.wait();
                     }
                 }
+                
                 Log.d(SenderThread.class.getName(), "Network Available!");
 
                 sendUserContainer();
 
                 Thread.sleep(interval * 1000);
+                
             } catch (InterruptedException e) {
 
                 Log.d(SenderThread.class.getName(), "Interrupted while Sleeping.");
@@ -66,14 +72,17 @@ public class SenderThread extends Thread implements Observer {
     }
 
     @Override
-    public void update(Observable observable, boolean data) {
-        
+    public void update(Observable<NetworkInfo.State> observable, NetworkInfo.State data) {
+
         synchronized (monitor) {
-            if (data) {
+
+            if (data == NetworkInfo.State.CONNECTED) {
+
                 monitor.notify();
                 Log.d(SenderThread.class.getName(), "Unblocking the Thread");
             }
         }
+
     }
 
     public SenderThread(int interval) {
@@ -216,5 +225,4 @@ public class SenderThread extends Thread implements Observer {
         Log.e(SenderThread.class.getName(), "UsersSendTask Cancelled, User Container was not Sent");
         outgoingUserContainer = null;
     }
-
 }

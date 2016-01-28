@@ -1,10 +1,8 @@
-package k23b.ac.threads;
+package k23b.ac.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 
 public class SenderService extends Service {
 

@@ -10,8 +10,8 @@ import k23b.ac.R;
 import k23b.ac.activities.AssignJobActivity;
 import k23b.ac.activities.MainActivity;
 import k23b.ac.rest.Agent;
-import k23b.ac.util.Logger;
-import k23b.ac.util.UserManager;
+import k23b.ac.services.Logger;
+import k23b.ac.services.UserManager;
 
 public class JobsActionsAgent implements ActionMode.Callback {
 

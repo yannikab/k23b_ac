@@ -5,8 +5,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
+import k23b.ac.services.Logger;
 import k23b.ac.tasks.status.UserRegisterStatus;
-import k23b.ac.util.Logger;
 
 /**
  * Represents an asynchronous registration task used to register the user.

@@ -18,9 +18,9 @@ import k23b.ac.fragments.JobsFragment;
 import k23b.ac.fragments.NavigationDrawerFragment;
 import k23b.ac.fragments.ResultsAgentFragment;
 import k23b.ac.fragments.ResultsAllFragment;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
-import k23b.ac.util.UserManager;
+import k23b.ac.services.Logger;
+import k23b.ac.services.NetworkManager;
+import k23b.ac.services.UserManager;
 
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 

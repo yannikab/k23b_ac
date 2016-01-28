@@ -1,5 +1,7 @@
 package k23b.ac.util;
 
+import k23b.ac.services.Logger;
+
 /**
  * Get/Set the configurable parameters of the application
  *

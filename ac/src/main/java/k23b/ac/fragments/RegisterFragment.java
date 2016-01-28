@@ -20,9 +20,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import k23b.ac.R;
+import k23b.ac.services.Logger;
+import k23b.ac.services.NetworkManager;
 import k23b.ac.tasks.UserRegisterTask;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
 
 public class RegisterFragment extends Fragment implements UserRegisterTask.RegisterCallback {

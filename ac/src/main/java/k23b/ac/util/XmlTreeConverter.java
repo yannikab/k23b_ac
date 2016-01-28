@@ -26,6 +26,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import k23b.ac.services.Logger;
+
 public class XmlTreeConverter {
 
     private DocumentBuilder db;

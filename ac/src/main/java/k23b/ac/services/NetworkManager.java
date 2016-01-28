@@ -1,4 +1,4 @@
-package k23b.ac.util;
+package k23b.ac.services;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,13 +12,13 @@ import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import k23b.ac.util.observerPattern.Observable;
-import k23b.ac.util.observerPattern.Observer;
+import k23b.ac.services.observer.Observable;
+import k23b.ac.services.observer.Observer;
 
-public class NetworkManager extends BroadcastReceiver implements Observable {
+public class NetworkManager extends BroadcastReceiver implements Observable<State> {
 
     private static Context context;
-    private static List<Observer> observerList;
+    private static List<Observer<State>> observerList;
     private static NetworkManager instance;
 
     public static void setContext(Context context) {
@@ -33,6 +33,7 @@ public class NetworkManager extends BroadcastReceiver implements Observable {
     public static NetworkManager getInstance() {
 
         synchronized (NetworkManager.class) {
+
             if (NetworkManager.instance == null)
                 instance = new NetworkManager();
 
@@ -41,11 +42,12 @@ public class NetworkManager extends BroadcastReceiver implements Observable {
     }
 
     @Override
-    public void registerObserver(Observer observer) {
+    public void registerObserver(Observer<State> observer) {
 
         synchronized (NetworkManager.class) {
+
             if (observerList == null)
-                observerList = new LinkedList<Observer>();
+                observerList = new LinkedList<Observer<State>>();
 
             if (!observerList.contains(observer))
                 observerList.add(observer);
@@ -55,9 +57,10 @@ public class NetworkManager extends BroadcastReceiver implements Observable {
     }
 
     @Override
-    public void unregisterObserver(Observer observer) {
+    public void unregisterObserver(Observer<State> observer) {
 
         synchronized (NetworkManager.class) {
+
             if (observerList.isEmpty())
                 return;
 
@@ -71,22 +74,25 @@ public class NetworkManager extends BroadcastReceiver implements Observable {
     @Override
     public void notifyObservers() {
 
-        for (Observer obs : observerList)
+        for (Observer<State> obs : observerList)
             obs.update(this, getCurrentState());
+
         Log.d(NetworkManager.class.getName(), "Observers notified");
 
     }
 
     @Override
-    public boolean getCurrentState() {
+    public State getCurrentState() {
 
         synchronized (NetworkManager.class) {
-            return isNetworkAvailable();
+
+            return isNetworkAvailable() ? State.CONNECTED : State.DISCONNECTED;
         }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Bundle extras = intent.getExtras();
 
         NetworkInfo info = (NetworkInfo) extras.getParcelable("networkInfo");
@@ -98,13 +104,14 @@ public class NetworkManager extends BroadcastReceiver implements Observable {
 
             Log.d(NetworkManager.class.getName(), "Network Connection Available!");
             Toast.makeText(context, "Network Available", Toast.LENGTH_SHORT).show();
-            notifyObservers();
 
         } else {
 
             Log.d(NetworkManager.class.getName(), "Network Connection Unavailable!");
             Toast.makeText(context, "Network Unavailable", Toast.LENGTH_SHORT).show();
         }
+        
+        notifyObservers();
     }
 
     public static boolean isNetworkAvailable() {

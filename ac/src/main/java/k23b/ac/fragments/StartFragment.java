@@ -13,13 +13,13 @@ import k23b.ac.activities.LoginActivity;
 import k23b.ac.activities.MainActivity;
 import k23b.ac.db.dao.DatabaseHandler;
 import k23b.ac.rest.User;
+import k23b.ac.services.AssetManager;
+import k23b.ac.services.Logger;
+import k23b.ac.services.NetworkManager;
+import k23b.ac.services.SenderService;
+import k23b.ac.services.UserManager;
 import k23b.ac.tasks.UserLoginTask;
-import k23b.ac.threads.SenderService;
-import k23b.ac.util.AssetManager;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
-import k23b.ac.util.UserManager;
 
 public class StartFragment extends Fragment implements UserLoginTask.LoginCallback {
 

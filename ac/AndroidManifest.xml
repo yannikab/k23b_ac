@@ -48,10 +48,10 @@
         </activity>
 
         <service
-            android:name="k23b.ac.util.JobDispatcher"
-            android:exported="false" />
-        
-        <service android:name="k23b.ac.threads.SenderService" >
+            android:name="k23b.ac.services.JobDispatcher"
+            android:exported="false" >
+        </service>
+        <service android:name="k23b.ac.services.SenderService" >
         </service>
     </application>
 

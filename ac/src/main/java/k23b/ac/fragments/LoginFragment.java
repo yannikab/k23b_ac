@@ -24,11 +24,11 @@ import k23b.ac.R;
 import k23b.ac.activities.MainActivity;
 import k23b.ac.activities.RegisterActivity;
 import k23b.ac.rest.User;
+import k23b.ac.services.Logger;
+import k23b.ac.services.NetworkManager;
+import k23b.ac.services.UserManager;
 import k23b.ac.tasks.UserLoginTask;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
-import k23b.ac.util.UserManager;
 
 public class LoginFragment extends Fragment implements UserLoginTask.LoginCallback {
 

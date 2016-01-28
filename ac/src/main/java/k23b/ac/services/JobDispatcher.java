@@ -1,4 +1,4 @@
-package k23b.ac.util;
+package k23b.ac.services;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +20,9 @@ import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
 import k23b.ac.rest.UserContainer;
 import k23b.ac.tasks.status.UsersSendStatus;
+import k23b.ac.util.JobDaoFactory;
+import k23b.ac.util.Settings;
+import k23b.ac.util.UserDaoFactory;
 
 public class JobDispatcher extends IntentService {
 

@@ -27,13 +27,13 @@ import k23b.ac.activities.MainActivity;
 import k23b.ac.fragments.adapters.ResultsArrayAdapter;
 import k23b.ac.rest.Result;
 import k23b.ac.rest.User;
+import k23b.ac.services.Logger;
+import k23b.ac.services.NetworkManager;
+import k23b.ac.services.UserManager;
 import k23b.ac.tasks.ResultsReceiveTask;
 import k23b.ac.tasks.ResultsReceiveTask.ResultsReceiveCallback;
 import k23b.ac.util.InputFilterMinMax;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
-import k23b.ac.util.UserManager;
 import k23b.ac.util.WebViewManager;
 
 public class ResultsAllFragment extends Fragment implements ResultsReceiveCallback {

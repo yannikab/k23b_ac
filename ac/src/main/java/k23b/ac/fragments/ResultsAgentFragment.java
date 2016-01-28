@@ -30,15 +30,15 @@ import k23b.ac.fragments.adapters.ResultsArrayAdapter;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.Result;
 import k23b.ac.rest.User;
+import k23b.ac.services.Logger;
+import k23b.ac.services.NetworkManager;
+import k23b.ac.services.UserManager;
 import k23b.ac.tasks.AgentsReceiveTask;
 import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.tasks.ResultsAgentReceiveTask;
 import k23b.ac.tasks.ResultsAgentReceiveTask.ResultsAgentReceiveCallback;
 import k23b.ac.util.InputFilterMinMax;
-import k23b.ac.util.Logger;
-import k23b.ac.util.NetworkManager;
 import k23b.ac.util.Settings;
-import k23b.ac.util.UserManager;
 import k23b.ac.util.WebViewManager;
 
 public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallback, ResultsAgentReceiveCallback {

@@ -9,9 +9,9 @@ import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
 import k23b.ac.rest.ResultContainer;
+import k23b.ac.services.Logger;
 import k23b.ac.rest.Result;
 import k23b.ac.tasks.status.ReceiveStatus;
-import k23b.ac.util.Logger;
 
 public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 

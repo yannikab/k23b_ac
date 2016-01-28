@@ -9,9 +9,9 @@ import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
-import k23b.ac.util.JobDispatcher;
-import k23b.ac.util.Logger;
-import k23b.ac.util.UserManager;
+import k23b.ac.services.JobDispatcher;
+import k23b.ac.services.Logger;
+import k23b.ac.services.UserManager;
 
 public class JobsActionsJob implements ActionMode.Callback {
 
