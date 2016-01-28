@@ -38,8 +38,8 @@ public class SenderThread extends Thread implements Observer {
         while (!isInterrupted()) {
             try {
 
-                while(!NetworkManager.isNetworkAvailable()) {
-                    synchronized (monitor) {
+                synchronized (monitor) {
+                    while (!NetworkManager.isNetworkAvailable()) {
                         Log.d(SenderThread.class.getName(), "Network Unavailable: SenderThread waiting");
                         monitor.wait();
                     }
@@ -67,8 +67,9 @@ public class SenderThread extends Thread implements Observer {
 
     @Override
     public void update(Observable observable, boolean data) {
-        if (data) {
-            synchronized (monitor) {
+        
+        synchronized (monitor) {
+            if (data) {
                 monitor.notify();
                 Log.d(SenderThread.class.getName(), "Unblocking the Thread");
             }
