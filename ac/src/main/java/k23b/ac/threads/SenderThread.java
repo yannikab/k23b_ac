@@ -38,7 +38,7 @@ public class SenderThread extends Thread implements Observer {
         while (!isInterrupted()) {
             try {
 
-                if (!NetworkManager.isNetworkAvailable()) {
+                while(!NetworkManager.isNetworkAvailable()) {
                     synchronized (monitor) {
                         Log.d(SenderThread.class.getName(), "Network Unavailable: SenderThread waiting");
                         monitor.wait();
