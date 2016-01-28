@@ -237,7 +237,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         if (getView() == null)
             return;
 
-        ListView agentsListView = (ListView) getView().findViewById(R.id.results_agent_listView_agents);
+        ListView agentsListView = (ListView) getView().findViewById(R.id.jobs_listView_agents);
 
         agentsListView.setAdapter(agents == null ? null : new AgentsArrayAdapter(getActivity(), this.agents));
     }
