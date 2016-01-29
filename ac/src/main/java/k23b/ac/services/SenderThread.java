@@ -36,25 +36,25 @@ public class SenderThread extends Thread implements Observer<State> {
         Log.d(SenderThread.class.getName(), "Sender Thread running");
 
         while (!isInterrupted()) {
-            
+
             try {
 
                 synchronized (monitor) {
-                    
+
                     while (!NetworkManager.isNetworkAvailable()) {
-                        
+
                         Log.d(SenderThread.class.getName(), "Network Unavailable: SenderThread waiting");
-                        
+
                         monitor.wait();
                     }
                 }
-                
+
                 Log.d(SenderThread.class.getName(), "Network Available!");
 
                 sendUserContainer();
 
                 Thread.sleep(interval * 1000);
-                
+
             } catch (InterruptedException e) {
 
                 Log.d(SenderThread.class.getName(), "Interrupted while Sleeping.");

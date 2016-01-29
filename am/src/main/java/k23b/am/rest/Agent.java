@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import k23b.am.model.AgentStatus;
+
 @XmlRootElement(name = "agent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Agent {
@@ -33,10 +35,13 @@ public class Agent {
     @XmlElement(required = false)
     protected Date timeTerminated;
 
+    @XmlElement(required = true)
+    protected AgentStatus agentStatus;
+
     public Agent() {
         super();
     }
-    
+
     public long getAgentId() {
         return agentId;
     }
@@ -83,6 +88,23 @@ public class Agent {
 
     public void setTimeTerminated(Date timeTerminated) {
         this.timeTerminated = timeTerminated;
+    }
+
+    protected AgentStatus getStatus(int jobRequestInterval) {
+
+        Date timeActive = getTimeJobRequest();
+
+        if (timeActive == null)
+            return AgentStatus.OFFLINE;
+
+        Date now = new Date(System.currentTimeMillis());
+
+        long seconds = (now.getTime() - timeActive.getTime()) / 1000;
+
+        if (seconds > 3 * jobRequestInterval || seconds < 0)
+            return AgentStatus.OFFLINE;
+        else
+            return AgentStatus.ONLINE;
     }
 
     @Override

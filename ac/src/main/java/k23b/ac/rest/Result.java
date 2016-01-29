@@ -72,9 +72,9 @@ public class Result implements Comparable<Result> {
             return 0;
 
         if (this.resultId > that.resultId)
-            return 1;
-        else if (this.resultId < that.resultId)
             return -1;
+        else if (this.resultId < that.resultId)
+            return 1;
         else
             return 0;
     }

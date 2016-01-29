@@ -31,6 +31,9 @@ public class Agent implements Comparable<Agent> {
     @Element(required = false)
     private Date timeTerminated;
 
+    @Element(required = true)
+    private AgentStatus agentStatus;
+
     public Agent() {
         super();
     }
@@ -93,6 +96,14 @@ public class Agent implements Comparable<Agent> {
         this.timeTerminated = timeTerminated;
     }
 
+    public AgentStatus getAgentStatus() {
+        return agentStatus;
+    }
+
+    public void setAgentStatus(AgentStatus agentStatus) {
+        this.agentStatus = agentStatus;
+    }
+
     @SuppressLint("SimpleDateFormat")
     private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -120,23 +131,6 @@ public class Agent implements Comparable<Agent> {
         return dateFormat.format(timeTerminated);
     }
 
-    public AgentStatus getStatus(int jobRequestInterval) {
-
-        Date timeActive = getTimeJobRequest();
-
-        if (timeActive == null)
-            return AgentStatus.OFFLINE;
-
-        Date now = new Date(System.currentTimeMillis());
-
-        long seconds = (now.getTime() - timeActive.getTime()) / 1000;
-
-        if (seconds > 3 * jobRequestInterval || seconds < 0)
-            return AgentStatus.OFFLINE;
-        else
-            return AgentStatus.ONLINE;
-    }
-
     @Override
     public String toString() {
         return "Agent [agentId=" + agentId + ", requestHash=" + requestHash + ", adminUsername=" + adminUsername + ", timeAccepted=" + timeAccepted + ", timeJobRequest=" + timeJobRequest + ", timeTerminated=" + timeTerminated + "]";
@@ -149,9 +143,9 @@ public class Agent implements Comparable<Agent> {
             return 0;
 
         if (this.agentId > that.agentId)
-            return 1;
-        else if (this.agentId < that.agentId)
             return -1;
+        else if (this.agentId < that.agentId)
+            return 1;
         else
             return 0;
     }

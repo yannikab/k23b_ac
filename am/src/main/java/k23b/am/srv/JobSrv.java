@@ -69,7 +69,7 @@ public class JobSrv {
 
                     synchronized (lock ? JobCC.class : new Object()) {
 
-                        long jobId = JobCC.create(agentId, adminId, Date.from(Instant.now()), params, periodic, period);
+                        long jobId = JobCC.create(agentId, adminId, timeAssigned, params, periodic, period);
 
                         if (jobId == 0)
                             throw new SrvException("Could not create job for agent with id: " + agentId);

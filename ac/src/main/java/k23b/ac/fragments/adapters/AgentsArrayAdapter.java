@@ -11,7 +11,6 @@ import android.widget.TextView;
 import k23b.ac.R;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.status.AgentStatus;
-import k23b.ac.util.Settings;
 
 public class AgentsArrayAdapter extends ArrayAdapter<Agent> {
 
@@ -41,7 +40,7 @@ public class AgentsArrayAdapter extends ArrayAdapter<Agent> {
         textViewTimeAccepted.setText(a.getFormattedTimeAccepted());
         textViewTimeJobRequest.setText(a.getFormattedTimeJobRequest());
         textViewTimeTerminated.setText(a.getFormattedTimeTerminated());
-        AgentStatus status = a.getStatus(Settings.getJobRequestInterval());
+        AgentStatus status = a.getAgentStatus();
         textViewAgentStatus.setText(status.toString());
         textViewAgentStatus.setBackgroundColor(getContext().getResources().getColor(status == AgentStatus.ONLINE ? R.color.cell_agent_online : R.color.cell_agent_offline));
 

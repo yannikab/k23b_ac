@@ -52,10 +52,11 @@ public class Job implements Comparable<Job>, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeLong(agentId);
+        dest.writeLong(timeAssigned.getTime());
         dest.writeString(params);
         dest.writeByte((byte) (periodic ? 1 : 0));
         dest.writeInt(period);
-
+        
     }
 
     public static final Parcelable.Creator<Job> CREATOR = new Parcelable.Creator<Job>() {
@@ -77,7 +78,7 @@ public class Job implements Comparable<Job>, Parcelable {
         jobId = -1;
         agentId = source.readLong();
         adminId = -1;
-        timeAssigned = new Date();
+        timeAssigned = new Date(source.readLong());
         timeSent = new Date();
         params = source.readString();
         periodic = (source.readByte() != 0);
@@ -213,9 +214,9 @@ public class Job implements Comparable<Job>, Parcelable {
             return 0;
 
         if (this.jobId > that.jobId)
-            return 1;
-        else if (this.jobId < that.jobId)
             return -1;
+        else if (this.jobId < that.jobId)
+            return 1;
         else
             return 0;
     }

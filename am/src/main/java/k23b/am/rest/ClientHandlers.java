@@ -11,14 +11,12 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
-import k23b.am.dao.AdminDao;
 import k23b.am.dao.AgentDao;
 import k23b.am.dao.JobDao;
 import k23b.am.dao.RequestDao;
 import k23b.am.dao.RequestStatus;
 import k23b.am.dao.ResultDao;
 import k23b.am.dao.UserDao;
-import k23b.am.srv.AdminSrv;
 import k23b.am.srv.AgentSrv;
 import k23b.am.srv.JobSrv;
 import k23b.am.srv.RequestSrv;
@@ -430,15 +428,11 @@ public class ClientHandlers {
                     log.info(service + e.getMessage());
                     continue;
                 }
-                
+
                 UserDao ud = UserSrv.findByUsername(u.getUsername());
-                
-                AdminDao ad = AdminSrv.findById(ud.getAdminId());
-                if(ad == null)
-                	log.error(service + " Admin not Found");
-                	
+
                 for (Job j : u.getJobs())
-                    JobSrv.create(j.getAgentId(), ad.getAdminId(), j.getTimeAssigned(), j.getParams(), j.getPeriodic(), j.getPeriod());
+                    JobSrv.create(j.getAgentId(), ud.getAdminId(), j.getTimeAssigned(), j.getParams(), j.getPeriodic(), j.getPeriod());
             }
 
             return Response.status(200).entity("Accepted").build();
