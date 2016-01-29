@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/results_agent_progress"
+        android:id="@+id/results_agents_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" >
@@ -34,7 +34,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/results_agent_view"
+        android:id="@+id/results_agents_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
@@ -138,7 +138,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.055"
             android:orientation="vertical" >
 
             <RelativeLayout
@@ -170,155 +170,161 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/results_agent_textView_results"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/textView_padding"
-                android:textSize="@dimen/textView_textSize"
-                android:visibility="visible" />
-
             <LinearLayout
                 android:id="@+id/results_agent_view_results"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/results_agent_textView_results"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/textView_padding"
+                    android:textSize="@dimen/textView_textSize"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:orientation="vertical" >
+                    android:layout_height="match_parent" >
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal" >
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:orientation="vertical" >
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:padding="@dimen/textView_padding"
-                            android:text="@string/message_results_number"
-                            android:textSize="@dimen/textView_textSize" />
-
-                        <EditText
-                            android:id="@+id/results_agent_editText_number"
-                            android:layout_width="55dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:imeOptions="actionDone"
-                            android:inputType="number" >
-
-                            <requestFocus />
-                        </EditText>
-
-                        <Button
-                            android:id="@+id/results_agent_button_refresh"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/action_results_refresh" />
+                            android:layout_gravity="left"
+                            android:orientation="horizontal" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:padding="@dimen/textView_padding"
+                                android:text="@string/message_results_number"
+                                android:textSize="@dimen/textView_textSize" />
+
+                            <EditText
+                                android:id="@+id/results_agent_editText_number"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:imeOptions="actionDone"
+                                android:inputType="number"
+                                android:textSize="@dimen/textView_textSize" />
+
+                            <Button
+                                android:id="@+id/results_agent_button_refresh"
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/action_results_refresh" />
+
+                        </LinearLayout>
+
+                        <TableLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+
+                            <TableRow>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="@dimen/weight_result_resultId"
+                                    android:background="@color/header_result_back"
+                                    android:gravity="center"
+                                    android:padding="@dimen/row_result_padding"
+                                    android:text="@string/header_result_resultId"
+                                    android:textColor="@color/header_text"
+                                    android:textSize="@dimen/row_result_textSize" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="@dimen/weight_result_jobId"
+                                    android:background="@color/header_result_back_alt"
+                                    android:gravity="center"
+                                    android:padding="@dimen/row_result_padding"
+                                    android:text="@string/header_result_jobId"
+                                    android:textColor="@color/header_text"
+                                    android:textSize="@dimen/row_result_textSize" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="@dimen/weight_result_timeReceived"
+                                    android:background="@color/header_result_back"
+                                    android:gravity="center"
+                                    android:padding="@dimen/row_result_padding"
+                                    android:text="@string/header_result_timeReceived"
+                                    android:textColor="@color/header_text"
+                                    android:textSize="@dimen/row_result_textSize" />
+                            </TableRow>
+                        </TableLayout>
+
+                        <ListView
+                            android:id="@+id/results_agent_listView_results"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                        </ListView>
+
                     </LinearLayout>
-
-                    <TableLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
-
-                        <TableRow>
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="@dimen/weight_result_resultId"
-                                android:background="@color/header_result_back"
-                                android:gravity="center"
-                                android:padding="@dimen/row_result_padding"
-                                android:text="@string/header_result_resultId"
-                                android:textColor="@color/header_text"
-                                android:textSize="@dimen/row_result_textSize" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="@dimen/weight_result_jobId"
-                                android:background="@color/header_result_back_alt"
-                                android:gravity="center"
-                                android:padding="@dimen/row_result_padding"
-                                android:text="@string/header_result_jobId"
-                                android:textColor="@color/header_text"
-                                android:textSize="@dimen/row_result_textSize" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="@dimen/weight_result_timeReceived"
-                                android:background="@color/header_result_back"
-                                android:gravity="center"
-                                android:padding="@dimen/row_result_padding"
-                                android:text="@string/header_result_timeReceived"
-                                android:textColor="@color/header_text"
-                                android:textSize="@dimen/row_result_textSize" />
-                        </TableRow>
-                    </TableLayout>
-
-                    <ListView
-                        android:id="@+id/results_agent_listView_results"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </ListView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:orientation="vertical" >
 
                     <LinearLayout
-                        android:id="@+id/output_controls"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:orientation="horizontal"
-                        android:visibility="visible" >
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical" >
 
-                        <TextView
-                            android:id="@+id/textViewResultId"
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:id="@+id/output_controls"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_margin="1dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:padding="5dp"
-                            android:text="@string/message_results_title_sample"
-                            android:textSize="@dimen/textView_textSize" />
+                            android:gravity="right"
+                            android:orientation="horizontal"
+                            android:visibility="visible" >
 
-                        <Button
-                            android:id="@+id/results_agent_button_expand_all"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/action_results_expand_all" />
+                            <TextView
+                                android:id="@+id/textViewResultId"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="1dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="5dp"
+                                android:text="@string/message_results_title_sample"
+                                android:textSize="@dimen/textView_textSize" />
 
-                        <Button
-                            android:id="@+id/results_agent_button_collapse_all"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/action_results_collapse_all" />
+                            <Button
+                                android:id="@+id/results_agent_button_expand_all"
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/action_results_expand_all" />
+
+                            <Button
+                                android:id="@+id/results_agent_button_collapse_all"
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/action_results_collapse_all" />
+                        </LinearLayout>
+
+                        <WebView
+                            android:id="@+id/webview_results_agent"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent" />
                     </LinearLayout>
-
-                    <WebView
-                        android:id="@+id/webview_results_agent"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent" />
                 </LinearLayout>
-            </LinearLayout>
 
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

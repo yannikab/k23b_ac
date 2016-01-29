@@ -18,11 +18,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.activities.MainActivity;
+import k23b.ac.fragments.actions.AgentActions;
 import k23b.ac.fragments.adapters.AgentsArrayAdapter;
 import k23b.ac.rest.Agent;
-import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
-import k23b.ac.services.JobDispatcher;
 import k23b.ac.services.Logger;
 import k23b.ac.services.NetworkManager;
 import k23b.ac.services.UserManager;
@@ -30,13 +29,11 @@ import k23b.ac.tasks.AgentsReceiveTask;
 import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.util.Settings;
 
-public class AgentsFragment extends Fragment implements AgentsReceiveCallback, ActionMode.Callback {
+public class AgentsFragment extends Fragment implements AgentsReceiveCallback, AgentActions.Callback {
 
     private AgentsReceiveTask agentsReceiveTask;
 
     private List<Agent> agents;
-
-    private Agent selectedAgent;
 
     private ActionMode actionMode;
 
@@ -87,9 +84,9 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
                 if (actionMode != null)
                     return false;
 
-                selectedAgent = (Agent) parent.getAdapter().getItem(position);
+                Agent selectedAgent = (Agent) parent.getAdapter().getItem(position);
 
-                actionMode = AgentsFragment.this.getActivity().startActionMode(AgentsFragment.this);
+                actionMode = AgentsFragment.this.getActivity().startActionMode(new AgentActions(AgentsFragment.this, selectedAgent));
 
                 view.setSelected(true);
 
@@ -177,6 +174,11 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
         showAgents();
 
         showProgress(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), agents.size() + (agents.size() == 1 ? " agent" : " agents") + " received", Toast.LENGTH_LONG).show();
     }
 
     private void showAgents() {
@@ -234,71 +236,6 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     }
 
     @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-
-        MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.agent_actions, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-        User u = UserManager.getInstance().getStoredUser();
-
-        if (u == null) {
-
-            Logger.info(this.toString(), "No user logged in, aborting activity.");
-            getActivity().finish();
-            return false;
-        }
-
-        switch (item.getItemId()) {
-
-        case R.id.action_agent_terminate:
-
-            terminateAgent(u);
-            mode.finish();
-
-            return true;
-
-        default:
-
-            return false;
-        }
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-
-        this.actionMode = null;
-        this.selectedAgent = null;
-    }
-
-    private void terminateAgent(User u) {
-
-        if (getActivity() == null)
-            return;
-
-        Job job = new Job();
-        job.setAgentId(selectedAgent.getAgentId());
-        job.setParams("exit");
-        job.setPeriodic(false);
-
-        u.getJobs().add(job);
-
-        JobDispatcher.getInstance().dispatch(getActivity(), u);
-
-        Toast.makeText(getActivity(), String.valueOf(job.getParams()), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void registrationPending() {
 
         Logger.info(this.toString(), "Registration pending, aborting activity.");
@@ -342,5 +279,11 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     public void removeAgentsTask() {
 
         this.agentsReceiveTask = null;
+    }
+
+    @Override
+    public void destroyActionMode() {
+
+        this.actionMode = null;
     }
 }

@@ -3,7 +3,7 @@
 
     <string name="agents">Agents</string>
     <string name="action_agents_refresh">Refresh</string>
-    <string name="message_agents_getting">Getting agents from server</string>
+    <string name="message_agents_getting">Retrieving agents from server</string>
     <string name="header_agent_id">Id</string>
     <string name="header_agent_requestHash">Hash</string>
     <string name="header_agent_timeAccepted">Time Accepted</string>

@@ -168,7 +168,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
             switch (resultCode) {
             case RESULT_OK:
-                Toast.makeText(this, String.valueOf("Job assigned to Agent"), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, String.valueOf("Job assigned to agent"), Toast.LENGTH_LONG).show();
                 break;
             case RESULT_CANCELED:
             default:

@@ -91,6 +91,9 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                if (agentsReceiveTask != null || jobsReceiveTask != null)
+                    return;
+                
                 if (actionMode != null)
                     return;
 
@@ -107,6 +110,9 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
+                if (agentsReceiveTask != null || jobsReceiveTask != null)
+                    return false;
+                
                 if (actionMode != null)
                     return false;
 
@@ -156,7 +162,21 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         showJobs();
 
-        showProgress(agentsReceiveTask != null || jobsReceiveTask != null);
+        showProgress(agentsReceiveTask != null);
+
+        showProgressJobs(jobsReceiveTask != null);
+
+        if (initialized)
+            return;
+
+        initialized = true;
+
+        fetchAgents();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -217,8 +237,6 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
     @Override
     public void agentsReceived(List<Agent> agents) {
 
-        this.agentsReceiveTask = null;
-
         this.agents = agents;
 
         showAgents();
@@ -230,6 +248,11 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         showJobs();
 
         showProgress(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), agents.size() + (agents.size() == 1 ? " agent" : " agents") + " received", Toast.LENGTH_LONG).show();
     }
 
     private void showAgents() {
@@ -247,6 +270,9 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         if (agentsReceiveTask != null || jobsReceiveTask != null)
             return;
 
+        if (selectedAgent == null)
+            return;
+
         if (getActivity() == null)
             return;
 
@@ -255,7 +281,8 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         if (u == null) {
 
             Logger.info(this.toString(), "No user logged in, aborting activity.");
-            getActivity().finish();
+
+            abortActivity();
             return;
         }
 
@@ -265,10 +292,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
             return;
         }
 
-        if (selectedAgent == null)
-            return;
-
-        showProgress(true);
+        showProgressJobs(true);
 
         jobsReceiveTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
 
@@ -282,7 +306,12 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         showJobs();
 
-        showProgress(false);
+        showProgressJobs(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), jobs.size() + (jobs.size() == 1 ? " job" : " jobs") + " received", Toast.LENGTH_LONG).show();
     }
 
     private void showJobs() {
@@ -292,7 +321,8 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         TextView jobsTextView = (TextView) getView().findViewById(R.id.jobs_textView_jobs);
 
-        jobsTextView.setText(selectedAgent == null ? "" : "Jobs for Agent " + selectedAgent.getShortRequestHash());
+        jobsTextView.setText(selectedAgent == null ? "Jobs" : "Jobs for agent " + selectedAgent.getShortRequestHash());
+        jobsTextView.setVisibility(View.VISIBLE);
 
         ListView jobsListView = (ListView) getView().findViewById(R.id.jobs_listView_jobs);
 
@@ -306,12 +336,15 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
         getView().findViewById(R.id.jobs_progress).setVisibility(show ? View.VISIBLE : View.GONE);
         getView().findViewById(R.id.jobs_view_agents).setVisibility(show ? View.GONE : View.VISIBLE);
-        getView().findViewById(R.id.jobs_view_jobs).setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-    public void destroyActionMode() {
+    private void showProgressJobs(final boolean show) {
 
-        actionMode = null;
+        if (getView() == null)
+            return;
+
+        getView().findViewById(R.id.jobs_progress_jobs).setVisibility(show ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.jobs_view_jobs).setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -357,12 +390,17 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
     @Override
     public void removeAgentsTask() {
 
-        this.jobsReceiveTask = null;
+        this.agentsReceiveTask = null;
     }
 
     @Override
     public void removeJobsTask() {
 
         this.jobsReceiveTask = null;
+    }
+
+    public void destroyActionMode() {
+
+        this.actionMode = null;
     }
 }

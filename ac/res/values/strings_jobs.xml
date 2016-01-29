@@ -3,7 +3,7 @@
 
     <string name="jobs">Jobs</string>
     <string name="action_jobs_refresh">Refresh</string>
-    <string name="message_jobs_getting">Getting jobs from server</string>
+    <string name="message_jobs_getting">Retrieving jobs from server</string>
     <string name="header_job_id">Id</string>
     <string name="header_job_timeAssigned">Time Assigned</string>
     <string name="header_job_timeSent">Time Sent</string>
@@ -11,7 +11,7 @@
     <string name="header_job_periodic">Per.</string>
     <string name="header_job_interval">Int.</string>
     <string name="header_job_status">Status</string>
-    <string name="action_job_stop">Stop</string>
-    <string name="action_job_reassign">Re-assign</string>
+    <string name="action_job_stop">Stop Job</string>
+    <string name="action_job_reassign">Re-assign Job</string>
 
 </resources>

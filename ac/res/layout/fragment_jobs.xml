@@ -10,215 +10,273 @@
         android:layout_height="match_parent"
         android:visibility="gone" >
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/textView_padding"
+                android:text="@string/message_agents_getting"
+                android:textSize="@dimen/progress_message_textSize" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/jobs_view_agents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/jobs_textView_agents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/textView_padding"
-            android:text="@string/agents"
-            android:textSize="@dimen/textView_textSize" />
-
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_agent_agentId"
-                    android:background="@color/header_agent_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_agent_padding"
-                    android:text="@string/header_agent_id"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_agent_requestHash"
-                    android:background="@color/header_agent_back_alt"
-                    android:gravity="center"
-                    android:padding="@dimen/row_agent_padding"
-                    android:text="@string/header_agent_requestHash"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_agent_time"
-                    android:background="@color/header_agent_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_agent_padding"
-                    android:text="@string/header_agent_timeAccepted"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_agent_time"
-                    android:background="@color/header_agent_back_alt"
-                    android:gravity="center"
-                    android:padding="@dimen/row_agent_padding"
-                    android:text="@string/header_agent_timeJobRequest"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_agent_time"
-                    android:background="@color/header_agent_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_agent_padding"
-                    android:text="@string/header_agent_timeTerminated"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_agent_status"
-                    android:background="@color/header_agent_back_alt"
-                    android:gravity="center"
-                    android:padding="@dimen/row_agent_padding"
-                    android:text="@string/header_agent_status"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-            </TableRow>
-        </TableLayout>
-
-        <ListView
-            android:id="@+id/jobs_listView_agents"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ListView>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/jobs_view_jobs"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical" >
+            <TextView
+                android:id="@+id/jobs_agent_textView_agents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/textView_padding"
+                android:text="@string/agents"
+                android:textSize="@dimen/textView_textSize" />
 
-        <TextView
-            android:id="@+id/jobs_textView_jobs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/textView_padding"
-            android:textSize="@dimen/textView_textSize" />
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
 
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+                <TableRow>
 
-            <TableRow>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="@dimen/weight_agent_agentId"
+                        android:background="@color/header_agent_back"
+                        android:gravity="center"
+                        android:padding="@dimen/row_agent_padding"
+                        android:text="@string/header_agent_id"
+                        android:textColor="@color/header_text"
+                        android:textSize="@dimen/row_agent_textSize" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_jobId"
-                    android:background="@color/header_job_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_id"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="@dimen/weight_agent_requestHash"
+                        android:background="@color/header_agent_back_alt"
+                        android:gravity="center"
+                        android:padding="@dimen/row_agent_padding"
+                        android:text="@string/header_agent_requestHash"
+                        android:textColor="@color/header_text"
+                        android:textSize="@dimen/row_agent_textSize" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_time"
-                    android:background="@color/header_job_back_alt"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_timeAssigned"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="@dimen/weight_agent_time"
+                        android:background="@color/header_agent_back"
+                        android:gravity="center"
+                        android:padding="@dimen/row_agent_padding"
+                        android:text="@string/header_agent_timeAccepted"
+                        android:textColor="@color/header_text"
+                        android:textSize="@dimen/row_agent_textSize" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_time"
-                    android:background="@color/header_job_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_timeSent"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="@dimen/weight_agent_time"
+                        android:background="@color/header_agent_back_alt"
+                        android:gravity="center"
+                        android:padding="@dimen/row_agent_padding"
+                        android:text="@string/header_agent_timeJobRequest"
+                        android:textColor="@color/header_text"
+                        android:textSize="@dimen/row_agent_textSize" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_parameters"
-                    android:background="@color/header_job_back_alt"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_parameters"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="@dimen/weight_agent_time"
+                        android:background="@color/header_agent_back"
+                        android:gravity="center"
+                        android:padding="@dimen/row_agent_padding"
+                        android:text="@string/header_agent_timeTerminated"
+                        android:textColor="@color/header_text"
+                        android:textSize="@dimen/row_agent_textSize" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_periodic"
-                    android:background="@color/header_job_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_periodic"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="@dimen/weight_agent_status"
+                        android:background="@color/header_agent_back_alt"
+                        android:gravity="center"
+                        android:padding="@dimen/row_agent_padding"
+                        android:text="@string/header_agent_status"
+                        android:textColor="@color/header_text"
+                        android:textSize="@dimen/row_agent_textSize" />
+                </TableRow>
+            </TableLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_interval"
-                    android:background="@color/header_job_back_alt"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_interval"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
+            <ListView
+                android:id="@+id/jobs_listView_agents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ListView>
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_job_status"
-                    android:background="@color/header_job_back"
-                    android:gravity="center"
-                    android:padding="@dimen/row_job_padding"
-                    android:text="@string/header_job_status"
-                    android:textColor="@color/header_text"
-                    android:textSize="@dimen/row_agent_textSize" />
-            </TableRow>
-        </TableLayout>
-
-        <ListView
-            android:id="@+id/jobs_listView_jobs"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ListView>
+            android:layout_height="match_parent"
+            android:layout_weight="1.055"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/jobs_progress_jobs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:visibility="visible" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/textView_padding"
+                        android:text="@string/message_jobs_getting"
+                        android:textSize="@dimen/progress_message_textSize" />
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/jobs_view_jobs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/jobs_textView_jobs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/textView_padding"
+                    android:text="@string/jobs"
+                    android:textSize="@dimen/textView_textSize" />
+
+                <TableLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_jobId"
+                            android:background="@color/header_job_back"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_id"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_time"
+                            android:background="@color/header_job_back_alt"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_timeAssigned"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_time"
+                            android:background="@color/header_job_back"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_timeSent"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_parameters"
+                            android:background="@color/header_job_back_alt"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_parameters"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_periodic"
+                            android:background="@color/header_job_back"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_periodic"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_interval"
+                            android:background="@color/header_job_back_alt"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_interval"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="@dimen/weight_job_status"
+                            android:background="@color/header_job_back"
+                            android:gravity="center"
+                            android:padding="@dimen/row_job_padding"
+                            android:text="@string/header_job_status"
+                            android:textColor="@color/header_text"
+                            android:textSize="@dimen/row_agent_textSize" />
+                    </TableRow>
+                </TableLayout>
+
+                <ListView
+                    android:id="@+id/jobs_listView_jobs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                </ListView>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

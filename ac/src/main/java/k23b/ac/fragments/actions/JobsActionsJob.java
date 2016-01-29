@@ -1,5 +1,7 @@
 package k23b.ac.fragments.actions;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.User;
+import k23b.ac.rest.status.JobStatus;
 import k23b.ac.services.JobDispatcher;
 import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
@@ -84,11 +87,19 @@ public class JobsActionsJob implements ActionMode.Callback {
         if (callback.getActivity() == null)
             return;
 
-        if (!selectedJob.getPeriodic())
+        if (!selectedJob.getPeriodic()) {
+            Toast.makeText(callback.getActivity(), "Can not stop job " + j.getJobId() + ", it is not periodic", Toast.LENGTH_LONG).show();
             return;
+        }
+
+        if (j.getStatus() == JobStatus.ASSIGNED) {
+            Toast.makeText(callback.getActivity(), "Can not stop job " + j.getJobId() + ", it has not been sent", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         Job job = new Job();
         job.setAgentId(j.getAgentId());
+        job.setTimeAssigned(new Date(System.currentTimeMillis()));
         job.setParams(String.format("stop %d", j.getJobId()));
         job.setPeriodic(false);
 
@@ -96,7 +107,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
-        Toast.makeText(callback.getActivity(), String.valueOf(job.getParams()), Toast.LENGTH_LONG).show();
+        Toast.makeText(callback.getActivity(), "Stop requested for job " + j.getJobId(), Toast.LENGTH_LONG).show();
     }
 
     private void reassignJob(User u, Job j) {
@@ -106,6 +117,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         Job job = new Job();
         job.setAgentId(j.getAgentId());
+        job.setTimeAssigned(new Date(System.currentTimeMillis()));
         job.setParams(j.getParams());
         job.setPeriodic(j.getPeriodic());
         job.setPeriod(j.getPeriod());
@@ -114,7 +126,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
-        Toast.makeText(callback.getActivity(), String.valueOf(j.getParams()), Toast.LENGTH_LONG).show();
+        Toast.makeText(callback.getActivity(), "Re-assigned job " + j.getJobId(), Toast.LENGTH_LONG).show();
     }
 
     @Override

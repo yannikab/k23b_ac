@@ -1,5 +1,7 @@
 package k23b.ac.activities;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -78,6 +80,7 @@ public class AssignJobActivity extends Activity {
         Job j = new Job();
 
         j.setAgentId(agentId);
+        j.setTimeAssigned(new Date(System.currentTimeMillis()));
         j.setParams(editTextParams.getText().toString());
         j.setPeriodic(radioPeriodicYes.isChecked());
         j.setPeriod(j.getPeriodic() ? Integer.valueOf(editTextPeriod.getText().toString()) : 0);

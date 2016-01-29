@@ -1,19 +1,22 @@
 package k23b.ac.fragments.actions;
 
+import java.util.Date;
+
 import android.app.Activity;
-import android.content.Intent;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 import k23b.ac.R;
-import k23b.ac.activities.AssignJobActivity;
-import k23b.ac.activities.MainActivity;
 import k23b.ac.rest.Agent;
+import k23b.ac.rest.Job;
+import k23b.ac.rest.User;
+import k23b.ac.services.JobDispatcher;
 import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 
-public class JobsActionsAgent implements ActionMode.Callback {
+public class AgentActions implements ActionMode.Callback {
 
     public interface Callback {
 
@@ -25,7 +28,7 @@ public class JobsActionsAgent implements ActionMode.Callback {
     private Callback callback;
     private Agent selectedAgent;
 
-    public JobsActionsAgent(Callback callback, Agent selectedAgent) {
+    public AgentActions(Callback callback, Agent selectedAgent) {
         super();
 
         this.callback = callback;
@@ -34,23 +37,24 @@ public class JobsActionsAgent implements ActionMode.Callback {
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
         MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.job_actions_agent, menu);
+        inflater.inflate(R.menu.agent_actions, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
         return false;
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
-        if (callback.getActivity() == null)
-            return false;
+        User u = UserManager.getInstance().getStoredUser();
 
-        if (!UserManager.getInstance().isUserStored()) {
+        if (u == null) {
 
             Logger.info(this.toString(), "No user logged in, aborting activity.");
             callback.getActivity().finish();
@@ -59,12 +63,12 @@ public class JobsActionsAgent implements ActionMode.Callback {
 
         switch (item.getItemId()) {
 
-        case R.id.action_agent_assign_job:
+        case R.id.action_agent_terminate:
 
-            startAssignJobActivity(selectedAgent);
-            
+            terminateAgent(u);
+
             mode.finish();
-            
+
             return true;
 
         default:
@@ -73,22 +77,28 @@ public class JobsActionsAgent implements ActionMode.Callback {
         }
     }
 
-    private void startAssignJobActivity(Agent selectedAgent) {
+    private void terminateAgent(User u) {
 
-        if (callback.getActivity() == null || selectedAgent == null)
+        if (callback.getActivity() == null)
             return;
 
-        Intent assignIntent = new Intent(callback.getActivity(), AssignJobActivity.class);
-        assignIntent.putExtra("agentId", selectedAgent.getAgentId());
-        assignIntent.putExtra("requestHash", selectedAgent.getShortRequestHash());
+        Job job = new Job();
+        job.setAgentId(selectedAgent.getAgentId());
+        job.setTimeAssigned(new Date(System.currentTimeMillis()));
+        job.setParams("exit");
+        job.setPeriodic(false);
 
-        // current.startActivity(assignIntent);
+        u.getJobs().add(job);
 
-        callback.getActivity().startActivityForResult(assignIntent, MainActivity.ASSIGN_JOB_REQUEST);
+        JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
+
+        Toast.makeText(callback.getActivity(), "Termination requested for agent " + selectedAgent.getShortRequestHash(), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+
         this.callback.destroyActionMode();
+
     }
 }

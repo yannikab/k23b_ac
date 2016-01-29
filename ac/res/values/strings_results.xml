@@ -2,7 +2,7 @@
 <resources>
 
     <string name="results">Results</string>
-    <string name="message_results_getting">Getting results from server</string>
+    <string name="message_results_getting">Retrieving results from server</string>
     <string name="message_results_number">Number of results:</string>
     <string name="header_result_resultId">Result</string>
     <string name="header_result_jobId">Job</string>

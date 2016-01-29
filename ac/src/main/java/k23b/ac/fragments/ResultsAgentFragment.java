@@ -204,13 +204,13 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
         showAgents();
 
         showResults();
-        
+
         showOutput();
-        
+
         showProgress(agentsReceiveTask != null);
 
         showProgressResults(resultsReceiveTask != null);
-        
+
         if (initialized)
             return;
 
@@ -306,7 +306,7 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
         clearOutput();
 
         showProgress(false);
-        
+
         if (getActivity() == null)
             return;
 
@@ -325,7 +325,7 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
 
     private void fetchResults() {
 
-        if (resultsReceiveTask != null)
+        if (agentsReceiveTask != null || resultsReceiveTask != null)
             return;
 
         if (selectedAgent == null)
@@ -415,8 +415,9 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
 
         TextView resultsTextView = (TextView) getView().findViewById(R.id.results_agent_textView_results);
 
-        resultsTextView.setText(selectedAgent == null ? "" : "Results for Agent " + selectedAgent.getShortRequestHash());
-        
+        resultsTextView.setText(selectedAgent == null ? "" : "Results for agent " + selectedAgent.getShortRequestHash());
+        resultsTextView.setVisibility(selectedAgent == null ? View.GONE : View.VISIBLE);
+
         ListView resultsListView = (ListView) getView().findViewById(R.id.results_agent_listView_results);
 
         resultsListView.setAdapter(results == null ? null : new ResultsArrayAdapter(getActivity(), this.results));
@@ -446,8 +447,8 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
         if (getView() == null)
             return;
 
-        getView().findViewById(R.id.results_agent_progress).setVisibility(show ? View.VISIBLE : View.GONE);
-        getView().findViewById(R.id.results_agent_view).setVisibility(show ? View.GONE : View.VISIBLE);
+        getView().findViewById(R.id.results_agents_progress).setVisibility(show ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.results_agents_view).setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     private void showProgressResults(final boolean show) {
