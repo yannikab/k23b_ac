@@ -186,7 +186,7 @@ public class ResultSrv {
 
             synchronized (lock ? ResultCC.class : new Object()) {
 
-                return ResultCC.findLast(number);
+                return ResultCC.findLast(agentId, number);
             }
 
         } catch (DaoException e) {
