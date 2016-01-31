@@ -3,9 +3,11 @@ package k23b.ac.activities;
 import java.util.Date;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -66,6 +68,20 @@ public class AssignJobActivity extends Activity {
         super.onDestroy();
     }
 
+    public void onRadioButtonClicked(View v) {
+
+        switch (v.getId()) {
+        case R.id.assign_job_radio_periodic_no:
+            ((TextView) findViewById(R.id.assign_job_period)).setEnabled(false);
+            return;
+        case R.id.assign_job_radio_periodic_yes:
+            ((TextView) findViewById(R.id.assign_job_period)).setEnabled(true);
+            return;
+        default:
+            break;
+        }
+    }
+
     public void onOkPressed(View v) {
 
         User u = UserManager.getInstance().getStoredUser();
@@ -91,26 +107,28 @@ public class AssignJobActivity extends Activity {
 
         Intent data = new Intent();
         setResult(RESULT_OK, data);
+
+        closeSoftKeyboard();
+
         finish();
     }
 
     public void onCancelPressed(View v) {
 
         setResult(RESULT_CANCELED);
+
+        closeSoftKeyboard();
+
         finish();
     }
 
-    public void onRadioButtonClicked(View v) {
+    private void closeSoftKeyboard() {
 
-        switch (v.getId()) {
-        case R.id.assign_job_radio_periodic_no:
-            ((TextView) findViewById(R.id.assign_job_period)).setEnabled(false);
-            return;
-        case R.id.assign_job_radio_periodic_yes:
-            ((TextView) findViewById(R.id.assign_job_period)).setEnabled(true);
-            return;
-        default:
-            break;
+        View view = getCurrentFocus();
+
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

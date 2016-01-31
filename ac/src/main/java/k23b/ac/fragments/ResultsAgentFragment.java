@@ -5,6 +5,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.ActionMode;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -120,6 +122,8 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
             @Override
             public void onClick(View v) {
 
+                closeSoftKeyboard();
+                
                 fetchResults();
             }
         });
@@ -189,6 +193,19 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
         return view;
     }
 
+    private void closeSoftKeyboard() {
+
+        if (getActivity() == null)
+            return;
+        
+        View view = getActivity().getCurrentFocus();
+
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
@@ -204,6 +221,8 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
         showAgents();
 
         showResults();
+
+        clearOutput();
 
         showOutput();
 

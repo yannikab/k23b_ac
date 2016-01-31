@@ -39,7 +39,7 @@
         <activity
             android:name="k23b.ac.activities.MainActivity"
             android:label="@string/title_activity_main"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustNothing" >
         </activity>
         <activity
             android:name="k23b.ac.activities.AssignJobActivity"

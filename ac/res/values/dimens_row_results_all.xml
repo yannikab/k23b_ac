@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="weight_result_all_resultId" format="float" type="dimen">1.4</item>
+    <item name="weight_result_all_agentHash" format="float" type="dimen">2.0</item>
+    <item name="weight_result_all_jobId" format="float" type="dimen">1.3</item>
+    <item name="weight_result_all_timeReceived" format="float" type="dimen">3.2</item>
+
+</resources>

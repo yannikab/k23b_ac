@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.ActionMode;
@@ -13,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -24,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.activities.MainActivity;
-import k23b.ac.fragments.adapters.ResultsArrayAdapter;
+import k23b.ac.fragments.adapters.ResultsAllArrayAdapter;
 import k23b.ac.rest.Result;
 import k23b.ac.rest.User;
 import k23b.ac.services.Logger;
@@ -108,6 +110,8 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
             @Override
             public void onClick(View v) {
 
+                closeSoftKeyboard();
+                
                 fetchResults();
             }
         });
@@ -161,6 +165,19 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
         outputControls.setVisibility(View.GONE);
 
         return view;
+    }
+    
+    private void closeSoftKeyboard() {
+
+        if (getActivity() == null)
+            return;
+        
+        View view = getActivity().getCurrentFocus();
+
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -314,7 +331,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
         ListView resultsListView = (ListView) getView().findViewById(R.id.results_all_listView_results);
 
-        resultsListView.setAdapter(results == null ? null : new ResultsArrayAdapter(getActivity(), this.results));
+        resultsListView.setAdapter(results == null ? null : new ResultsAllArrayAdapter(getActivity(), this.results));
     }
 
     private void showOutput() {

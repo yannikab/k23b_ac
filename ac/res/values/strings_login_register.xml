@@ -1,6 +1,7 @@
 <resources>
 
     <string name="message_authenticating">Authenticating with server</string>
+    <string name="message_registering">Registering with server</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_repeat_password">Repeat password</string>
@@ -10,7 +11,7 @@
     <string name="action_register_short">Register</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_field_required">This field is required</string>
-    <string name="error_registration_pending">Registration pending</string>
+    <string name="error_registration_pending">Registration pending approval</string>
     <string name="error_incorrect_credentials">Incorrect username or password</string>
     <string name="error_passwords_do_not_match">Passwords do not match</string>
     <string name="info_registration_success">Registration successful</string>

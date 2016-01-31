@@ -3,11 +3,12 @@
 
     <string name="results">Results</string>
     <string name="message_results_getting">Retrieving results from server</string>
-    <string name="message_results_number">Number of results:</string>
+    <string name="message_results_limit">Results:</string>
     <string name="header_result_resultId">Result</string>
+    <string name="header_result_agentHash">Agent</string>
     <string name="header_result_jobId">Job</string>
     <string name="header_result_timeReceived">Time Received</string>
-    <string name="message_results_title_sample">Output for result 326</string>
+    <string name="message_results_title_sample">Result 326</string>
     <string name="action_results_refresh">Refresh</string>
     <string name="action_results_expand_all">Expand All</string>
     <string name="action_results_collapse_all">Collapse All</string>

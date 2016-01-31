@@ -31,7 +31,8 @@
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/control_margin" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -39,7 +40,7 @@
         android:id="@+id/results_all_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_weight="2.4"
         android:orientation="vertical" >
 
         <TextView
@@ -51,29 +52,39 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
             android:orientation="horizontal" >
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
-                android:padding="@dimen/textView_padding"
-                android:text="@string/message_results_number"
-                android:textSize="@dimen/textView_textSize" />
+                android:layout_weight="1" >
 
-            <EditText
-                android:id="@+id/results_all_editText_number"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:textSize="@dimen/textView_textSize" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/textView_padding"
+                        android:text="@string/message_results_limit"
+                        android:textSize="@dimen/textView_textSize_small" />
+
+                    <EditText
+                        android:id="@+id/results_all_editText_number"
+                        android:layout_width="55dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:textSize="@dimen/textView_textSize_small" />
+                </LinearLayout>
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/results_all_button_refresh"
@@ -93,7 +104,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_result_resultId"
+                    android:layout_weight="@dimen/weight_result_all_resultId"
                     android:background="@color/header_result_back"
                     android:gravity="center"
                     android:padding="@dimen/row_result_padding"
@@ -104,8 +115,19 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_result_jobId"
+                    android:layout_weight="@dimen/weight_result_all_agentHash"
                     android:background="@color/header_result_back_alt"
+                    android:gravity="center"
+                    android:padding="@dimen/row_result_padding"
+                    android:text="@string/header_result_agentHash"
+                    android:textColor="@color/header_text"
+                    android:textSize="@dimen/row_result_textSize" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="@dimen/weight_result_all_jobId"
+                    android:background="@color/header_result_back"
                     android:gravity="center"
                     android:padding="@dimen/row_result_padding"
                     android:text="@string/header_result_jobId"
@@ -115,8 +137,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="@dimen/weight_result_timeReceived"
-                    android:background="@color/header_result_back"
+                    android:layout_weight="@dimen/weight_result_all_timeReceived"
+                    android:background="@color/header_result_back_alt"
                     android:gravity="center"
                     android:padding="@dimen/row_result_padding"
                     android:text="@string/header_result_timeReceived"
@@ -156,7 +178,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="@string/message_results_title_sample"
-                android:textSize="@dimen/textView_textSize" />
+                android:textSize="@dimen/textView_textSize_small" />
 
             <Button
                 android:id="@+id/results_all_button_expand_all"

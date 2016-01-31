@@ -40,8 +40,8 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />
-            
-             <EditText
+
+            <EditText
                 android:id="@+id/repeat_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,11 +70,28 @@
         android:layout_height="match_parent"
         android:visibility="gone" >
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/textView_padding"
+                android:text="@string/message_registering"
+                android:textSize="@dimen/progress_message_textSize" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/control_margin" />
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

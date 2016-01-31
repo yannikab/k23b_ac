@@ -29,7 +29,8 @@
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/control_margin" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -166,7 +167,8 @@
                         style="?android:attr/progressBarStyleLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/control_margin" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -195,29 +197,39 @@
                         android:orientation="vertical" >
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="left"
                             android:orientation="horizontal" >
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <RelativeLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:padding="@dimen/textView_padding"
-                                android:text="@string/message_results_number"
-                                android:textSize="@dimen/textView_textSize" />
+                                android:layout_weight="1" >
 
-                            <EditText
-                                android:id="@+id/results_agent_editText_number"
-                                android:layout_width="60dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:imeOptions="actionDone"
-                                android:inputType="number"
-                                android:textSize="@dimen/textView_textSize" />
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true" >
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:padding="@dimen/textView_padding"
+                                        android:text="@string/message_results_limit"
+                                        android:textSize="@dimen/textView_textSize_small" />
+
+                                    <EditText
+                                        android:id="@+id/results_agent_editText_number"
+                                        android:layout_width="55dp"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:imeOptions="actionDone"
+                                        android:inputType="number"
+                                        android:textSize="@dimen/textView_textSize_small" />
+                                </LinearLayout>
+                            </RelativeLayout>
 
                             <Button
                                 android:id="@+id/results_agent_button_refresh"
@@ -275,7 +287,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" >
                         </ListView>
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -302,18 +313,20 @@
                                 android:gravity="center"
                                 android:padding="5dp"
                                 android:text="@string/message_results_title_sample"
-                                android:textSize="@dimen/textView_textSize" />
+                                android:textSize="@dimen/textView_textSize_small" />
 
                             <Button
                                 android:id="@+id/results_agent_button_expand_all"
                                 android:layout_width="120dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:text="@string/action_results_expand_all" />
 
                             <Button
                                 android:id="@+id/results_agent_button_collapse_all"
                                 android:layout_width="120dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:text="@string/action_results_collapse_all" />
                         </LinearLayout>
 
@@ -323,7 +336,6 @@
                             android:layout_height="fill_parent" />
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

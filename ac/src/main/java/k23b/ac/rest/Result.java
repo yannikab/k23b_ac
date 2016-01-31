@@ -17,16 +17,19 @@ import android.annotation.SuppressLint;
 public class Result implements Comparable<Result> {
 
     @Element(required = false)
-    private long resultId;
-
-    @Element(required = true)
-    private long jobId;
+    protected long resultId;
 
     @Element(required = false)
-    private Date timeReceived;
+    protected String agentHash;
 
     @Element(required = true)
-    private String output;
+    protected long jobId;
+
+    @Element(required = false)
+    protected Date timeReceived;
+
+    @Element(required = true)
+    protected String output;
 
     public Result() {
         super();
@@ -40,6 +43,10 @@ public class Result implements Comparable<Result> {
 
     public long getResultId() {
         return this.resultId;
+    }
+
+    public String getAgentHash() {
+        return agentHash;
     }
 
     public long getJobId() {

@@ -10,6 +10,7 @@
     -->
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="textView_textSize">22sp</dimen>
+    <dimen name="textView_textSize_small">20sp</dimen>
     <dimen name="textView_padding">2dp</dimen>
     <dimen name="row_agent_textSize">20sp</dimen>
     <dimen name="row_job_textSize">20sp</dimen>
@@ -19,5 +20,7 @@
     <dimen name="row_result_padding">2dp</dimen>
     <dimen name="control_margin">16dp</dimen>
     <dimen name="progress_message_textSize">20sp</dimen>
+    <dimen name="assign_job_textSize">20sp</dimen>
+    <dimen name="assign_job_controls_margin">10dp</dimen>
 
 </resources>
