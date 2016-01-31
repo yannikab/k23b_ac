@@ -19,6 +19,9 @@ public class Result {
     @XmlElement(required = false)
     protected long resultId;
 
+    @XmlElement(required = false)
+    protected String agentHash;
+
     @XmlElement(required = true)
     protected long jobId;
 
@@ -41,6 +44,10 @@ public class Result {
 
     public long getResultId() {
         return this.resultId;
+    }
+
+    public String getAgentHash() {
+        return agentHash;
     }
 
     public long getJobId() {

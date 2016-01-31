@@ -369,8 +369,25 @@ public class ClientHandlers {
 
             ResultContainer resultContainer = new ResultContainer("Accepted");
 
-            for (ResultDao r : ResultSrv.findLast(number))
-                resultContainer.getResults().add(ResultFactory.fromDao(r));
+            for (ResultDao r : ResultSrv.findLast(number)) {
+
+                Result result = ResultFactory.fromDao(r);
+
+                try {
+
+                    JobDao jd = JobSrv.findById(r.getJobId());
+
+                    AgentDao ad = AgentSrv.findById(jd.getAgentId());
+
+                    result.agentHash = RequestSrv.findById(ad.getRequestId()).getHash();
+
+                } catch (SrvException e) {
+                    log.error(service + e.getMessage());
+                    result.agentHash = null;
+                }
+
+                resultContainer.getResults().add(result);
+            }
 
             resultContainer.getResults().sort(new ResultComparator());
 
