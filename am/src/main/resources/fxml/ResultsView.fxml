@@ -15,7 +15,7 @@
       <columns>
         <TableColumn fx:id="agentIdColumn" prefWidth="55.0" text="Agent" />
         <TableColumn fx:id="requestHashColumn" prefWidth="80.0" text="Hash" />
-        <TableColumn fx:id="admin1UsernameColumn" prefWidth="75.0" text="User" />
+        <TableColumn fx:id="admin1UsernameColumn" prefWidth="73.0" text="Admin" />
         <TableColumn fx:id="agentTimeAcceptedColumn" prefWidth="156.0" text="Time Accepted" />
         <TableColumn fx:id="agentTimeActiveColumn" prefWidth="156.0" text="Job Request Time" />
         <TableColumn fx:id="agentStatusColumn" prefWidth="60.0" text="Status" />

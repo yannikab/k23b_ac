@@ -11,7 +11,7 @@
     <columns>
       <TableColumn fx:id="idColumn" prefWidth="41.0" text="Id" />
       <TableColumn fx:id="usernameColumn" prefWidth="61.0" text="User" />
-      <TableColumn fx:id="adminUsernameColumn" prefWidth="61.0" text="Admin" />
+      <TableColumn fx:id="adminUsernameColumn" prefWidth="73.0" text="Admin" />
       <TableColumn fx:id="timeRegisteredColumn" prefWidth="156.0" text="Time Registered" />
       <TableColumn fx:id="timeAcceptedColumn" prefWidth="156.0" text="Time Accepted" />
       <TableColumn fx:id="timeActiveColumn" prefWidth="156.0" text="Time Active" />
