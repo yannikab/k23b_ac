@@ -48,7 +48,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="TIME_ACCEPTED" COLSPAN="3" ALIGN="LEFT">TIME_ACCEPTED</TD></TR>
       <TR><TD PORT="TIME_JOBREQUEST" COLSPAN="3" ALIGN="LEFT">TIME_JOBREQUEST</TD></TR>
       <TR><TD PORT="TIME_TERMINATED" COLSPAN="3" ALIGN="LEFT">TIME_TERMINATED</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">6 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_agent.html"
     tooltip="amdb_agent"
@@ -66,7 +66,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="PERIODIC" COLSPAN="3" ALIGN="LEFT">PERIODIC</TD></TR>
       <TR><TD PORT="PERIOD" COLSPAN="3" ALIGN="LEFT">PERIOD</TD></TR>
       <TR><TD PORT="TIME_STOPPED" COLSPAN="3" ALIGN="LEFT">TIME_STOPPED</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">146 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_job.html"
     tooltip="amdb_job"
@@ -76,7 +76,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">amdb_request</TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">6 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_request.html"
     tooltip="amdb_request"
@@ -86,7 +86,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">amdb_result</TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">727 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
     </TABLE>>
     URL="amdb_result.html"
     tooltip="amdb_result"
@@ -99,8 +99,10 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="ADMIN_ID" COLSPAN="3" BGCOLOR="#f4f7da" ALIGN="LEFT">ADMIN_ID</TD></TR>
       <TR><TD PORT="USERNAME" COLSPAN="3" BGCOLOR="#f4f7da" ALIGN="LEFT">USERNAME</TD></TR>
       <TR><TD PORT="PASSWORD" COLSPAN="3" ALIGN="LEFT">PASSWORD</TD></TR>
-      <TR><TD PORT="ACTIVE" COLSPAN="3" ALIGN="LEFT">ACTIVE</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
+      <TR><TD PORT="TIME_REGISTERED" COLSPAN="3" ALIGN="LEFT">TIME_REGISTERED</TD></TR>
+      <TR><TD PORT="TIME_ACCEPTED" COLSPAN="3" ALIGN="LEFT">TIME_ACCEPTED</TD></TR>
+      <TR><TD PORT="TIME_ACTIVE" COLSPAN="3" ALIGN="LEFT">TIME_ACTIVE</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">3 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
     </TABLE>>
     URL="amdb_user.html"
     tooltip="amdb_user"

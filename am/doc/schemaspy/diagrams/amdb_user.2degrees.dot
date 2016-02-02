@@ -41,7 +41,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">amdb_agent</TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">6 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_agent.html"
     tooltip="amdb_agent"
@@ -51,7 +51,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">amdb_job</TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">146 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_job.html"
     tooltip="amdb_job"
@@ -64,8 +64,10 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="ADMIN_ID" COLSPAN="2" BGCOLOR="#f4f7da" ALIGN="LEFT">ADMIN_ID</TD><TD PORT="ADMIN_ID.type" ALIGN="LEFT">bigint[19]</TD></TR>
       <TR><TD PORT="USERNAME" COLSPAN="2" BGCOLOR="#f4f7da" ALIGN="LEFT">USERNAME</TD><TD PORT="USERNAME.type" ALIGN="LEFT">varchar[40]</TD></TR>
       <TR><TD PORT="PASSWORD" COLSPAN="2" ALIGN="LEFT">PASSWORD</TD><TD PORT="PASSWORD.type" ALIGN="LEFT">char[64]</TD></TR>
-      <TR><TD PORT="ACTIVE" COLSPAN="2" ALIGN="LEFT">ACTIVE</TD><TD PORT="ACTIVE.type" ALIGN="LEFT">bit[1]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 &gt;</TD></TR>
+      <TR><TD PORT="TIME_REGISTERED" COLSPAN="2" ALIGN="LEFT">TIME_REGISTERED</TD><TD PORT="TIME_REGISTERED.type" ALIGN="LEFT">datetime[19]</TD></TR>
+      <TR><TD PORT="TIME_ACCEPTED" COLSPAN="2" ALIGN="LEFT">TIME_ACCEPTED</TD><TD PORT="TIME_ACCEPTED.type" ALIGN="LEFT">datetime[19]</TD></TR>
+      <TR><TD PORT="TIME_ACTIVE" COLSPAN="2" ALIGN="LEFT">TIME_ACTIVE</TD><TD PORT="TIME_ACTIVE.type" ALIGN="LEFT">datetime[19]</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">3 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 &gt;</TD></TR>
     </TABLE>>
     URL="amdb_user.html"
     tooltip="amdb_user"
