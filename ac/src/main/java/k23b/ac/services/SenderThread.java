@@ -127,7 +127,6 @@ public class SenderThread extends Thread implements Observer<State> {
                 switch (status) {
 
                 case NETWORK_ERROR:
-                case INVALID:
                     networkError();
                     break;
 
@@ -135,11 +134,10 @@ public class SenderThread extends Thread implements Observer<State> {
                     serviceError();
                     break;
 
-                case SUCCESS:
+                case SEND_SUCCESS:
                     sendSuccess();
                     break;
 
-                case CANCELLED:
                 default:
                     cancelled();
                     break;
@@ -196,11 +194,9 @@ public class SenderThread extends Thread implements Observer<State> {
             String response = restTemplate.postForObject(url, userContainer, String.class);
 
             if (response.startsWith("Accepted"))
-                return UsersSendStatus.SUCCESS;
-            else if (response.startsWith("Service Error"))
-                return UsersSendStatus.SERVICE_ERROR;
+                return UsersSendStatus.SEND_SUCCESS;
             else
-                return UsersSendStatus.INVALID;
+                return UsersSendStatus.SERVICE_ERROR;
 
         } catch (RestClientException e) {
             Logger.logException(getClass().getSimpleName(), e);

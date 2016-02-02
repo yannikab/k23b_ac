@@ -15,17 +15,9 @@ import k23b.ac.tasks.status.ReceiveStatus;
 
 public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface AgentsReceiveCallback {
+    public interface AgentsReceiveCallback extends TaskCallback {
 
         public void agentsReceived(List<Agent> agents);
-
-        public void registrationPending();
-
-        public void incorrectCredentials();
-
-        public void serviceError();
-
-        public void networkError();
 
         public void removeAgentsTask();
     }
@@ -51,13 +43,6 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
         try {
 
-            // try {
-            // Thread.sleep(5000);
-            // } catch (InterruptedException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-
             String url = baseURI + "agents/" + username + "/" + password;
 
             RestTemplate restTemplate = new RestTemplate();
@@ -65,6 +50,13 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
 
             AgentContainer agentContainer = restTemplate.getForObject(url, AgentContainer.class);
+
+            // try {
+            // Thread.sleep(5000);
+            // } catch (InterruptedException e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
 
             Collections.sort(agentContainer.getAgents());
 
@@ -75,16 +67,26 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
                 this.agents = agentContainer.getAgents();
 
                 return ReceiveStatus.RECEIVE_SUCCESS;
+            }
 
-            } else if (status.startsWith("Pending"))
-                return ReceiveStatus.REGISTRATION_PENDING;
-            else if (status.startsWith("Incorrect"))
+            if (status.equals("Incorrect Credentials"))
                 return ReceiveStatus.INCORRECT_CREDENTIALS;
-            else
+
+            if (status.equals("Registration Pending"))
+                return ReceiveStatus.REGISTRATION_PENDING;
+
+            if (status.equals("Session Expired"))
+                return ReceiveStatus.SESSION_EXPIRED;
+
+            if (status.equals("Service Error"))
                 return ReceiveStatus.SERVICE_ERROR;
 
+            return ReceiveStatus.INVALID;
+
         } catch (RestClientException e) {
+
             Logger.logException(getClass().getSimpleName(), e);
+
             return ReceiveStatus.NETWORK_ERROR;
         }
     }
@@ -92,39 +94,48 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onPostExecute(final ReceiveStatus status) {
 
-        agentsReceiveCallback.removeAgentsTask();
-
         switch (status) {
 
         case RECEIVE_SUCCESS:
+
             agentsReceiveCallback.agentsReceived(agents);
             break;
 
-        case REGISTRATION_PENDING:
-            agentsReceiveCallback.registrationPending();
-            break;
-
         case INCORRECT_CREDENTIALS:
+
             agentsReceiveCallback.incorrectCredentials();
             break;
 
-        case SERVICE_ERROR:
-            agentsReceiveCallback.serviceError();
+        case REGISTRATION_PENDING:
+
+            agentsReceiveCallback.registrationPending();
+            break;
+            
+        case SESSION_EXPIRED:
+            
+            agentsReceiveCallback.sessionExpired();
             break;
 
         case NETWORK_ERROR:
+
             agentsReceiveCallback.networkError();
+            break;
+
+        case SERVICE_ERROR:
+
+            agentsReceiveCallback.serviceError();
+            break;
 
         default:
             break;
         }
+
+        agentsReceiveCallback.removeAgentsTask();
     }
 
     @Override
     protected void onCancelled() {
 
         agentsReceiveCallback.removeAgentsTask();
-
-        agentsReceiveCallback.agentsReceived(null);
     }
 }

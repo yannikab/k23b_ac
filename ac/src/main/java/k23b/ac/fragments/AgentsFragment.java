@@ -3,7 +3,6 @@ package k23b.ac.fragments;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -29,7 +28,7 @@ import k23b.ac.tasks.AgentsReceiveTask;
 import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.util.Settings;
 
-public class AgentsFragment extends Fragment implements AgentsReceiveCallback, AgentActions.Callback {
+public class AgentsFragment extends FragmentBase implements AgentsReceiveCallback, AgentActions.Callback {
 
     private AgentsReceiveTask agentsReceiveTask;
 
@@ -236,41 +235,17 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     }
 
     @Override
-    public void registrationPending() {
+    public void networkError() {
 
-        Logger.info(this.toString(), "Registration pending, aborting activity.");
-
-        abortActivity();
-    }
-
-    @Override
-    public void incorrectCredentials() {
-
-        Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
-
-        abortActivity();
-    }
-
-    private void abortActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
-    }
-
-    @Override
-    public void serviceError() {
-
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
+        super.networkError();
 
         showProgress(false);
     }
 
     @Override
-    public void networkError() {
+    public void serviceError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
+        super.serviceError();
 
         showProgress(false);
     }
@@ -282,7 +257,7 @@ public class AgentsFragment extends Fragment implements AgentsReceiveCallback, A
     }
 
     @Override
-    public void destroyActionMode() {
+    public void removeActionMode() {
 
         this.actionMode = null;
     }

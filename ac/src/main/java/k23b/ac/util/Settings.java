@@ -12,20 +12,24 @@ public class Settings {
 
         setBaseURI("http://ykab.dynu.net:8080/am/client/");
         // setBaseURI("http://192.168.2.7:8080/am/client/");
-        Logger.info("Settings", "baseURI: " + getBaseURI());
+        Logger.info(Settings.class.getSimpleName(), "baseURI: " + getBaseURI());
 
-        setSenderThreadInterval(60);
-        Logger.info("Settings", "senderThreadInterval: " + getSenderThreadInterval());
+        setSenderThreadInterval(30);
+        Logger.info(Settings.class.getSimpleName(), "senderThreadInterval: " + getSenderThreadInterval());
+
+        setLogOutOnSessionExpiry(true);
+        Logger.info(Settings.class.getSimpleName(), "logOutOnSessionExpiry: " + getLogOutOnSessionExpiry());
     }
 
     private static String baseURI;
     private static int senderThreadInterval;
+    private static boolean logOutOnSessionExpiry;
 
     public static int getSenderThreadInterval() {
         return senderThreadInterval;
     }
 
-    public static void setSenderThreadInterval(int senderThreadInterval) {
+    private static void setSenderThreadInterval(int senderThreadInterval) {
         Settings.senderThreadInterval = senderThreadInterval;
     }
 
@@ -35,5 +39,13 @@ public class Settings {
 
     private static void setBaseURI(String baseURI) {
         Settings.baseURI = baseURI;
+    }
+
+    public static boolean getLogOutOnSessionExpiry() {
+        return logOutOnSessionExpiry;
+    }
+
+    private static void setLogOutOnSessionExpiry(boolean logOutOnSessionExpiry) {
+        Settings.logOutOnSessionExpiry = logOutOnSessionExpiry;
     }
 }

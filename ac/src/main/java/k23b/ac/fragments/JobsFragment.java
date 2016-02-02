@@ -3,7 +3,6 @@ package k23b.ac.fragments;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -36,7 +35,7 @@ import k23b.ac.tasks.JobsReceiveTask;
 import k23b.ac.tasks.JobsReceiveTask.JobsReceiveCallback;
 import k23b.ac.util.Settings;
 
-public class JobsFragment extends Fragment implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
+public class JobsFragment extends FragmentBase implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
 
     private AgentsReceiveTask agentsReceiveTask;
 
@@ -93,7 +92,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
                 if (agentsReceiveTask != null || jobsReceiveTask != null)
                     return;
-                
+
                 if (actionMode != null)
                     return;
 
@@ -112,7 +111,7 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
 
                 if (agentsReceiveTask != null || jobsReceiveTask != null)
                     return false;
-                
+
                 if (actionMode != null)
                     return false;
 
@@ -348,43 +347,21 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
     }
 
     @Override
-    public void registrationPending() {
-
-        Logger.info(this.toString(), "Registration pending, aborting activity.");
-
-        abortActivity();
-    }
-
-    @Override
-    public void incorrectCredentials() {
-
-        Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
-
-        abortActivity();
-    }
-
-    private void abortActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
-    }
-
-    @Override
     public void serviceError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
+        super.serviceError();
 
         showProgress(false);
+        showProgressJobs(false);
     }
 
     @Override
     public void networkError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
+        super.networkError();
 
         showProgress(false);
+        showProgressJobs(false);
     }
 
     @Override
@@ -399,7 +376,8 @@ public class JobsFragment extends Fragment implements AgentsReceiveCallback, Job
         this.jobsReceiveTask = null;
     }
 
-    public void destroyActionMode() {
+    @Override
+    public void removeActionMode() {
 
         this.actionMode = null;
     }

@@ -13,17 +13,11 @@ import k23b.ac.tasks.status.UserLoginStatus;
  */
 public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
 
-    public interface LoginCallback {
+    public interface LoginCallback extends TaskCallback {
 
         public void loginSuccess();
-
-        public void registrationPending();
-
-        public void incorrectCredentials();
-
-        public void serviceError();
-
-        public void networkError();
+        
+        public void removeLoginTask();
     }
 
     private final LoginCallback loginCallback;
@@ -71,17 +65,24 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
                 // e.printStackTrace();
             }
 
-            if (result.startsWith("Accepted"))
+            if (result.equals("Login Success"))
                 return UserLoginStatus.LOGIN_SUCCESS;
-            else if (result.startsWith("Pending"))
-                return UserLoginStatus.REGISTRATION_PENDING;
-            else if (result.startsWith("Incorrect"))
+
+            if (result.equals("Incorrect Credentials"))
                 return UserLoginStatus.INCORRECT_CREDENTIALS;
-            else
+
+            if (result.equals("Registration Pending"))
+                return UserLoginStatus.REGISTRATION_PENDING;
+
+            if (result.equals("Service Error"))
                 return UserLoginStatus.SERVICE_ERROR;
 
+            return UserLoginStatus.INVALID;
+
         } catch (RestClientException e) {
+            
             Logger.logException(getClass().getSimpleName(), e);
+            
             return UserLoginStatus.NETWORK_ERROR;
         }
     }
@@ -92,26 +93,40 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
         switch (status) {
 
         case LOGIN_SUCCESS:
+            
             loginCallback.loginSuccess();
             break;
 
-        case REGISTRATION_PENDING:
-            loginCallback.registrationPending();
-            break;
-
         case INCORRECT_CREDENTIALS:
+            
             loginCallback.incorrectCredentials();
             break;
 
-        case SERVICE_ERROR:
-            loginCallback.serviceError();
+        case REGISTRATION_PENDING:
+            
+            loginCallback.registrationPending();
             break;
 
         case NETWORK_ERROR:
+            
             loginCallback.networkError();
+            break;
+            
+        case SERVICE_ERROR:
+            
+            loginCallback.serviceError();
+            break;
 
         default:
             break;
         }
+        
+        loginCallback.removeLoginTask();
+    }
+
+    @Override
+    protected void onCancelled() {
+
+        loginCallback.removeLoginTask();
     }
 }

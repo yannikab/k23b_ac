@@ -15,17 +15,9 @@ import k23b.ac.tasks.status.ReceiveStatus;
 
 public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface JobsReceiveCallback {
+    public interface JobsReceiveCallback extends TaskCallback {
 
         public void jobsReceived(List<Job> jobs);
-
-        public void registrationPending();
-
-        public void incorrectCredentials();
-
-        public void serviceError();
-
-        public void networkError();
 
         public void removeJobsTask();
     }
@@ -53,8 +45,6 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
         try {
 
-            // Thread.sleep(5000);
-
             String url = baseURI + "jobs/" + username + "/" + password + "/" + agentHash;
 
             RestTemplate restTemplate = new RestTemplate();
@@ -62,6 +52,13 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
 
             JobContainer jobContainer = restTemplate.getForObject(url, JobContainer.class);
+
+            // try {
+            // Thread.sleep(5000);
+            // } catch (InterruptedException e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
 
             Collections.sort(jobContainer.getJobs());
 
@@ -72,17 +69,26 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
                 this.jobs = jobContainer.getJobs();
 
                 return ReceiveStatus.RECEIVE_SUCCESS;
-
-            } else if (status.startsWith("Pending")) {
-                return ReceiveStatus.REGISTRATION_PENDING;
-            } else if (status.startsWith("Incorrect")) {
-                return ReceiveStatus.INCORRECT_CREDENTIALS;
-            } else {
-                return ReceiveStatus.SERVICE_ERROR;
             }
 
+            if (status.equals("Incorrect Credentials"))
+                return ReceiveStatus.INCORRECT_CREDENTIALS;
+
+            if (status.equals("Registration Pending"))
+                return ReceiveStatus.REGISTRATION_PENDING;
+
+            if (status.equals("Session Expired"))
+                return ReceiveStatus.SESSION_EXPIRED;
+
+            if (status.equals("Service Error"))
+                return ReceiveStatus.SERVICE_ERROR;
+
+            return ReceiveStatus.INVALID;
+
         } catch (RestClientException e) {
+
             Logger.logException(getClass().getSimpleName(), e);
+
             return ReceiveStatus.NETWORK_ERROR;
         }
     }
@@ -90,39 +96,48 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onPostExecute(final ReceiveStatus status) {
 
-        jobsReceiveCallback.removeJobsTask();
-
         switch (status) {
 
         case RECEIVE_SUCCESS:
+
             jobsReceiveCallback.jobsReceived(jobs);
             break;
 
-        case REGISTRATION_PENDING:
-            jobsReceiveCallback.registrationPending();
-            break;
-
         case INCORRECT_CREDENTIALS:
+
             jobsReceiveCallback.incorrectCredentials();
             break;
 
-        case SERVICE_ERROR:
-            jobsReceiveCallback.serviceError();
+        case REGISTRATION_PENDING:
+
+            jobsReceiveCallback.registrationPending();
+            break;
+
+        case SESSION_EXPIRED:
+
+            jobsReceiveCallback.sessionExpired();
             break;
 
         case NETWORK_ERROR:
+
             jobsReceiveCallback.networkError();
+            break;
+
+        case SERVICE_ERROR:
+
+            jobsReceiveCallback.serviceError();
+            break;
 
         default:
             break;
         }
+
+        jobsReceiveCallback.removeJobsTask();
     }
 
     @Override
     protected void onCancelled() {
 
         jobsReceiveCallback.removeJobsTask();
-
-        jobsReceiveCallback.jobsReceived(null);
     }
 }

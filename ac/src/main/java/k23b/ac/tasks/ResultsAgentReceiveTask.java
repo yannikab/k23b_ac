@@ -15,17 +15,9 @@ import k23b.ac.tasks.status.ReceiveStatus;
 
 public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface ResultsAgentReceiveCallback {
+    public interface ResultsAgentReceiveCallback extends TaskCallback {
 
         public void resultsReceived(List<Result> results);
-
-        public void registrationPending();
-
-        public void incorrectCredentials();
-
-        public void serviceError();
-
-        public void networkError();
 
         public void removeResultsTask();
     }
@@ -72,16 +64,26 @@ public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus
                 this.results = resultContainer.getResults();
 
                 return ReceiveStatus.RECEIVE_SUCCESS;
+            }
 
-            } else if (status.startsWith("Pending"))
-                return ReceiveStatus.REGISTRATION_PENDING;
-            else if (status.startsWith("Incorrect"))
+            if (status.equals("Incorrect Credentials"))
                 return ReceiveStatus.INCORRECT_CREDENTIALS;
-            else
+
+            if (status.equals("Registration Pending"))
+                return ReceiveStatus.REGISTRATION_PENDING;
+
+            if (status.equals("Session Expired"))
+                return ReceiveStatus.SESSION_EXPIRED;
+
+            if (status.equals("Service Error"))
                 return ReceiveStatus.SERVICE_ERROR;
 
+            return ReceiveStatus.INVALID;
+
         } catch (RestClientException e) {
+            
             Logger.logException(getClass().getSimpleName(), e);
+            
             return ReceiveStatus.NETWORK_ERROR;
         }
     }
@@ -94,23 +96,34 @@ public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus
         switch (status) {
 
         case RECEIVE_SUCCESS:
+
             resultsAgentReceiveCallback.resultsReceived(results);
             break;
 
-        case REGISTRATION_PENDING:
-            resultsAgentReceiveCallback.registrationPending();
-            break;
-
         case INCORRECT_CREDENTIALS:
+
             resultsAgentReceiveCallback.incorrectCredentials();
             break;
 
-        case SERVICE_ERROR:
-            resultsAgentReceiveCallback.serviceError();
+        case REGISTRATION_PENDING:
+
+            resultsAgentReceiveCallback.registrationPending();
+            break;
+            
+        case SESSION_EXPIRED:
+
+            resultsAgentReceiveCallback.sessionExpired();
             break;
 
         case NETWORK_ERROR:
+
             resultsAgentReceiveCallback.networkError();
+            break;
+
+        case SERVICE_ERROR:
+
+            resultsAgentReceiveCallback.serviceError();
+            break;
 
         default:
             break;
@@ -121,7 +134,5 @@ public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus
     protected void onCancelled() {
 
         resultsAgentReceiveCallback.removeResultsTask();
-
-        resultsAgentReceiveCallback.resultsReceived(null);
     }
 }

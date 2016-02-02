@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -43,7 +42,7 @@ import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Settings;
 import k23b.ac.util.WebViewManager;
 
-public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallback, ResultsAgentReceiveCallback {
+public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveCallback, ResultsAgentReceiveCallback {
 
     private AgentsReceiveTask agentsReceiveTask;
 
@@ -123,7 +122,7 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
             public void onClick(View v) {
 
                 closeSoftKeyboard();
-                
+
                 fetchResults();
             }
         });
@@ -197,7 +196,7 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
 
         if (getActivity() == null)
             return;
-        
+
         View view = getActivity().getCurrentFocus();
 
         if (view != null) {
@@ -480,43 +479,21 @@ public class ResultsAgentFragment extends Fragment implements AgentsReceiveCallb
     }
 
     @Override
-    public void registrationPending() {
-
-        Logger.info(this.toString(), "Registration pending, aborting activity.");
-
-        abortActivity();
-    }
-
-    @Override
-    public void incorrectCredentials() {
-
-        Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
-
-        abortActivity();
-    }
-
-    private void abortActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
-    }
-
-    @Override
     public void serviceError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
-
         showProgress(false);
+        showProgressResults(false);
+
+        super.serviceError();
     }
 
     @Override
     public void networkError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
-
         showProgress(false);
+        showProgressResults(false);
+
+        super.networkError();
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +29,7 @@ import k23b.ac.services.UserManager;
 import k23b.ac.tasks.UserLoginTask;
 import k23b.ac.util.Settings;
 
-public class LoginFragment extends Fragment implements UserLoginTask.LoginCallback {
+public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCallback {
 
     private UserLoginTask userLoginTask = null;
 
@@ -209,14 +208,9 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void loginSuccess() {
 
-        if (userLoginTask == null)
-            return;
-
         Logger.info(this.toString(), "Log in success, storing user in shared preferences and starting main activity.");
 
         storeUser(userLoginTask.getUsername(), userLoginTask.getPassword());
-
-        userLoginTask = null;
 
         startMainActivity();
     }
@@ -257,27 +251,7 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     }
 
     @Override
-    public void registrationPending() {
-
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
-        Logger.info(this.toString(), "Registration pending.");
-
-        showProgress(false);
-
-        Toast.makeText(getActivity(), getString(R.string.error_registration_pending), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void incorrectCredentials() {
-
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
 
         Logger.info(this.toString(), "Incorrect credentials.");
 
@@ -293,33 +267,29 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
     }
 
     @Override
-    public void serviceError() {
+    public void registrationPending() {
 
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
-        Logger.info(this.toString(), "Service error.");
+        Logger.info(this.toString(), "Registration pending.");
 
         showProgress(false);
 
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getString(R.string.error_registration_pending), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void networkError() {
 
-        if (userLoginTask == null)
-            return;
+        showProgress(false);
 
-        userLoginTask = null;
+        super.networkError();
+    }
 
-        Logger.info(this.toString(), "Network error.");
+    @Override
+    public void serviceError() {
 
         showProgress(false);
 
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
+        super.serviceError();
     }
 
     @Override
@@ -367,5 +337,16 @@ public class LoginFragment extends Fragment implements UserLoginTask.LoginCallba
         }
 
         return new String(hexChars);
+    }
+
+    @Override
+    public void removeLoginTask() {
+
+        this.userLoginTask = null;
+    }
+
+    @Override
+    public void sessionExpired() {
+
     }
 }

@@ -19,9 +19,11 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
 
         public void userExists();
 
+        public void networkError();
+
         public void serviceError();
 
-        public void networkError();
+        public void removeRegisterTask();
     }
 
     private final RegisterCallback registerCallback;
@@ -51,23 +53,29 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
 
             String result = restTemplate.getForObject(url, String.class);
 
-            try {
+            // try {
+            //
+            // Thread.sleep(5000);
+            //
+            // } catch (InterruptedException e) {
+            // // e.printStackTrace();
+            // }
 
-                Thread.sleep(5000);
-
-            } catch (InterruptedException e) {
-                // e.printStackTrace();
-            }
-
-            if (result.startsWith("Accepted"))
+            if (result.equals("Registration Success"))
                 return UserRegisterStatus.REGISTRATION_SUCCESS;
-            else if (result.startsWith("User Exists"))
+
+            if (result.equals("User Exists"))
                 return UserRegisterStatus.USER_EXISTS;
-            else
+
+            if (result.equals("Service Error"))
                 return UserRegisterStatus.SERVICE_ERROR;
 
+            return UserRegisterStatus.INVALID;
+
         } catch (RestClientException e) {
+
             Logger.logException(getClass().getSimpleName(), e);
+
             return UserRegisterStatus.NETWORK_ERROR;
         }
     }
@@ -78,22 +86,35 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
         switch (status) {
 
         case REGISTRATION_SUCCESS:
+
             registerCallback.registrationSuccess();
             break;
 
         case USER_EXISTS:
+
             registerCallback.userExists();
             break;
 
-        case SERVICE_ERROR:
-            registerCallback.serviceError();
-
         case NETWORK_ERROR:
+
             registerCallback.networkError();
+            break;
+
+        case SERVICE_ERROR:
+
+            registerCallback.serviceError();
             break;
 
         default:
             break;
         }
+
+        registerCallback.removeRegisterTask();
+    }
+
+    @Override
+    protected void onCancelled() {
+
+        registerCallback.removeRegisterTask();
     }
 }

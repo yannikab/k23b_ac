@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,7 +24,7 @@ import k23b.ac.services.NetworkManager;
 import k23b.ac.tasks.UserRegisterTask;
 import k23b.ac.util.Settings;
 
-public class RegisterFragment extends Fragment implements UserRegisterTask.RegisterCallback {
+public class RegisterFragment extends FragmentBase implements UserRegisterTask.RegisterCallback {
 
     private UserRegisterTask userRegisterTask = null;
 
@@ -240,27 +239,20 @@ public class RegisterFragment extends Fragment implements UserRegisterTask.Regis
     @Override
     public void registrationSuccess() {
 
-        if (userRegisterTask == null)
-            return;
-
-        userRegisterTask = null;
+        Logger.info(this.toString(), "Registration success.");
 
         showProgress(false);
 
-        Logger.info(this.toString(), "Registration success.");
-
         clearEditTexts();
+
+        if (getActivity() == null)
+            return;
 
         Toast.makeText(getActivity(), getString(R.string.info_registration_success), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void userExists() {
-
-        if (userRegisterTask == null)
-            return;
-
-        userRegisterTask = null;
 
         Logger.info(this.toString(), "User exists.");
 
@@ -276,33 +268,19 @@ public class RegisterFragment extends Fragment implements UserRegisterTask.Regis
     }
 
     @Override
-    public void serviceError() {
+    public void networkError() {
 
-        if (userRegisterTask == null)
-            return;
-
-        userRegisterTask = null;
-
-        Logger.info(this.toString(), "Service error.");
+        super.networkError();
 
         showProgress(false);
-
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void networkError() {
+    public void serviceError() {
 
-        if (userRegisterTask == null)
-            return;
-
-        userRegisterTask = null;
-
-        Logger.info(this.toString(), "Network error.");
+        super.serviceError();
 
         showProgress(false);
-
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -318,9 +296,15 @@ public class RegisterFragment extends Fragment implements UserRegisterTask.Regis
 
         Logger.info(this.toString(), "onDestroy()");
 
-        userRegisterTask = null;
+        removeRegisterTask();
 
         super.onDestroy();
+    }
+
+    @Override
+    public void removeRegisterTask() {
+
+        this.userRegisterTask = null;
     }
 
     private String hashForPassword(String password) {

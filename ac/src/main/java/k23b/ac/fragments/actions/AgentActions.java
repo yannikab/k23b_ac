@@ -22,7 +22,7 @@ public class AgentActions implements ActionMode.Callback {
 
         public Activity getActivity();
 
-        public void destroyActionMode();
+        public void removeActionMode();
     }
 
     private Callback callback;
@@ -98,7 +98,7 @@ public class AgentActions implements ActionMode.Callback {
     @Override
     public void onDestroyActionMode(ActionMode mode) {
 
-        this.callback.destroyActionMode();
+        this.callback.removeActionMode();
 
     }
 }

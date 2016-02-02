@@ -1,7 +1,6 @@
 package k23b.ac.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import k23b.ac.services.UserManager;
 import k23b.ac.tasks.UserLoginTask;
 import k23b.ac.util.Settings;
 
-public class StartFragment extends Fragment implements UserLoginTask.LoginCallback {
+public class StartFragment extends FragmentBase implements UserLoginTask.LoginCallback {
 
     private UserLoginTask userLoginTask = null;
 
@@ -48,7 +47,7 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
         NetworkManager.setContext(context);
 
         AssetManager.setContext(context);
-        
+
         DatabaseHandler.setContext(context);
 
         Intent intent = new Intent(context, SenderService.class);
@@ -124,11 +123,6 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void loginSuccess() {
 
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
         Logger.info(this.toString(), "Log in success, starting main activity.");
 
         startMainActivity();
@@ -146,11 +140,6 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void registrationPending() {
 
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
         Logger.info(this.toString(), "Registration pending, starting log in activity.");
 
         startLoginActivity();
@@ -159,25 +148,7 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void incorrectCredentials() {
 
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
         Logger.info(this.toString(), "Incorrect credentials, starting log in activity.");
-
-        startLoginActivity();
-    }
-
-    @Override
-    public void serviceError() {
-
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
-        Logger.info(this.toString(), "Service error, starting log in activity.");
 
         startLoginActivity();
     }
@@ -185,12 +156,15 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
     @Override
     public void networkError() {
 
-        if (userLoginTask == null)
-            return;
-
-        userLoginTask = null;
-
         Logger.info(this.toString(), "Network error, starting log in activity.");
+
+        startLoginActivity();
+    }
+
+    @Override
+    public void serviceError() {
+
+        Logger.info(this.toString(), "Service error, starting log in activity.");
 
         startLoginActivity();
     }
@@ -210,5 +184,11 @@ public class StartFragment extends Fragment implements UserLoginTask.LoginCallba
             return;
 
         getView().findViewById(R.id.start_progress).setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void removeLoginTask() {
+
+        this.userLoginTask = null;
     }
 }

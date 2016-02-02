@@ -15,17 +15,9 @@ import k23b.ac.tasks.status.ReceiveStatus;
 
 public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
-    public interface ResultsReceiveCallback {
+    public interface ResultsReceiveCallback extends TaskCallback {
 
         public void resultsReceived(List<Result> results);
-
-        public void registrationPending();
-
-        public void incorrectCredentials();
-
-        public void serviceError();
-
-        public void networkError();
 
         public void removeResultsTask();
     }
@@ -70,16 +62,26 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
                 this.results = resultContainer.getResults();
 
                 return ReceiveStatus.RECEIVE_SUCCESS;
+            }
 
-            } else if (status.startsWith("Pending"))
-                return ReceiveStatus.REGISTRATION_PENDING;
-            else if (status.startsWith("Incorrect"))
+            if (status.equals("Incorrect Credentials"))
                 return ReceiveStatus.INCORRECT_CREDENTIALS;
-            else
+
+            if (status.equals("Registration Pending"))
+                return ReceiveStatus.REGISTRATION_PENDING;
+
+            if (status.equals("Session Expired"))
+                return ReceiveStatus.SESSION_EXPIRED;
+
+            if (status.equals("Service Error"))
                 return ReceiveStatus.SERVICE_ERROR;
 
+            return ReceiveStatus.INVALID;
+
         } catch (RestClientException e) {
+
             Logger.logException(getClass().getSimpleName(), e);
+
             return ReceiveStatus.NETWORK_ERROR;
         }
     }
@@ -87,39 +89,48 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     @Override
     protected void onPostExecute(final ReceiveStatus status) {
 
-        resultsReceiveCallback.removeResultsTask();
-
         switch (status) {
 
         case RECEIVE_SUCCESS:
+
             resultsReceiveCallback.resultsReceived(results);
             break;
 
-        case REGISTRATION_PENDING:
-            resultsReceiveCallback.registrationPending();
-            break;
-
         case INCORRECT_CREDENTIALS:
+
             resultsReceiveCallback.incorrectCredentials();
             break;
 
-        case SERVICE_ERROR:
-            resultsReceiveCallback.serviceError();
+        case REGISTRATION_PENDING:
+
+            resultsReceiveCallback.registrationPending();
+            break;
+
+        case SESSION_EXPIRED:
+
+            resultsReceiveCallback.sessionExpired();
             break;
 
         case NETWORK_ERROR:
+
             resultsReceiveCallback.networkError();
+            break;
+
+        case SERVICE_ERROR:
+
+            resultsReceiveCallback.serviceError();
+            break;
 
         default:
             break;
         }
+
+        resultsReceiveCallback.removeResultsTask();
     }
 
     @Override
     protected void onCancelled() {
 
         resultsReceiveCallback.removeResultsTask();
-
-        resultsReceiveCallback.resultsReceived(null);
     }
 }

@@ -16,11 +16,9 @@ public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
 
         public void sendSuccess();
 
-        public void serviceError();
-
         public void networkError();
 
-        public void cancelled();
+        public void serviceError();
     }
 
     private final UsersSendCallback usersSendCallBack;
@@ -52,46 +50,44 @@ public class UsersSendTask extends AsyncTask<Void, Void, UsersSendStatus> {
 
             String response = restTemplate.postForObject(url, userContainer, String.class);
 
-            if (response.startsWith("Accepted"))
-                return UsersSendStatus.SUCCESS;
-            else if (response.startsWith("Service Error"))
+            if (response.equals("Accepted"))
+                return UsersSendStatus.SEND_SUCCESS;
+
+            if (response.equals("Service Error"))
                 return UsersSendStatus.SERVICE_ERROR;
-            else
-                return UsersSendStatus.INVALID;
+            
+            return UsersSendStatus.INVALID;
 
         } catch (RestClientException e) {
+            
             Logger.logException(getClass().getSimpleName(), e);
+            
             return UsersSendStatus.NETWORK_ERROR;
         }
     }
 
     @Override
     protected void onPostExecute(UsersSendStatus status) {
+        
         switch (status) {
 
+        case SEND_SUCCESS:
+            
+            usersSendCallBack.sendSuccess();
+            break;
+
         case NETWORK_ERROR:
-        case INVALID:
+            
             usersSendCallBack.networkError();
             break;
 
         case SERVICE_ERROR:
+            
             usersSendCallBack.serviceError();
             break;
 
-        case SUCCESS:
-            usersSendCallBack.sendSuccess();
-            break;
-
-        case CANCELLED:
         default:
-            usersSendCallBack.cancelled();
             break;
         }
-    }
-
-    @Override
-    protected void onCancelled() {
-
-        usersSendCallBack.cancelled();
     }
 }

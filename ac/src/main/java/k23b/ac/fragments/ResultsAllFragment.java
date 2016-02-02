@@ -3,7 +3,6 @@ package k23b.ac.fragments;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -14,8 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,7 +37,7 @@ import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Settings;
 import k23b.ac.util.WebViewManager;
 
-public class ResultsAllFragment extends Fragment implements ResultsReceiveCallback {
+public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCallback {
 
     private ResultsReceiveTask resultsReceiveTask;
 
@@ -111,7 +110,7 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
             public void onClick(View v) {
 
                 closeSoftKeyboard();
-                
+
                 fetchResults();
             }
         });
@@ -166,12 +165,12 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
 
         return view;
     }
-    
+
     private void closeSoftKeyboard() {
 
         if (getActivity() == null)
             return;
-        
+
         View view = getActivity().getCurrentFocus();
 
         if (view != null) {
@@ -363,43 +362,19 @@ public class ResultsAllFragment extends Fragment implements ResultsReceiveCallba
     }
 
     @Override
-    public void registrationPending() {
-
-        Logger.info(this.toString(), "Registration pending, aborting activity.");
-
-        abortActivity();
-    }
-
-    @Override
-    public void incorrectCredentials() {
-
-        Logger.info(this.toString(), "Incorrect credentials, aborting activity.");
-
-        abortActivity();
-    }
-
-    private void abortActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        getActivity().finish();
-    }
-
-    @Override
     public void serviceError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
-
         showProgress(false);
+
+        super.serviceError();
     }
 
     @Override
     public void networkError() {
 
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
-
         showProgress(false);
+
+        super.networkError();
     }
 
     @Override
