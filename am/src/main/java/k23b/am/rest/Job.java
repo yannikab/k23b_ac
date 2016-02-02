@@ -1,6 +1,7 @@
 package k23b.am.rest;
 
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -125,5 +126,37 @@ public class Job {
     @Override
     public String toString() {
         return "Job [jobId=" + jobId + ", agentId=" + agentId + ", adminId=" + adminId + ", timeAssigned=" + timeAssigned + ", timeSent=" + timeSent + ", params=" + params + ", periodic=" + periodic + ", period=" + period + ", timeStopped=" + timeStopped + "]";
+    }
+
+    public boolean isTerminating() {
+
+        return params != null && params.equals("exit");
+    }
+
+    public boolean isPeriodicStop() {
+
+        return params != null && params.startsWith("stop");
+    }
+
+    public long getPeriodicJobId() {
+
+        if (!isPeriodicStop())
+            return 0;
+
+        StringTokenizer stk = new StringTokenizer(params, " ");
+
+        if (stk.countTokens() != 2)
+            return 0;
+
+        stk.nextToken();
+
+        try {
+            
+            return Long.valueOf(stk.nextToken());
+
+        } catch (NumberFormatException e) {
+            
+            return 0;
+        }
     }
 }

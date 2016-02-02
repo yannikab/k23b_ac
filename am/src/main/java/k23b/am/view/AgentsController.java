@@ -274,6 +274,7 @@ public class AgentsController {
             AgentSrv.terminate(agent.getAgentId());
 
             AgentDao a = AgentSrv.findById(agent.getAgentId());
+
             if (a != null)
                 agent.setTimeTerminated(a.getTimeTerminated());
 

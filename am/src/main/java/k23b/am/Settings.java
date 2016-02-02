@@ -24,6 +24,8 @@ public class Settings {
     private static String dbPass;
     private static boolean createSchema;
     private static boolean createAdmins;
+    private static boolean expireUserSessions;
+    private static int userSessionMinutes;
 
     public static int getJobRequestInterval() {
         return jobRequestInterval;
@@ -55,6 +57,14 @@ public class Settings {
 
     public static boolean getCreateAdmins() {
         return createAdmins;
+    }
+    
+    public static boolean getExpireUserSessions() {
+        return expireUserSessions;
+    }
+    
+    public static int getUserSessionMinutes() {
+        return userSessionMinutes;
     }
 
     public static void load() {
@@ -97,6 +107,12 @@ public class Settings {
 
                 createAdmins = Boolean.parseBoolean(properties.getProperty("createAdmins"));
                 log.info("createAdmins: " + getCreateAdmins());
+                
+                expireUserSessions = Boolean.parseBoolean(properties.getProperty("expireUserSessions"));
+                log.info("expireUserSessions: " + getExpireUserSessions());
+                
+                userSessionMinutes = Integer.parseInt(properties.getProperty("userSessionMinutes"));
+                log.info("userSessionMinutes: " + getUserSessionMinutes());
 
                 log.info("Settings loaded.");
 

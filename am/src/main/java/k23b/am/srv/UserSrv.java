@@ -1,8 +1,14 @@
 package k23b.am.srv;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.Set;
+
 import k23b.am.cc.AdminCC;
+import k23b.am.cc.AgentCC;
 import k23b.am.cc.UserCC;
 import k23b.am.dao.AdminDao;
+import k23b.am.dao.AgentDao;
 import k23b.am.dao.DaoException;
 import k23b.am.dao.UserDao;
 
@@ -44,7 +50,7 @@ public class UserSrv {
                 if ((UserCC.findByUsername(username) != null))
                     throw new UserCredentialsException("Can not create user. Another user already exists with username: " + username);
 
-                long userId = UserCC.create(username, password, false);
+                long userId = UserCC.create(username, password, Date.from(Instant.now()));
 
                 if (userId == 0)
                     throw new SrvException("Could not create user with username: " + username);
@@ -103,90 +109,23 @@ public class UserSrv {
     }
 
     /**
-     * Logs in a user given its credentials.
+     * Retrieves all users currently in store.
      * 
-     * @param username the user's username.
-     * @param password the user's password.
-     * @throws UserCredentialsException if a user with specified username does not exist, password is incorrect, or the user could not be logged in.
+     * @return a set of objects, each representing a user.
      * @throws SrvException if a data access error occurs.
      */
-    public static void login(String username, String password) throws UserCredentialsException, SrvException {
+    public static Set<UserDao> findAll() throws SrvException {
 
         try {
 
             synchronized (lock ? UserCC.class : new Object()) {
 
-                UserDao u = UserCC.findByUsername(username);
-
-                if (u == null)
-                    throw new UserCredentialsException("Can not login user. User does not exist with username: " + username);
-
-                if (!u.getPassword().equals(password))
-                    throw new UserCredentialsException("Can not login user. Incorrect password.");
-
-                UserCC.setActive(u.getUserId(), true);
+                return UserCC.findAll();
             }
 
         } catch (DaoException e) {
             // e.printStackTrace();
-            throw new SrvException("Data access error while logging in user with username: " + username);
-        }
-    }
-
-    /**
-     * Logs out a user.
-     * 
-     * @param username the user's username.
-     * @throws SrvException if a user with specified username does not exist, the user is not logged in, the user could not be logged out, or a data access error occurs.
-     */
-    public static void logout(String username) throws SrvException {
-
-        try {
-
-            synchronized (lock ? UserCC.class : new Object()) {
-
-                UserDao u = UserCC.findByUsername(username);
-
-                if (u == null)
-                    throw new SrvException("Can not logout user. User does not exist with username: " + username);
-
-                if (!u.getActive())
-                    throw new SrvException("Can not logout user. User with username " + username + " is not logged in.");
-
-                UserCC.setActive(u.getUserId(), false);
-            }
-
-        } catch (DaoException e) {
-            // e.printStackTrace();
-            throw new SrvException("Data access error while logging out user with username: " + username);
-        }
-    }
-
-    /**
-     * Checks for a user's login status given its username.
-     * 
-     * @param username the user's username.
-     * @return true if the user is logged in, false otherwise.
-     * @throws UserCredentialsException if a user with specified username does not exist.
-     * @throws SrvException if a data access error occurs.
-     */
-    public static boolean isLoggedIn(String username) throws UserCredentialsException, SrvException {
-
-        try {
-
-            synchronized (lock ? UserCC.class : new Object()) {
-
-                UserDao u = UserCC.findByUsername(username);
-
-                if (u == null)
-                    throw new UserCredentialsException("Can not check user login status. User does not exist with username: " + username);
-
-                return u.getActive();
-            }
-
-        } catch (DaoException e) {
-            // e.printStackTrace();
-            throw new SrvException("Data access error while checking login status of user with username: " + username);
+            throw new SrvException("Data access error while finding all agents.");
         }
     }
 
@@ -197,7 +136,7 @@ public class UserSrv {
      * @param adminId id of the admin that is accepting the user.
      * @throws SrvException if the admin does not exist or is not logged in, the user does not exist or is already accepted, or a data access error occurs.
      */
-    public static void accept(String username, long adminId) throws SrvException {
+    public static void accept(String username, long adminId) throws UserApprovalException, SrvException {
 
         try {
 
@@ -222,9 +161,10 @@ public class UserSrv {
                         throw new SrvException("Can not accept user. Could not find user with username: " + username);
 
                     if (ud.getAdminId() > 0)
-                        throw new SrvException("Can not accept user. An admin has already accepted user with username: " + username);
+                        throw new UserApprovalException("Can not accept user. An admin has already accepted user with username: " + username);
 
                     UserCC.setAdminId(ud.getUserId(), adminId);
+                    UserCC.setTimeAccepted(ud.getUserId(), Date.from(Instant.now()));
                 }
             }
 
@@ -241,7 +181,7 @@ public class UserSrv {
      * @param adminId id of the admin that is rejecting the user.
      * @throws SrvException if the admin does not exist or is not logged in, the user does not exist or is not accepted, or a data access error occurs.
      */
-    public static void reject(String username, long adminId) throws SrvException {
+    public static void reject(String username, long adminId) throws UserApprovalException, SrvException {
 
         try {
 
@@ -266,9 +206,10 @@ public class UserSrv {
                         throw new SrvException("Can not reject user. Could not find user with username: " + username);
 
                     if (ud.getAdminId() == 0)
-                        throw new SrvException("Can not reject user. Status is not accepted for user with username: " + username);
+                        throw new UserApprovalException("Can not reject user. Status is not accepted for user with username: " + username);
 
                     UserCC.setAdminId(ud.getUserId(), 0);
+                    UserCC.setTimeAccepted(ud.getUserId(), null);
                 }
             }
 
@@ -280,13 +221,13 @@ public class UserSrv {
 
     /**
      * Checks for a user's accepted status given its username.
-     * 
+     *
      * @param username the user's username.
      * @return true if the user has been accepted by some admin, false otherwise.
      * @throws UserCredentialsException if a user with specified username does not exist.
      * @throws SrvException if a data access error occurs.
      */
-    public static boolean isAccepted(String username) throws UserCredentialsException, SrvException {
+    public static boolean isAccepted(String username, String password) throws UserCredentialsException, SrvException {
 
         try {
 
@@ -297,12 +238,95 @@ public class UserSrv {
                 if (u == null)
                     throw new UserCredentialsException("Can not check user accept status. User does not exist with username: " + username);
 
+                if (!u.getPassword().equals(password))
+                    throw new UserCredentialsException("Can not check user accept status. Incorrect password for user with username: " + username);
+
                 return u.getAdminId() > 0;
             }
 
         } catch (DaoException e) {
             // e.printStackTrace();
             throw new SrvException("Data access error while checking accept status of user with username: " + username);
+        }
+    }
+
+    /**
+     * Refreshes the session for the user with specified credentials.
+     * 
+     * @param username the user's username.
+     * @param password the user's password.
+     * @throws UserCredentialsException if a user with specified username does not exist, or the password is incorrect.
+     * @throws UserApprovalException if the user has not been approved by an admin.
+     * @throws SrvException if a data access error occurs.
+     */
+    public static void refreshSession(String username, String password) throws UserCredentialsException, UserApprovalException, SrvException {
+
+        try {
+
+            synchronized (lock ? UserCC.class : new Object()) {
+
+                UserDao u = UserCC.findByUsername(username);
+
+                if (u == null)
+                    throw new UserCredentialsException("Can not refresh session. User does not exist with username: " + username);
+
+                if (u.getAdminId() == 0)
+                    throw new UserApprovalException("Can not refresh session. An administrator needs to accept user: " + username);
+
+                if (!u.getPassword().equals(password))
+                    throw new UserCredentialsException("Can not refresh session. Incorrect password for user with username: " + username);
+
+                UserCC.setTimeActive(u.getUserId(), Date.from(Instant.now()));
+            }
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            throw new SrvException("Data access error while logging in user with username: " + username);
+        }
+    }
+
+    /**
+     * Checks for a user's session status given its username and password.
+     * 
+     * @param username the user's username.
+     * @param password the user's password.
+     * @param userSessionMinutes the number of minutes a session stays active.
+     * @return true if the user is logged in, false otherwise.
+     * @throws UserCredentialsException if a user with specified username does not exist.
+     * @throws SrvException if a data access error occurs.
+     */
+    public static boolean isSessionActive(String username, String password, int userSessionMinutes) throws UserCredentialsException, UserApprovalException, SrvException {
+
+        try {
+
+            synchronized (lock ? UserCC.class : new Object()) {
+
+                UserDao u = UserCC.findByUsername(username);
+
+                if (u == null)
+                    throw new UserCredentialsException("Can not check user active status. User does not exist with username: " + username);
+
+                if (!u.getPassword().equals(password))
+                    throw new UserCredentialsException("Can not check user active status. Incorrect password for user with username: " + username);
+
+                if (u.getAdminId() == 0)
+                    throw new UserApprovalException("Can not check user active status. An administrator needs to accept user: " + username);
+
+                Date timeActive = u.getTimeActive();
+
+                if (timeActive == null)
+                    return false;
+
+                Date now = Date.from(Instant.now());
+
+                long seconds = (now.getTime() - timeActive.getTime()) / 1000;
+
+                return seconds >= 0 && seconds <= userSessionMinutes * 60;
+            }
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            throw new SrvException("Data access error while checking login status of user with username: " + username);
         }
     }
 }

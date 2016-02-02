@@ -23,6 +23,7 @@
   <center>
     <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
       <tabs>
+        <Tab fx:id="usersTab" onSelectionChanged="#tabChanged" text="Users" />
         <Tab fx:id="requestsTab" onSelectionChanged="#tabChanged" text="Requests" />
         <Tab fx:id="agentsTab" onSelectionChanged="#tabChanged" text="Agents" />
         <Tab fx:id="jobsTab" onSelectionChanged="#tabChanged" text="Jobs" />

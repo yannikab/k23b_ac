@@ -31,6 +31,9 @@ public class RootPaneController {
     }
 
     @FXML
+    private Tab usersTab;
+
+    @FXML
     private Tab requestsTab;
 
     @FXML
@@ -87,15 +90,20 @@ public class RootPaneController {
             allResultsTab.setContent((Node) allResultsLoader.load());
             this.allResultsController = allResultsLoader.getController();
 
+            FXMLLoader usersLoader = new FXMLLoader();
+            usersLoader.setLocation(App.class.getResource("/fxml/UsersView.fxml"));
+            usersTab.setContent((Node) usersLoader.load());
+            this.usersController = usersLoader.getController();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         setAdmin(null);
 
-        fetchAdmin();
+        // fetchAdmin();
 
-        // showLoginWindow();
+        showLoginWindow();
 
         tabChanged();
 
@@ -129,6 +137,7 @@ public class RootPaneController {
     private JobsController jobsController;
     private ResultsController resultsController;
     private AllResultsController allResultsController;
+    private UsersController usersController;
 
     @FXML
     private void tabChanged() {
@@ -156,6 +165,11 @@ public class RootPaneController {
         if (allResultsTab != null) {
             if (allResultsTab.isSelected() && allResultsController != null)
                 allResultsController.refresh();
+        }
+
+        if (usersTab != null) {
+            if (usersTab.isSelected() && usersController != null)
+                usersController.refresh();
         }
 
         return;
@@ -233,6 +247,7 @@ public class RootPaneController {
         jobsController.setAdmin(admin);
         resultsController.setAdmin(admin);
         allResultsController.setAdmin(admin);
+        usersController.setAdmin(admin);
 
         this.admin = admin;
 

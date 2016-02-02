@@ -26,9 +26,9 @@ public class UserSrvTest {
 
         try {
 
-            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb", "root", "s3cr3t");
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb_test", "root", "s3cr3t");
 
-            new ScriptRunner(c).runScript("drop.sql");
+            new ScriptRunner(c).runScript("drop-test.sql");
             new ScriptRunner(c).runScript("amdb.sql");
 
             c.close();
@@ -39,9 +39,9 @@ public class UserSrvTest {
 
         Settings.load();
 
-        ConnectionSingleton.setDbUrl(Settings.getDbUrl());
-        ConnectionSingleton.setDbUser(Settings.getDbUser());
-        ConnectionSingleton.setDbPass(Settings.getDbPass());
+        ConnectionSingleton.setDbUrl("jdbc:mysql://localhost:3306/amdb_test");
+        ConnectionSingleton.setDbUser("root");
+        ConnectionSingleton.setDbPass("s3cr3t");
 
         if (Settings.getCacheEnabled()) {
             AdminCC.initCache();
@@ -81,10 +81,17 @@ public class UserSrvTest {
             UserDao u = UserSrv.create(username, password);
 
             Assert.assertNotNull(u);
+
             Assert.assertEquals(username, u.getUsername());
-            Assert.assertEquals(false, u.getActive());
+            Assert.assertEquals(password, u.getPassword());
+
+            Assert.assertNotNull(u.getTimeRegistered());
+
             Assert.assertEquals(0, u.getAdminId());
-            Assert.assertTrue(!UserSrv.isAccepted(username));
+            Assert.assertNull(u.getTimeAccepted());
+            Assert.assertFalse(UserSrv.isAccepted(username, password));
+
+            Assert.assertNull(u.getTimeActive());
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -102,13 +109,20 @@ public class UserSrvTest {
 
             UserSrv.create(username, password);
 
-            UserDao a = UserSrv.findByUsername(username);
+            UserDao u = UserSrv.findByUsername(username);
 
-            Assert.assertNotNull(a);
-            Assert.assertEquals(username, a.getUsername());
-            Assert.assertEquals(false, a.getActive());
-            Assert.assertEquals(0, a.getAdminId());
-            Assert.assertTrue(!UserSrv.isAccepted(username));
+            Assert.assertNotNull(u);
+
+            Assert.assertEquals(username, u.getUsername());
+            Assert.assertEquals(password, u.getPassword());
+
+            Assert.assertNotNull(u.getTimeRegistered());
+
+            Assert.assertEquals(0, u.getAdminId());
+            Assert.assertNull(u.getTimeAccepted());
+            Assert.assertFalse(UserSrv.isAccepted(username, password));
+
+            Assert.assertNull(u.getTimeActive());
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -126,11 +140,13 @@ public class UserSrvTest {
 
             UserSrv.create(username, password);
 
-            Assert.assertTrue(!UserSrv.isLoggedIn(username));
+            UserSrv.accept(username, ad.getAdminId());
 
-            UserSrv.login(username, password);
+            Assert.assertFalse(UserSrv.isSessionActive(username, password, Settings.getUserSessionMinutes()));
 
-            Assert.assertTrue(UserSrv.isLoggedIn(username));
+            UserSrv.refreshSession(username, password);
+
+            Assert.assertTrue(UserSrv.isSessionActive(username, password, Settings.getUserSessionMinutes()));
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -148,11 +164,11 @@ public class UserSrvTest {
 
             UserSrv.create(username, password);
 
-            Assert.assertTrue(!UserSrv.isAccepted(username));
+            Assert.assertFalse(UserSrv.isAccepted(username, password));
 
             UserSrv.accept(username, ad.getAdminId());
 
-            Assert.assertTrue(UserSrv.isAccepted(username));
+            Assert.assertTrue(UserSrv.isAccepted(username, password));
 
         } catch (SrvException e) {
             // e.printStackTrace();
@@ -173,7 +189,7 @@ public class UserSrvTest {
 
             UserSrv.reject(username, ad.getAdminId());
 
-            Assert.assertTrue(!UserSrv.isAccepted(username));
+            Assert.assertFalse(UserSrv.isAccepted(username, password));
 
         } catch (SrvException e) {
             // e.printStackTrace();

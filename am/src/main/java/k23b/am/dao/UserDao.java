@@ -2,6 +2,10 @@ package k23b.am.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -21,11 +25,11 @@ public class UserDao {
      * @return the newly created user's id.
      * @throws DaoException if the newly created user's id could not be retrieved or a data access error occurs.
      */
-    public static long create(String username, String password, boolean active) throws DaoException {
+    public static long create(String username, String password, Date timeRegistered) throws DaoException {
 
         String sql = new StringBuilder()
                 .append("insert into amdb_user ")
-                .append("(USERNAME, PASSWORD, ACTIVE) ")
+                .append("(USERNAME, PASSWORD, TIME_REGISTERED) ")
                 .append("values ")
                 .append("(?, ?, ?)")
                 .toString();
@@ -41,8 +45,8 @@ public class UserDao {
             log.debug("Setting parameter 2 to: " + password);
             ss.setString(2, password);
 
-            log.debug("Setting parameter 3 to: " + active);
-            ss.setBoolean(3, active);
+            log.debug("Setting parameter 3 to: " + timeRegistered);
+            ss.setTimestamp(3, new Timestamp(timeRegistered.getTime()));
 
             int rows = ss.executeUpdate();
             log.debug(rows + (rows == 1 ? " row " : " rows ") + "inserted.");
@@ -100,10 +104,12 @@ public class UserDao {
                     adminId = 0;
                 String username = rs.getString("USERNAME");
                 String password = rs.getString("PASSWORD");
-                boolean active = rs.getBoolean("ACTIVE");
+                Date timeRegistered = rs.getTimestamp("TIME_REGISTERED");
+                Date timeAccepted = rs.getTimestamp("TIME_ACCEPTED");
+                Date timeActive = rs.getTimestamp("TIME_ACTIVE");
 
                 log.debug("1 row selected.");
-                return new UserDao(id, adminId, username, password, active);
+                return new UserDao(id, adminId, username, password, timeRegistered, timeAccepted, timeActive);
 
             } else {
 
@@ -154,10 +160,12 @@ public class UserDao {
                     adminId = 0;
                 String name = rs.getString("USERNAME");
                 String password = rs.getString("PASSWORD");
-                boolean active = rs.getBoolean("ACTIVE");
+                Date timeRegistered = rs.getTimestamp("TIME_REGISTERED");
+                Date timeAccepted = rs.getTimestamp("TIME_ACCEPTED");
+                Date timeActive = rs.getTimestamp("TIME_ACTIVE");
 
                 log.debug("1 row selected.");
-                return new UserDao(userId, adminId, name, password, active);
+                return new UserDao(userId, adminId, name, password, timeRegistered, timeAccepted, timeActive);
 
             } else {
 
@@ -174,19 +182,15 @@ public class UserDao {
     }
 
     /**
-     * Sets the active status of a user to a specific value.
+     * Retrieves all users currently in store.
      * 
-     * @param userId the user's id.
-     * @param active the user's active status.
-     * @throws DaoException if the user's active status could not be changed to the specified value or a data access error occurs.
+     * @return a set of objects, each representing a user.
+     * @throws DaoException if a data access error occurs.
      */
-    public static void setActive(long userId, boolean active) throws DaoException {
+    public static Set<UserDao> findAll() throws DaoException {
 
         String sql = new StringBuilder()
-                .append("update amdb_user set ")
-                .append("ACTIVE = ? ")
-                .append("where ")
-                .append("USER_ID = ?")
+                .append("select * from amdb_user")
                 .toString();
 
         try (SynchronizedStatement ss = ConnectionSingleton.getInstance().getStatement(sql)) {
@@ -194,23 +198,38 @@ public class UserDao {
             log.debug("");
             log.debug("Executing query: " + sql);
 
-            log.debug("Setting parameter 1 to: " + active);
-            ss.setBoolean(1, active);
+            ss.executeQuery();
 
-            log.debug("Setting parameter 2 to: " + userId);
-            ss.setLong(2, userId);
+            ResultSet rs = ss.getResultSet();
 
-            int rows = ss.executeUpdate();
-            log.debug(rows + (rows == 1 ? " row " : " rows ") + "updated.");
+            Set<UserDao> users = new HashSet<UserDao>();
 
-            if (rows != 1)
-                throw new DaoException("Error while setting active to " + active + " on user with id: " + userId);
+            int rows = 0;
+
+            while (rs.next()) {
+
+                rows++;
+                long userId = rs.getLong("USER_ID");
+                long adminId = rs.getLong("ADMIN_ID");
+                if (rs.wasNull())
+                    adminId = 0;
+                String name = rs.getString("USERNAME");
+                String password = rs.getString("PASSWORD");
+                Date timeRegistered = rs.getTimestamp("TIME_REGISTERED");
+                Date timeAccepted = rs.getTimestamp("TIME_ACCEPTED");
+                Date timeActive = rs.getTimestamp("TIME_ACTIVE");
+
+                users.add(new UserDao(userId, adminId, name, password, timeRegistered, timeAccepted, timeActive));
+            }
+
+            log.debug(rows + (rows == 1 ? " row " : " rows ") + "selected.");
+            return users;
 
         } catch (SQLException e) {
             // e.printStackTrace();
             log.error(e.getMessage());
 
-            throw new DaoException("Error while setting active to " + active + " on user with id: " + userId);
+            throw new DaoException("Error while finding all users.");
         }
     }
 
@@ -260,11 +279,103 @@ public class UserDao {
         }
     }
 
+    /**
+     * Sets the accepted time of a user to a specific value.
+     * 
+     * @param userId the user's id.
+     * @param timeAccepted the time user was accepted.
+     * @throws DaoException if the user's accepted time could not be changed to the specified value or a data access error occurs.
+     */
+    public static void setTimeAccepted(long userId, Date timeAccepted) throws DaoException {
+
+        String sql = new StringBuilder()
+                .append("update amdb_user set ")
+                .append(timeAccepted != null ? "TIME_ACCEPTED = ? " : "TIME_ACCEPTED = NULL ")
+                .append("where ")
+                .append("USER_ID = ?")
+                .toString();
+
+        try (SynchronizedStatement ss = ConnectionSingleton.getInstance().getStatement(sql)) {
+
+            log.debug("");
+            log.debug("Executing query: " + sql);
+
+            if (timeAccepted != null) {
+
+                log.debug("Setting parameter 1 to: " + timeAccepted);
+                ss.setTimestamp(1, new Timestamp((timeAccepted.getTime())));
+
+                log.debug("Setting parameter 2 to: " + userId);
+                ss.setLong(2, userId);
+
+            } else {
+
+                log.debug("Setting parameter 1 to: " + userId);
+                ss.setLong(1, userId);
+            }
+
+            int rows = ss.executeUpdate();
+            log.debug(rows + (rows == 1 ? " row " : " rows ") + "updated.");
+
+            if (rows != 1)
+                throw new DaoException("Error while setting accepted time to " + timeAccepted + " on user with id: " + userId);
+
+        } catch (SQLException e) {
+            // e.printStackTrace();
+            log.error(e.getMessage());
+
+            throw new DaoException("Error while setting accepted time to " + timeAccepted + " on user with id: " + userId);
+        }
+    }
+
+    /**
+     * Sets the active time of a user to a specific value.
+     * 
+     * @param userId the user's id.
+     * @param timeActive the time user was active.
+     * @throws DaoException if the user's active time could not be changed to the specified value or a data access error occurs.
+     */
+    public static void setTimeActive(long userId, Date timeActive) throws DaoException {
+
+        String sql = new StringBuilder()
+                .append("update amdb_user set ")
+                .append("TIME_ACTIVE = ? ")
+                .append("where ")
+                .append("USER_ID = ?")
+                .toString();
+
+        try (SynchronizedStatement ss = ConnectionSingleton.getInstance().getStatement(sql)) {
+
+            log.debug("");
+            log.debug("Executing query: " + sql);
+
+            log.debug("Setting parameter 1 to: " + timeActive);
+            ss.setTimestamp(1, new Timestamp((timeActive.getTime())));
+
+            log.debug("Setting parameter 2 to: " + userId);
+            ss.setLong(2, userId);
+
+            int rows = ss.executeUpdate();
+            log.debug(rows + (rows == 1 ? " row " : " rows ") + "updated.");
+
+            if (rows != 1)
+                throw new DaoException("Error while setting time active to " + timeActive + " on user with id: " + userId);
+
+        } catch (SQLException e) {
+            // e.printStackTrace();
+            log.error(e.getMessage());
+
+            throw new DaoException("Error while setting time active to " + timeActive + " on user with id: " + userId);
+        }
+    }
+
     private long userId;
     private long adminId;
     private String username;
     private String password;
-    private boolean active;
+    private Date timeRegistered;
+    private Date timeAccepted;
+    private Date timeActive;
 
     public long getUserId() {
         return userId;
@@ -286,20 +397,34 @@ public class UserDao {
         return password;
     }
 
-    public boolean getActive() {
-        return active;
+    public Date getTimeRegistered() {
+        return timeRegistered;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public Date getTimeAccepted() {
+        return timeAccepted;
     }
 
-    private UserDao(long userId, long adminId, String username, String password, boolean active) {
+    public void setTimeAccepted(Date timeAccepted) {
+        this.timeAccepted = timeAccepted;
+    }
+
+    public Date getTimeActive() {
+        return timeActive;
+    }
+
+    public void setTimeActive(Date timeActive) {
+        this.timeActive = timeActive;
+    }
+
+    private UserDao(long userId, long adminId, String username, String password, Date timeRegistered, Date timeAccepted, Date timeActive) {
         super();
         this.userId = userId;
         this.adminId = adminId;
         this.username = username;
         this.password = password;
-        this.active = active;
+        this.timeRegistered = timeRegistered;
+        this.timeAccepted = timeAccepted;
+        this.timeActive = timeActive;
     }
 }

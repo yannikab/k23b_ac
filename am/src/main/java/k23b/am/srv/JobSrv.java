@@ -7,10 +7,12 @@ import java.util.Set;
 import k23b.am.cc.AdminCC;
 import k23b.am.cc.AgentCC;
 import k23b.am.cc.JobCC;
+import k23b.am.cc.UserCC;
 import k23b.am.dao.AdminDao;
 import k23b.am.dao.AgentDao;
 import k23b.am.dao.DaoException;
 import k23b.am.dao.JobDao;
+import k23b.am.dao.UserDao;
 
 /**
  * Service layer for job objects.
@@ -44,10 +46,10 @@ public class JobSrv {
 
         if (timeAssigned == null)
             throw new SrvException(new IllegalArgumentException("Date timeAssigned is null."));
-        
+
         if (params == null)
             throw new SrvException(new IllegalArgumentException("String params is null."));
-            
+
         try {
 
             synchronized (lock ? AgentCC.class : new Object()) {
@@ -75,6 +77,76 @@ public class JobSrv {
                             throw new SrvException("Could not create job for agent with id: " + agentId);
 
                         return JobCC.findById(jobId);
+                    }
+                }
+            }
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            throw new SrvException("Data access error while creating job for agent with id: " + agentId);
+        }
+    }
+
+    /**
+     * Creates a job for a specific agent, on behalf of a specific user.
+     * 
+     * @param agentId id of the agent for which the job is being created.
+     * @param username user's username.
+     * @param password user's password.
+     * @param params job parameters.
+     * @param periodic job's periodic property.
+     * @param period job's period, if periodic.
+     * @return the created job object containing its generated id, or null if the job was not found after creating it.
+     * @throws UserCredentialsException if a user with specified username does not exist, or the password is incorrect.
+     * @throws UserApprovalException if the user has not been approved by an admin.
+     * @throws SrvException if the job could not be created, or a data access error occurs.
+     */
+    public static JobDao createForUser(long agentId, String username, String password, Date timeAssigned, String params, boolean periodic, int period) throws UserCredentialsException, UserApprovalException, SrvException {
+
+        if (timeAssigned == null)
+            throw new SrvException(new IllegalArgumentException("Date timeAssigned is null."));
+
+        if (params == null)
+            throw new SrvException(new IllegalArgumentException("String params is null."));
+
+        try {
+
+            synchronized (lock ? AgentCC.class : new Object()) {
+
+                AgentDao agent = AgentCC.findById(agentId);
+
+                if (agent == null)
+                    throw new SrvException("Can not create job. Could not find agent with id: " + agentId);
+
+                synchronized (lock ? UserCC.class : new Object()) {
+
+                    UserDao user = UserCC.findByUsername(username);
+
+                    if (user == null)
+                        throw new UserCredentialsException("Can not create job. Could not find user with username: " + username);
+
+                    if (user.getAdminId() == 0)
+                        throw new UserApprovalException("Can not create job for user. An administrator needs to accept user: " + username);
+
+                    if (!user.getPassword().equals(password))
+                        throw new UserCredentialsException("Can not create job for user. Incorrect password for user with username: " + username);
+
+                    synchronized (lock ? AdminCC.class : new Object()) {
+
+                        AdminDao admin = AdminCC.findById(user.getAdminId());
+
+                        if (admin == null)
+                            throw new SrvException("Can not create job. Could not find admin with id: " + user.getAdminId());
+
+                        synchronized (lock ? JobCC.class : new Object()) {
+
+                            long jobId = JobCC.create(agentId, user.getAdminId(), timeAssigned, params, periodic, period);
+
+                            if (jobId == 0)
+                                throw new SrvException("Could not create job for agent with id: " + agentId);
+
+                            return JobCC.findById(jobId);
+                        }
                     }
                 }
             }

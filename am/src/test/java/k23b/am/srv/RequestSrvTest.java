@@ -25,9 +25,9 @@ public class RequestSrvTest {
 
         try {
 
-            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb", "root", "s3cr3t");
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb_test", "root", "s3cr3t");
 
-            new ScriptRunner(c).runScript("drop.sql");
+            new ScriptRunner(c).runScript("drop-test.sql");
             new ScriptRunner(c).runScript("amdb.sql");
 
             c.close();
@@ -37,10 +37,10 @@ public class RequestSrvTest {
         }
 
         Settings.load();
-        
-        ConnectionSingleton.setDbUrl(Settings.getDbUrl());
-        ConnectionSingleton.setDbUser(Settings.getDbUser());
-        ConnectionSingleton.setDbPass(Settings.getDbPass());
+
+        ConnectionSingleton.setDbUrl("jdbc:mysql://localhost:3306/amdb_test");
+        ConnectionSingleton.setDbUser("root");
+        ConnectionSingleton.setDbPass("s3cr3t");
 
         if (Settings.getCacheEnabled()) {
             RequestCC.initCache();

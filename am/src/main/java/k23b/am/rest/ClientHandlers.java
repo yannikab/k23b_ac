@@ -11,17 +11,18 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import k23b.am.Settings;
 import k23b.am.dao.AgentDao;
 import k23b.am.dao.JobDao;
 import k23b.am.dao.RequestDao;
 import k23b.am.dao.RequestStatus;
 import k23b.am.dao.ResultDao;
-import k23b.am.dao.UserDao;
 import k23b.am.srv.AgentSrv;
 import k23b.am.srv.JobSrv;
 import k23b.am.srv.RequestSrv;
 import k23b.am.srv.ResultSrv;
 import k23b.am.srv.SrvException;
+import k23b.am.srv.UserApprovalException;
 import k23b.am.srv.UserCredentialsException;
 import k23b.am.srv.UserSrv;
 
@@ -44,27 +45,23 @@ public class ClientHandlers {
 
         try {
 
-            if (!UserSrv.isAccepted(username)) {
-
-                log.info(service + "User is not accepted.");
-
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity("Pending").build();
-                else
-                    return Response.status(200).entity("Incorrect Credentials").build();
-            }
-
-            UserSrv.login(username, password);
+            UserSrv.refreshSession(username, password);
 
             log.info(service + "Logged in user.");
 
-            return Response.status(200).entity("Accepted").build();
+            return Response.status(200).entity("Login Success").build();
 
         } catch (UserCredentialsException e) {
 
             log.info(service + e.getMessage());
 
             return Response.status(200).entity("Incorrect Credentials").build();
+
+        } catch (UserApprovalException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity("Registration Pending").build();
 
         } catch (SrvException e) {
 
@@ -90,7 +87,7 @@ public class ClientHandlers {
 
             UserSrv.create(username, password);
 
-            return Response.status(200).entity("Accepted").build();
+            return Response.status(200).entity("Registration Success").build();
 
         } catch (UserCredentialsException e) {
 
@@ -120,25 +117,16 @@ public class ClientHandlers {
 
         try {
 
-            if (!UserSrv.isAccepted(username)) {
+            if (Settings.getExpireUserSessions()) {
+                if (!UserSrv.isSessionActive(username, password, Settings.getUserSessionMinutes())) {
 
-                log.info(service + "User is not accepted.");
+                    log.info(service + "Session expired.");
 
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new AgentContainer("Pending")).build();
-                else
-                    return Response.status(200).entity(new AgentContainer("Incorrect Credentials")).build();
+                    return Response.status(200).entity(new AgentContainer("Session Expired")).build();
+                }
             }
 
-            if (!UserSrv.isLoggedIn(username)) {
-
-                log.info(service + "User is not logged in.");
-
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new AgentContainer("Not Logged In")).build();
-                else
-                    return Response.status(200).entity(new AgentContainer("Incorrect Credentials")).build();
-            }
+            UserSrv.refreshSession(username, password);
 
             AgentContainer agentContainer = new AgentContainer("Accepted");
 
@@ -154,6 +142,12 @@ public class ClientHandlers {
             log.info(service + e.getMessage());
 
             return Response.status(200).entity(new AgentContainer("Incorrect Credentials")).build();
+
+        } catch (UserApprovalException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity(new AgentContainer("Registration Pending")).build();
 
         } catch (SrvException e) {
 
@@ -178,25 +172,16 @@ public class ClientHandlers {
 
         try {
 
-            if (!UserSrv.isAccepted(username)) {
+            if (Settings.getExpireUserSessions()) {
+                if (!UserSrv.isSessionActive(username, password, Settings.getUserSessionMinutes())) {
 
-                log.info(service + "User is not accepted.");
+                    log.info(service + "Session expired.");
 
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new JobContainer("Pending")).build();
-                else
-                    return Response.status(200).entity(new JobContainer("Incorrect Credentials")).build();
+                    return Response.status(200).entity(new JobContainer("Session Expired")).build();
+                }
             }
 
-            if (!UserSrv.isLoggedIn(username)) {
-
-                log.info(service + "User is not logged in.");
-
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new JobContainer("Not Logged In")).build();
-                else
-                    return Response.status(200).entity(new JobContainer("Incorrect Credentials")).build();
-            }
+            UserSrv.refreshSession(username, password);
 
             RequestDao rd = RequestSrv.findByHash(agentHash);
 
@@ -204,14 +189,14 @@ public class ClientHandlers {
 
                 log.info(service + "Request not found.");
 
-                return Response.status(200).entity(new JobContainer("Invalid")).build();
+                return Response.status(200).entity(new JobContainer("Invalid Hash")).build();
             }
 
             if (rd.getRequestStatus() != RequestStatus.ACCEPTED) {
 
                 log.info(service + "Request not accepted.");
 
-                return Response.status(200).entity(new JobContainer("Invalid")).build();
+                return Response.status(200).entity(new JobContainer("Invalid Hash")).build();
             }
 
             AgentDao ad = AgentSrv.findByRequestId(rd.getRequestId());
@@ -220,7 +205,7 @@ public class ClientHandlers {
 
                 log.info(service + "Agent not found.");
 
-                return Response.status(200).entity(new JobContainer("Invalid")).build();
+                return Response.status(200).entity(new JobContainer("Invalid Hash")).build();
             }
 
             JobContainer jobContainer = new JobContainer("Accepted");
@@ -237,6 +222,12 @@ public class ClientHandlers {
             log.info(service + e.getMessage());
 
             return Response.status(200).entity(new JobContainer("Incorrect Credentials")).build();
+
+        } catch (UserApprovalException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity(new JobContainer("Registration Pending")).build();
 
         } catch (SrvException e) {
 
@@ -262,25 +253,16 @@ public class ClientHandlers {
 
         try {
 
-            if (!UserSrv.isAccepted(username)) {
+            if (Settings.getExpireUserSessions()) {
+                if (!UserSrv.isSessionActive(username, password, Settings.getUserSessionMinutes())) {
 
-                log.info(service + "User is not accepted.");
+                    log.info(service + "Session expired.");
 
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new ResultContainer("Pending")).build();
-                else
-                    return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
+                    return Response.status(200).entity(new ResultContainer("Session Expired")).build();
+                }
             }
 
-            if (!UserSrv.isLoggedIn(username)) {
-
-                log.info(service + "User is not logged in.");
-
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new ResultContainer("Not Logged In")).build();
-                else
-                    return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
-            }
+            UserSrv.refreshSession(username, password);
 
             RequestDao rd = RequestSrv.findByHash(agentHash);
 
@@ -288,14 +270,14 @@ public class ClientHandlers {
 
                 log.info(service + "Request not found.");
 
-                return Response.status(200).entity(new ResultContainer("Invalid")).build();
+                return Response.status(200).entity(new ResultContainer("Invalid Hash")).build();
             }
 
             if (rd.getRequestStatus() != RequestStatus.ACCEPTED) {
 
                 log.info(service + "Request not accepted.");
 
-                return Response.status(200).entity(new ResultContainer("Invalid")).build();
+                return Response.status(200).entity(new ResultContainer("Invalid Hash")).build();
             }
 
             AgentDao ad = AgentSrv.findByRequestId(rd.getRequestId());
@@ -304,7 +286,7 @@ public class ClientHandlers {
 
                 log.info(service + "Agent not found.");
 
-                return Response.status(200).entity(new ResultContainer("Invalid")).build();
+                return Response.status(200).entity(new ResultContainer("Invalid Hash")).build();
             }
 
             ResultContainer resultContainer = new ResultContainer("Accepted");
@@ -323,6 +305,12 @@ public class ClientHandlers {
             log.info(service + e.getMessage());
 
             return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
+
+        } catch (UserApprovalException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity(new ResultContainer("Registration Pending")).build();
 
         } catch (SrvException e) {
 
@@ -347,25 +335,16 @@ public class ClientHandlers {
 
         try {
 
-            if (!UserSrv.isAccepted(username)) {
+            if (Settings.getExpireUserSessions()) {
+                if (!UserSrv.isSessionActive(username, password, Settings.getUserSessionMinutes())) {
 
-                log.info(service + "User is not accepted.");
+                    log.info(service + "Session expired.");
 
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new ResultContainer("Pending")).build();
-                else
-                    return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
+                    return Response.status(200).entity(new ResultContainer("Session Expired")).build();
+                }
             }
 
-            if (!UserSrv.isLoggedIn(username)) {
-
-                log.info(service + "User is not logged in.");
-
-                if (UserSrv.findByUsername(username).getPassword().equals(password))
-                    return Response.status(200).entity(new ResultContainer("Not Logged In")).build();
-                else
-                    return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
-            }
+            UserSrv.refreshSession(username, password);
 
             ResultContainer resultContainer = new ResultContainer("Accepted");
 
@@ -382,7 +361,9 @@ public class ClientHandlers {
                     result.agentHash = RequestSrv.findById(ad.getRequestId()).getHash();
 
                 } catch (SrvException e) {
+
                     log.error(service + e.getMessage());
+
                     result.agentHash = null;
                 }
 
@@ -400,6 +381,12 @@ public class ClientHandlers {
             log.info(service + e.getMessage());
 
             return Response.status(200).entity(new ResultContainer("Incorrect Credentials")).build();
+
+        } catch (UserApprovalException e) {
+
+            log.info(service + e.getMessage());
+
+            return Response.status(200).entity(new ResultContainer("Registration Pending")).build();
 
         } catch (SrvException e) {
 
@@ -426,30 +413,33 @@ public class ClientHandlers {
 
                 log.info(service + "Received " + u.getJobs().size() + " jobs from user: " + u.getUsername());
 
+                UserSrv.refreshSession(u.getUsername(), u.getPassword());
+
                 try {
 
-                    if (!UserSrv.isAccepted(u.getUsername())) {
+                    for (Job j : u.getJobs()) {
 
-                        log.info(service + "User is not accepted.");
-                        continue;
+                        try {
+
+                            if (j.isTerminating())
+                                AgentSrv.terminate(j.getAgentId());
+                            else if (j.isPeriodicStop())
+                                JobSrv.stopPeriodic(j.getPeriodicJobId());
+                            
+                        } catch (SrvException e) {
+                            // e.printStackTrace();
+                            continue;
+                        }
+
+                        JobSrv.createForUser(j.getAgentId(), u.getUsername(), u.getPassword(), j.getTimeAssigned(), j.getParams(), j.getPeriodic(), j.getPeriod());
                     }
 
-                    if (!UserSrv.isLoggedIn(u.getUsername())) {
-
-                        log.info(service + "User is not logged in.");
-                        continue;
-                    }
-
-                } catch (UserCredentialsException e) {
+                } catch (UserCredentialsException | UserApprovalException e) {
 
                     log.info(service + e.getMessage());
+
                     continue;
                 }
-
-                UserDao ud = UserSrv.findByUsername(u.getUsername());
-
-                for (Job j : u.getJobs())
-                    JobSrv.create(j.getAgentId(), ud.getAdminId(), j.getTimeAssigned(), j.getParams(), j.getPeriodic(), j.getPeriod());
             }
 
             return Response.status(200).entity("Accepted").build();

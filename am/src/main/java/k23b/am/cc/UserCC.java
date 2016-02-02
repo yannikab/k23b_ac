@@ -1,11 +1,14 @@
 package k23b.am.cc;
 
+import java.util.Date;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 
-import k23b.am.dao.UserDao;
 import k23b.am.dao.DaoException;
+import k23b.am.dao.RequestDao;
+import k23b.am.dao.UserDao;
 
 /**
  * Caching control layer for user objects.
@@ -76,12 +79,12 @@ public class UserCC {
      * @return the newly created user's id or 0 if the user could not be retrieved for caching after its creation.
      * @throws DaoException if the user could not be created or retrieved for caching.
      */
-    public static long create(String username, String password, boolean active) throws DaoException {
+    public static long create(String username, String password, Date timeRegistered) throws DaoException {
 
         if (cacheDisabled())
-            return UserDao.create(username, password, active);
+            return UserDao.create(username, password, timeRegistered);
 
-        long userId = UserDao.create(username, password, active);
+        long userId = UserDao.create(username, password, timeRegistered);
 
         UserDao ud = UserDao.findById(userId);
 
@@ -152,40 +155,22 @@ public class UserCC {
     }
 
     /**
-     * Sets the active status of a user to a specific value. If the user was cached, updates the cached instance as well.
+     * Retrieves all users currently in store and caches them.
      * 
-     * @param userId the user's id.
-     * @param active the user's active status.
-     * @throws DaoException if the user's active status could not be changed to the specified value or a data access error occurs.
+     * @return a set of objects, each representing a user.
+     * @throws DaoException if a data access error occurs.
      */
-    public static void setActive(long userId, boolean active) throws DaoException {
+    public static Set<UserDao> findAll() throws DaoException {
 
-        if (cacheDisabled()) {
-            UserDao.setActive(userId, active);
-            return;
-        }
+        if (cacheDisabled())
+            return UserDao.findAll();
 
-        try {
+        Set<UserDao> users = UserDao.findAll();
 
-            UserDao.setActive(userId, active);
+        for (UserDao ud : users)
+            cache.put(ud);
 
-            UserDao ud = cache.getById(userId);
-
-            if (ud == null)
-                return;
-
-            log.debug("Setting active to " + active + " on cached user with id: " + userId);
-            ud.setActive(active);
-
-        } catch (DaoException e) {
-            // e.printStackTrace();
-            log.error(e.getMessage());
-
-            log.debug("Deleting cached user with id: " + userId);
-            cache.deleteById(userId);
-
-            throw e;
-        }
+        return users;
     }
 
     /**
@@ -196,7 +181,7 @@ public class UserCC {
      * @throws DaoException if the user's active status could not be changed to the specified value or a data access error occurs.
      */
     public static void setAdminId(long userId, long adminId) throws DaoException {
-        
+
         if (cacheDisabled()) {
             UserDao.setAdminId(userId, adminId);
             return;
@@ -213,6 +198,80 @@ public class UserCC {
 
             log.debug("Setting admin id to " + adminId + " on cached user with id: " + userId);
             ud.setAdminId(adminId);
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            log.error(e.getMessage());
+
+            log.debug("Deleting cached user with id: " + userId);
+            cache.deleteById(userId);
+
+            throw e;
+        }
+    }
+
+    /**
+     * Sets a user's accepted time to a specific value. If the user was cached, updates the cached instance as well.
+     *
+     * @param userId the user's id.
+     * @param timeAccepted the time user was accepted.
+     * @throws DaoException if the user's active status could not be changed to the specified value or a data access error occurs.
+     */
+    public static void setTimeAccepted(long userId, Date timeAccepted) throws DaoException {
+
+        if (cacheDisabled()) {
+            UserDao.setTimeAccepted(userId, timeAccepted);
+            return;
+        }
+
+        try {
+
+            UserDao.setTimeAccepted(userId, timeAccepted);
+
+            UserDao ud = cache.getById(userId);
+
+            if (ud == null)
+                return;
+
+            log.debug("Setting time accepted to " + timeAccepted + " on cached user with id: " + userId);
+            ud.setTimeAccepted(timeAccepted);
+
+        } catch (DaoException e) {
+            // e.printStackTrace();
+            log.error(e.getMessage());
+
+            log.debug("Deleting cached user with id: " + userId);
+            cache.deleteById(userId);
+
+            throw e;
+        }
+    }
+
+    /**
+     * Sets the active time of a user to a specific value. If the user was cached, updates the cached instance as well.
+     *
+     * @param userId the user's id.
+     * @param timeActive the time user was active.
+     * @throws DaoException if the user's active time could not be changed to the specified value or a data access error occurs.
+     */
+    public static void setTimeActive(long userId, Date timeActive) throws DaoException {
+
+        if (cacheDisabled()) {
+            UserDao.setTimeActive(userId, timeActive);
+            return;
+        }
+
+        try {
+
+            UserDao.setTimeActive(userId, timeActive);
+
+            UserDao ud = cache.getById(userId);
+
+            if (ud == null)
+                return;
+
+            log.debug("Setting time active to " + timeActive + " on cached user with id: " + userId);
+            ud.setTimeActive(timeActive);
 
         } catch (DaoException e) {
             // e.printStackTrace();

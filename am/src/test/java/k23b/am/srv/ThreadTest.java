@@ -22,9 +22,9 @@ public class ThreadTest {
 
         try {
 
-            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb", "root", "s3cr3t");
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/amdb_test", "root", "s3cr3t");
 
-            new ScriptRunner(c).runScript("drop.sql");
+            new ScriptRunner(c).runScript("drop-test.sql");
             new ScriptRunner(c).runScript("amdb.sql");
 
             c.close();

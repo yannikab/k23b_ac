@@ -180,7 +180,7 @@ public class ResultSrv {
     public static Set<ResultDao> findLast(long agentId, int number) throws SrvException {
 
         if (!(number > 0))
-            throw new SrvException("Number of results must have a positive value.");
+            throw new SrvException(new IllegalArgumentException("Number of results must have a positive value."));
 
         try {
 
@@ -205,7 +205,7 @@ public class ResultSrv {
     public static Set<ResultDao> findLast(int number) throws SrvException {
 
         if (!(number > 0))
-            throw new SrvException("Number of results must have a positive value.");
+            throw new SrvException(new IllegalArgumentException("Number of results must have a positive value."));
 
         try {
 
