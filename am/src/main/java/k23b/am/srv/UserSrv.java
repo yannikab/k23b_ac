@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.Set;
 
 import k23b.am.cc.AdminCC;
-import k23b.am.cc.AgentCC;
 import k23b.am.cc.UserCC;
 import k23b.am.dao.AdminDao;
-import k23b.am.dao.AgentDao;
 import k23b.am.dao.DaoException;
 import k23b.am.dao.UserDao;
 
@@ -41,7 +39,7 @@ public class UserSrv {
     public static UserDao create(String username, String password) throws UserCredentialsException, SrvException {
 
         if (username.length() > 40)
-            throw new SrvException("Can not create user. Username exceeds maximum length: " + username);
+            throw new SrvException(new IllegalArgumentException("Can not create user. Username exceeds maximum length: " + username));
 
         try {
 
