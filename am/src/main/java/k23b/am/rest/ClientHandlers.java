@@ -130,8 +130,25 @@ public class ClientHandlers {
 
             AgentContainer agentContainer = new AgentContainer("Accepted");
 
-            for (AgentDao ad : AgentSrv.findAllWithRequestStatus(RequestStatus.ACCEPTED))
-                agentContainer.getAgents().add(AgentFactory.fromDao(ad));
+            for (AgentDao ad : AgentSrv.findAllWithRequestStatus(RequestStatus.ACCEPTED)) {
+
+                Agent a = AgentFactory.fromDao(ad);
+
+                try {
+                    
+                    RequestDao rd = RequestSrv.findById(ad.getRequestId());
+
+                    a.setRequestHash(rd.getHash());
+
+                } catch (SrvException e) {
+
+                    log.error(service + e.getMessage());
+
+                    a.setRequestHash(null);
+                }
+
+                agentContainer.getAgents().add(a);
+            }
 
             log.info(service + "Returning " + agentContainer.getAgents().size() + " agents.");
 
@@ -358,13 +375,13 @@ public class ClientHandlers {
 
                     AgentDao ad = AgentSrv.findById(jd.getAgentId());
 
-                    result.agentHash = RequestSrv.findById(ad.getRequestId()).getHash();
+                    result.setAgentHash(RequestSrv.findById(ad.getRequestId()).getHash());
 
                 } catch (SrvException e) {
 
                     log.error(service + e.getMessage());
 
-                    result.agentHash = null;
+                    result.setAgentHash(null);
                 }
 
                 resultContainer.getResults().add(result);
@@ -425,7 +442,7 @@ public class ClientHandlers {
                                 AgentSrv.terminate(j.getAgentId());
                             else if (j.isPeriodicStop())
                                 JobSrv.stopPeriodic(j.getPeriodicJobId());
-                            
+
                         } catch (SrvException e) {
                             // e.printStackTrace();
                             continue;

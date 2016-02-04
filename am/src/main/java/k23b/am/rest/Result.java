@@ -49,6 +49,10 @@ public class Result {
     public String getAgentHash() {
         return agentHash;
     }
+    
+    public void setAgentHash(String agentHash) {
+        this.agentHash = agentHash;
+    }
 
     public long getJobId() {
         return this.jobId;

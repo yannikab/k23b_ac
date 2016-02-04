@@ -20,9 +20,6 @@ public class Agent {
     @XmlElement(required = true)
     protected String requestHash;
 
-    @XmlElement(required = true)
-    protected String adminUsername;
-
     @XmlJavaTypeAdapter(DateAdapter.class)
     @XmlElement(required = true)
     protected Date timeAccepted;
@@ -56,14 +53,6 @@ public class Agent {
 
     public void setRequestHash(String requestHash) {
         this.requestHash = requestHash;
-    }
-
-    public String getAdminUsername() {
-        return adminUsername;
-    }
-
-    public void setAdminUsername(String adminUsername) {
-        this.adminUsername = adminUsername;
     }
 
     public Date getTimeAccepted() {
@@ -109,6 +98,6 @@ public class Agent {
 
     @Override
     public String toString() {
-        return "Agent [agentId=" + agentId + ", requestHash=" + requestHash + ", adminUsername=" + adminUsername + ", timeAccepted=" + timeAccepted + ", timeJobRequest=" + timeJobRequest + ", timeTerminated=" + timeTerminated + "]";
+        return "Agent [agentId=" + agentId + ", requestHash=" + requestHash + ", timeAccepted=" + timeAccepted + ", timeJobRequest=" + timeJobRequest + ", timeTerminated=" + timeTerminated + "]";
     }
 }
