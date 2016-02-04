@@ -20,9 +20,6 @@ public class Agent implements Comparable<Agent> {
     private String requestHash;
 
     @Element(required = true)
-    private String adminUsername;
-
-    @Element(required = true)
     private Date timeAccepted;
 
     @Element(required = false)
@@ -62,14 +59,6 @@ public class Agent implements Comparable<Agent> {
 
     public void setRequestHash(String requestHash) {
         this.requestHash = requestHash;
-    }
-
-    public String getAdminUsername() {
-        return adminUsername;
-    }
-
-    public void setAdminUsername(String adminUsername) {
-        this.adminUsername = adminUsername;
     }
 
     public Date getTimeAccepted() {
@@ -133,7 +122,7 @@ public class Agent implements Comparable<Agent> {
 
     @Override
     public String toString() {
-        return "Agent [agentId=" + agentId + ", requestHash=" + requestHash + ", adminUsername=" + adminUsername + ", timeAccepted=" + timeAccepted + ", timeJobRequest=" + timeJobRequest + ", timeTerminated=" + timeTerminated + "]";
+        return "Agent [agentId=" + agentId + ", requestHash=" + requestHash + ", timeAccepted=" + timeAccepted + ", timeJobRequest=" + timeJobRequest + ", timeTerminated=" + timeTerminated + "]";
     }
 
     @Override

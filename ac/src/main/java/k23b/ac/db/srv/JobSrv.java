@@ -11,8 +11,7 @@ import k23b.ac.db.dao.UserDao;
 
 public class JobSrv {
 
-    public static JobDao create(String username, long agentId, String params, boolean periodic, int period)
-            throws SrvException {
+    public static JobDao create(String username, long agentId, String params, boolean periodic, int period) throws SrvException {
 
         try {
 
@@ -25,10 +24,6 @@ public class JobSrv {
                             "Could not create Job for agent with id: " + agentId + ". No such User.");
                     return null;
                 }
-                // not using active
-                // if (!user.isActive())
-                // throw new SrvException("Can not create job. User with
-                // username " + username + " is not logged in.");
 
                 synchronized (JobDao.class) {
 
@@ -63,11 +58,6 @@ public class JobSrv {
             throw new SrvException("Data access error while searching for Job with id: " + jobId);
         }
     }
-
-    // public static Set<Job> findAllWithAgentId(int agentId) {
-    //
-    // return JobDao.findAllJobsFromAgentId(agentId);
-    // }
 
     public static void delete(long jobId) throws SrvException {
 
@@ -105,29 +95,4 @@ public class JobSrv {
             throw new SrvException("Data access error while finding Jobs from User with username: " + username);
         }
     }
-
-    // public static Set<Job> findAllJobsFromActiveUsers() {
-    //
-    // return JobDao.findAllJobsFromActiveUsers();
-    //
-    // }
-
-    // public static void setTimeAssigned(int jobId) throws SrvException {
-    //
-    // try {
-    //
-    // Job job = JobDao.findJobById(jobId);
-    //
-    // if (job == null)
-    // throw new SrvException("Cannot set Time Assigned. No such Job with id: "
-    // + jobId);
-    //
-    // JobDao.setTimeAssigned(jobId, new Date());
-    //
-    // } catch (DaoException e) {
-    // throw new SrvException("Data access error while setting Time Assigned for
-    // Job with id: " + jobId);
-    // }
-    //
-    // }
 }
