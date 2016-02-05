@@ -1,6 +1,7 @@
 package k23b.ac.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -332,6 +333,8 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
         for (CachedAgentDao ad : agents)
             this.agents.add(AgentFactory.fromCachedDao(ad));
 
+        Collections.sort(this.agents);
+        
         showAgents();
 
         showProgress(false);
