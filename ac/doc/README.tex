@@ -201,7 +201,6 @@ public Response agents(
     <requestHash>
       C886C27EF2CA686311C6918FA43B0AF90D2F7FFBD73C2958D48D399D4E037563
     </requestHash>
-    <adminUsername>Yannis</adminUsername>
     <timeAccepted>2016-01-28 22:36:21.0 EET</timeAccepted>
     <agentStatus>OFFLINE</agentStatus>
   </agent>
@@ -210,7 +209,6 @@ public Response agents(
     <requestHash>
       5A885FD0CEB82033480975B0203B632EE07E8E8B8B4421894969C2777D10D5D5
     </requestHash>
-    <adminUsername>Yannis</adminUsername>
     <timeAccepted>2016-01-26 18:25:18.0 EET</timeAccepted>
     <timeJobRequest>2016-02-03 02:37:04.0 EET</timeJobRequest>
     <timeTerminated>2016-02-02 01:36:48.0 EET</timeTerminated>
@@ -240,6 +238,9 @@ public Response jobs(
 }
 \end{lstlisting}
 Η μέθοδος jobs() ακούει σε ένα URI της μορφής: \url{http://localhost:8080/am/client/jobs/{username}/{password}/{agentHash}} για ένα αίτημα χρήστη για τα jobs που έχουν ανατεθεί σε κάποιον Software Agent. Οι παράμετροι είναι:
+
+\newpage
+
 \begin{itemize}
 
 \item username: το όνομα του χρήστη.
@@ -456,7 +457,7 @@ public Response allResults(
     ...
 }
 \end{lstlisting}
-Η μέθοδος users() ακούει στο URI: \url{http://localhost:8080/am/client/users} για ένα αίτημα χρήστη με περιεχόμενο εργασίες προς ανάθεση σε Software Agents. Είναι η μόνη υπηρεσία που χρησιμοποιεί την HTTP μέθοδο POST με περιεχόμενο XML.
+Η μέθοδος users() ακούει στο URI: \url{http://localhost:8080/am/client/users} για ένα αίτημα χρήστη με περιεχόμενο εργασίες προς ανάθεση σε Software Agents. Είναι η μόνη υπηρεσία που χρησιμοποιεί την HTTP μέθοδο POST με XML περιεχόμενο.
 Ένα παράδειγμα περιεχομένου προς κατανάλωση από την υπηρεσία είναι το εξής:
 \begin{lstlisting}
 <users>
@@ -497,6 +498,114 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 \end{itemize}
 
 \newpage
+
+\section{Ο Android Client}
+
+\subsection{Εγγραφή - Σύνδεση}
+
+Κατά την εκκίνησή του, ο Android Client ζητά τα στοιχεία σύνδεσης του χρήστη. Στην περίπτωση επιτυχούς σύνδεσης με την αντίστοιχη υπηρεσία του Aggregator Manager, τα στοιχεία σύνδεσης αποθηκεύονται σε shared preferences έτσι ώστε να είναι διαθέσιμα σε πιθανή μεταγενέστερη εκτέλεση του προγράμματος χωρίς να τα εισάγει ξανά ο χρήστης. Αν ο χρήστης δεν έχει εγγραφεί στον Aggregator Manager, του δίνεται η δυνατότητα μέσω του αντίστοιχου activity, για να συνδεθεί όμως απαιτείται έγκριση από κάποιον administrator όπως είδαμε στις σχετικές υπηρεσίες του Aggregator Manager.
+
+\subsection{Αποσύνδεση}
+
+Όταν βρισκόμαστε στο βασικό activity της εφαρμογής και πατήσουμε το πλήκτρο επιστροφής, επιστρέφουμε στην οθόνη σύνδεσης οπότε ο χρήστης μπορεί να συνδεθεί με διαφορετικά στοιχεία. Δεν γίνεται αποσύνδεση του προηγούμενου χρήστη και διαγραφή του από τα shared preferences παρά μόνο όταν επιλεγεί ρητά από το βασικό activity η αποσύνδεση. Πέρα από την αποσύνδεση με επιλογή του χρήστη, ενδέχεται να έχουμε αποσύνδεση του τρέχοντος χρήστη στην περίπτωση που έχει παρέλθει ο μέγιστος χρόνος σύνδεσης που είναι ρυθμισμένος στον Aggregator Manager, και αυτό μόνο όταν έχει ενεργοποιηθεί η boolean ρύθμιση logOutOnSessionExpiry του Android Client. Αν η ρύθμιση είναι ανενεργή τότε ο χρήστης απλά επιστρέφει στην οθόνη σύνδεσης χωρίς να διαγραφεί από τα shared preferences.
+\newline
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.activities: StartActivity, LoginActivity, RegisterActivity
+
+\item k23b.ac.fragments: StartFragment, LoginFragment, RegisterFragment
+
+\item k23b.ac.services: UserManager, NetworkManager
+
+\item k23b.ac.tasks: UserLoginTask, UserRegisterTask
+
+\item k23b.ac.util: Settings
+
+\end{itemize}
+
+\newpage
+
+\subsection{Agents}
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.activities: MainActivity
+
+\item k23b.ac.fragments: AgentsFragment
+
+\item k23b.ac.fragments.actions: AgentActions
+
+\item k23b.ac.db.srv: CachedAgentSrv
+
+\item k23b.ac.services: UserManager, NetworkManager, JobDispatcher
+
+\item k23b.ac.tasks: AgentsReceiveTask
+
+\end{itemize}
+
+\subsection{Jobs}
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.activities: MainActivity, AssignJobActivity
+
+\item k23b.ac.fragments: JobsFragment
+
+\item k23b.ac.fragments.actions: JobsActionsAgent, JobsActionsJob
+
+\item k23b.ac.db.srv: CachedAgentSrv, CachedJobSrv
+
+\item k23b.ac.services: UserManager, NetworkManager, JobDispatcher
+
+\item k23b.ac.tasks: AgentsReceiveTask, JobsReceiveTask
+
+\end{itemize}
+
+\subsection{Agent Results}
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.activities: MainActivity
+
+\item k23b.ac.fragments: ResultsAgentFragment
+
+\item k23b.ac.db.srv: CachedAgentSrv
+
+\item k23b.ac.services: UserManager, NetworkManager
+
+\item k23b.ac.tasks: AgentsReceiveTask, ResultsAgentReceiveTask
+
+\item k23b.ac.util: WebViewManager
+
+\end{itemize}
+
+\subsection{All Results}
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.activities: MainActivity
+
+\item k23b.ac.fragments: ResultsAllFragment
+
+\item k23b.ac.services: UserManager, NetworkManager
+
+\item k23b.ac.tasks: ResultsAllReceiveTask
+
+\item k23b.ac.util: WebViewManager
+
+\end{itemize}
+
 
 \end{sloppypar}
 

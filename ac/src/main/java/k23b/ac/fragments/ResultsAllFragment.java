@@ -31,15 +31,15 @@ import k23b.ac.rest.User;
 import k23b.ac.services.Logger;
 import k23b.ac.services.NetworkManager;
 import k23b.ac.services.UserManager;
-import k23b.ac.tasks.ResultsReceiveTask;
-import k23b.ac.tasks.ResultsReceiveTask.ResultsReceiveCallback;
+import k23b.ac.tasks.ResultsAllReceiveTask;
+import k23b.ac.tasks.ResultsAllReceiveTask.ResultsReceiveCallback;
 import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Settings;
 import k23b.ac.util.WebViewManager;
 
 public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCallback {
 
-    private ResultsReceiveTask resultsReceiveTask;
+    private ResultsAllReceiveTask resultsAllReceiveTask;
 
     private List<Result> results;
 
@@ -195,7 +195,7 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
 
         showOutput();
 
-        showProgress(resultsReceiveTask != null);
+        showProgress(resultsAllReceiveTask != null);
 
         if (initialized)
             return;
@@ -243,7 +243,7 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
 
     private void fetchResults() {
 
-        if (resultsReceiveTask != null)
+        if (resultsAllReceiveTask != null)
             return;
 
         if (getActivity() == null)
@@ -285,9 +285,9 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
 
         clearOutput();
 
-        resultsReceiveTask = new ResultsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), number);
+        resultsAllReceiveTask = new ResultsAllReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), number);
 
-        resultsReceiveTask.execute();
+        resultsAllReceiveTask.execute();
     }
 
     private void clearOutput() {
@@ -380,6 +380,6 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
     @Override
     public void removeResultsTask() {
 
-        this.resultsReceiveTask = null;
+        this.resultsAllReceiveTask = null;
     }
 }

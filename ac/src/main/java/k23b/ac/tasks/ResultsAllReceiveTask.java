@@ -13,7 +13,7 @@ import k23b.ac.services.Logger;
 import k23b.ac.rest.Result;
 import k23b.ac.tasks.status.ReceiveStatus;
 
-public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
+public class ResultsAllReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     public interface ResultsReceiveCallback extends TaskCallback {
 
@@ -30,7 +30,7 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     private List<Result> results;
 
-    public ResultsReceiveTask(ResultsReceiveCallback resultsReceiveCallback, String baseURI, String username, String password, int number) {
+    public ResultsAllReceiveTask(ResultsReceiveCallback resultsReceiveCallback, String baseURI, String username, String password, int number) {
         super();
 
         this.resultsReceiveCallback = resultsReceiveCallback;
