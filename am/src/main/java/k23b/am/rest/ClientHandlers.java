@@ -135,7 +135,7 @@ public class ClientHandlers {
                 Agent a = AgentFactory.fromDao(ad);
 
                 try {
-                    
+
                     RequestDao rd = RequestSrv.findById(ad.getRequestId());
 
                     a.setRequestHash(rd.getHash());
@@ -430,11 +430,20 @@ public class ClientHandlers {
 
                 log.info(service + "Received " + u.getJobs().size() + " jobs from user: " + u.getUsername());
 
-                UserSrv.refreshSession(u.getUsername(), u.getPassword());
-
                 try {
 
+                    UserSrv.refreshSession(u.getUsername(), u.getPassword());
+
                     for (Job j : u.getJobs()) {
+
+                        AgentDao ad = AgentSrv.findById(j.getAgentId());
+
+                        if (ad == null) {
+
+                            log.info(service + "Agent not found, ignoring job.");
+
+                            continue;
+                        }
 
                         try {
 
@@ -445,6 +454,9 @@ public class ClientHandlers {
 
                         } catch (SrvException e) {
                             // e.printStackTrace();
+
+                            log.info(service + e.getMessage());
+
                             continue;
                         }
 
