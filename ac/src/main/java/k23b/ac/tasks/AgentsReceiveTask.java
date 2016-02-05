@@ -144,6 +144,8 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             break;
 
         default:
+            
+            agentsReceiveCallback.serviceError();
             break;
         }
 

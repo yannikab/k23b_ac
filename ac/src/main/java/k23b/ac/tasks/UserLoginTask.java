@@ -118,6 +118,8 @@ public class UserLoginTask extends AsyncTask<Void, Void, UserLoginStatus> {
             break;
 
         default:
+            
+            loginCallback.serviceError();
             break;
         }
         

@@ -122,6 +122,8 @@ public class ResultsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             break;
 
         default:
+
+            resultsReceiveCallback.serviceError();
             break;
         }
 

@@ -267,6 +267,12 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
         
         showAgents();
 
+        this.selectedAgent = null;
+
+        this.jobs = null;
+
+        showJobs();
+        
         showProgress(false);
 
         if (getActivity() == null)

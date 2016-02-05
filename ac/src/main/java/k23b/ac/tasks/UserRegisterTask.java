@@ -106,6 +106,8 @@ public class UserRegisterTask extends AsyncTask<Void, Void, UserRegisterStatus> 
             break;
 
         default:
+
+            registerCallback.serviceError();
             break;
         }
 

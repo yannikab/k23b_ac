@@ -81,9 +81,9 @@ public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus
             return ReceiveStatus.INVALID;
 
         } catch (RestClientException e) {
-            
+
             Logger.logException(getClass().getSimpleName(), e);
-            
+
             return ReceiveStatus.NETWORK_ERROR;
         }
     }
@@ -109,7 +109,7 @@ public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus
 
             resultsAgentReceiveCallback.registrationPending();
             break;
-            
+
         case SESSION_EXPIRED:
 
             resultsAgentReceiveCallback.sessionExpired();
@@ -126,6 +126,8 @@ public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus
             break;
 
         default:
+            
+            resultsAgentReceiveCallback.serviceError();
             break;
         }
     }

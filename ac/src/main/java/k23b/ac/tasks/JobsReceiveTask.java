@@ -146,6 +146,8 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             break;
 
         default:
+            
+            jobsReceiveCallback.serviceError();
             break;
         }
 
