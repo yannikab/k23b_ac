@@ -24,7 +24,6 @@ import k23b.am.Settings;
 import k23b.am.dao.AdminDao;
 import k23b.am.dao.UserDao;
 import k23b.am.model.Admin;
-import k23b.am.model.AgentStatus;
 import k23b.am.model.User;
 import k23b.am.model.UserStatus;
 import k23b.am.srv.AdminSrv;

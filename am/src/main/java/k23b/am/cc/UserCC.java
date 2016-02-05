@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.log4j.Logger;
 
 import k23b.am.dao.DaoException;
-import k23b.am.dao.RequestDao;
 import k23b.am.dao.UserDao;
 
 /**
