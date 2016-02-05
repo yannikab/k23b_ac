@@ -14,22 +14,22 @@ import k23b.ac.rest.status.AgentStatus;
 public class Agent implements Comparable<Agent> {
 
     @Element(required = true)
-    private long agentId;
+    protected long agentId;
 
     @Element(required = true)
-    private String requestHash;
+    protected String requestHash;
 
     @Element(required = true)
-    private Date timeAccepted;
+    protected Date timeAccepted;
 
     @Element(required = false)
-    private Date timeJobRequest;
+    protected Date timeJobRequest;
 
     @Element(required = false)
-    private Date timeTerminated;
+    protected Date timeTerminated;
 
     @Element(required = true)
-    private AgentStatus agentStatus;
+    protected AgentStatus agentStatus;
 
     public Agent() {
         super();

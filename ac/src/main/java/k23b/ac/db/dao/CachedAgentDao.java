@@ -4,24 +4,24 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AgentDao {
+public class CachedAgentDao {
 
     // this method assumes that an agent does not exist with this id, and blindly creates it
-    public static void create(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, AgentStatus agentStatus) throws DaoException {
+    public static void create(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus) throws DaoException {
         return;
     }
 
     // this method assumes that an agent exists with this id, and blindly updates it
-    public static void update(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, AgentStatus agentStatus) throws DaoException {
+    public static void update(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus) throws DaoException {
         return;
     }
 
-    public static boolean agentExists(long agentId) throws DaoException {
+    public static boolean exists(long agentId) throws DaoException {
         return false;
     }
 
-    public static Set<AgentDao> findAll() throws DaoException {
-        return new HashSet<AgentDao>();
+    public static Set<CachedAgentDao> findAll() throws DaoException {
+        return new HashSet<CachedAgentDao>();
     }
 
     private long agentId;
@@ -29,7 +29,7 @@ public class AgentDao {
     private Date timeAccepted;
     private Date timeJobRequest;
     private Date timeTerminated;
-    private AgentStatus agentStatus;
+    private CachedAgentStatus agentStatus;
 
     public long getAgentId() {
         return agentId;
@@ -63,15 +63,15 @@ public class AgentDao {
         this.timeTerminated = timeTerminated;
     }
 
-    public AgentStatus getAgentStatus() {
+    public CachedAgentStatus getAgentStatus() {
         return agentStatus;
     }
 
-    public void setAgentStatus(AgentStatus agentStatus) {
+    public void setAgentStatus(CachedAgentStatus agentStatus) {
         this.agentStatus = agentStatus;
     }
 
-    private AgentDao(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, AgentStatus agentStatus) {
+    public CachedAgentDao(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus) {
         super();
         this.agentId = agentId;
         this.agentHash = agentHash;

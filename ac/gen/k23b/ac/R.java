@@ -89,8 +89,8 @@ public final class R {
         public static final int action_job_stop=0x7f09005d;
         public static final int action_jobs_refresh=0x7f09005f;
         public static final int action_logout=0x7f09005b;
-        public static final int action_results_agent=0x7f090060;
-        public static final int action_results_all=0x7f090061;
+        public static final int action_results_agent_refresh=0x7f090060;
+        public static final int action_results_all_refresh=0x7f090061;
         public static final int action_settings=0x7f09005a;
         public static final int agents_listView=0x7f090015;
         public static final int agents_progress=0x7f090013;

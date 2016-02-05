@@ -227,7 +227,7 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
 
         switch (item.getItemId()) {
 
-        case R.id.action_results_all:
+        case R.id.action_results_all_refresh:
 
             fetchResults();
 

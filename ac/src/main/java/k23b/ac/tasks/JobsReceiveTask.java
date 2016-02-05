@@ -8,6 +8,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
+import k23b.ac.db.dao.CachedJobStatus;
+import k23b.ac.db.srv.CachedJobSrv;
+import k23b.ac.db.srv.SrvException;
 import k23b.ac.rest.Job;
 import k23b.ac.rest.JobContainer;
 import k23b.ac.services.Logger;
@@ -67,6 +70,20 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             if (status.startsWith("Accepted")) {
 
                 this.jobs = jobContainer.getJobs();
+
+                for (Job j : this.jobs) {
+
+                    try {
+
+                        CachedJobSrv.createOrUpdate(j.getJobId(), j.getAgentId(), j.getTimeAssigned(), j.getTimeSent(), j.getParams(), j.getPeriodic(), j.getPeriod(), CachedJobStatus.values()[j.getStatus().ordinal()]);
+
+                    } catch (SrvException e) {
+
+                        Logger.error(this.toString(), e.getMessage());
+
+                        continue;
+                    }
+                }
 
                 return ReceiveStatus.RECEIVE_SUCCESS;
             }

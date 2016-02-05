@@ -33,6 +33,8 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
     private UserLoginTask userLoginTask = null;
 
+    private boolean firstStart;
+
     public LoginFragment() {
 
         super();
@@ -41,6 +43,8 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        this.firstStart = activity.getIntent().getBooleanExtra("firstStart", true);
     }
 
     @Override
@@ -48,6 +52,9 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
+
+        if (firstStart)
+            checkStatus();
     }
 
     @Override
@@ -93,24 +100,6 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
         return view;
     }
 
-    private void startRegisterActivity() {
-
-        if (getActivity() == null)
-            return;
-
-        if (!NetworkManager.isNetworkAvailable()) {
-
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        clearEditTexts();
-
-        Intent intent = new Intent(getActivity(), RegisterActivity.class);
-
-        getActivity().startActivity(intent);
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -121,6 +110,34 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
         super.onStart();
 
         showProgress(userLoginTask != null);
+    }
+
+    private void checkStatus() {
+
+        User u = UserManager.getInstance().getStoredUser();
+
+        if (u == null) {
+
+            Logger.info(this.toString(), "No user stored, waiting for credentials.");
+
+            return;
+        }
+
+        if (!NetworkManager.isNetworkAvailable()) {
+
+            Logger.info(this.toString(), "Found stored user but network is not available, starting main activity.");
+
+            startMainActivity();
+            return;
+        }
+
+        Logger.info(this.toString(), "Found stored user, authenticating with server.");
+
+        showProgress(true);
+
+        userLoginTask = new UserLoginTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
+
+        userLoginTask.execute((Void) null);
     }
 
     @Override
@@ -139,6 +156,39 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
     private boolean isPasswordValid(String password) {
         return password.length() > 0;
+    }
+
+    private void clearEditTexts() {
+
+        if (getView() == null)
+            return;
+
+        EditText usernameView = (EditText) getView().findViewById(R.id.username);
+        EditText passwordView = (EditText) getView().findViewById(R.id.password);
+
+        usernameView.setError(null);
+        passwordView.setError(null);
+
+        usernameView.setText("");
+        passwordView.setText("");
+    }
+
+    private void startRegisterActivity() {
+
+        if (getActivity() == null)
+            return;
+
+        if (!NetworkManager.isNetworkAvailable()) {
+
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        clearEditTexts();
+
+        Intent intent = new Intent(getActivity(), RegisterActivity.class);
+
+        getActivity().startActivity(intent);
     }
 
     private void attemptLogin() {
@@ -210,32 +260,9 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
         Logger.info(this.toString(), "Log in success, storing user in shared preferences and starting main activity.");
 
-        storeUser(userLoginTask.getUsername(), userLoginTask.getPassword());
+        UserManager.getInstance().storeUser(new User(userLoginTask.getUsername(), userLoginTask.getPassword()));
 
         startMainActivity();
-    }
-
-    private void clearEditTexts() {
-
-        if (getView() == null)
-            return;
-
-        EditText usernameView = (EditText) getView().findViewById(R.id.username);
-        EditText passwordView = (EditText) getView().findViewById(R.id.password);
-
-        usernameView.setError(null);
-        passwordView.setError(null);
-
-        usernameView.setText("");
-        passwordView.setText("");
-    }
-
-    private void storeUser(String username, String password) {
-
-        if (getActivity() == null)
-            return;
-
-        UserManager.getInstance().storeUser(new User(username, password));
     }
 
     private void startMainActivity() {
@@ -277,6 +304,11 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
     }
 
     @Override
+    public void sessionExpired() {
+
+    }
+
+    @Override
     public void networkError() {
 
         showProgress(false);
@@ -300,8 +332,6 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
     @Override
     public void onDestroy() {
-
-        userLoginTask = null;
 
         super.onDestroy();
     }
@@ -343,10 +373,5 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
     public void removeLoginTask() {
 
         this.userLoginTask = null;
-    }
-
-    @Override
-    public void sessionExpired() {
-
     }
 }

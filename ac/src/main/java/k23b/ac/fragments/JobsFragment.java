@@ -1,6 +1,9 @@
 package k23b.ac.fragments;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,6 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.activities.MainActivity;
+import k23b.ac.db.dao.CachedAgentDao;
+import k23b.ac.db.dao.CachedJobDao;
+import k23b.ac.db.srv.CachedAgentSrv;
+import k23b.ac.db.srv.CachedJobSrv;
+import k23b.ac.db.srv.SrvException;
 import k23b.ac.fragments.actions.JobsActionsAgent;
 import k23b.ac.fragments.actions.JobsActionsJob;
 import k23b.ac.fragments.adapters.AgentsArrayAdapter;
@@ -33,6 +41,8 @@ import k23b.ac.tasks.AgentsReceiveTask;
 import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.tasks.JobsReceiveTask;
 import k23b.ac.tasks.JobsReceiveTask.JobsReceiveCallback;
+import k23b.ac.util.AgentFactory;
+import k23b.ac.util.JobFactory;
 import k23b.ac.util.Settings;
 
 public class JobsFragment extends FragmentBase implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
@@ -222,7 +232,19 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+
+            try {
+
+                agentsRetrieved(CachedAgentSrv.findAll());
+
+            } catch (SrvException e) {
+
+                Logger.error(this.toString(), e.getMessage());
+
+                agentsRetrieved(new HashSet<CachedAgentDao>());
+            }
+
             return;
         }
 
@@ -231,6 +253,23 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
         agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
 
         agentsReceiveTask.execute();
+    }
+
+    private void agentsRetrieved(Set<CachedAgentDao> agents) {
+
+        this.agents = new ArrayList<Agent>();
+
+        for (CachedAgentDao ad : agents)
+            this.agents.add(AgentFactory.fromCachedDao(ad));
+
+        showAgents();
+
+        showProgress(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), "Network unavailable, " + agents.size() + " cached" + (agents.size() == 1 ? " agent" : " agents") + " retrieved", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -287,7 +326,19 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+
+            try {
+
+                jobsRetrieved(CachedJobSrv.findAllWithAgentId(selectedAgent.getAgentId()));
+
+            } catch (SrvException e) {
+
+                Logger.error(this.toString(), e.getMessage());
+
+                jobsRetrieved(new HashSet<CachedJobDao>());
+            }
+
             return;
         }
 
@@ -296,6 +347,23 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
         jobsReceiveTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
 
         jobsReceiveTask.execute();
+    }
+
+    private void jobsRetrieved(Set<CachedJobDao> jobs) {
+
+        this.jobs = new ArrayList<Job>();
+
+        for (CachedJobDao jd : jobs)
+            this.jobs.add(JobFactory.fromCachedDao(jd));
+
+        showJobs();
+
+        showProgress(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), "Network unavailable, " + jobs.size() + " cached" + (jobs.size() == 1 ? " job" : " jobs") + " retrieved", Toast.LENGTH_LONG).show();
     }
 
     @Override

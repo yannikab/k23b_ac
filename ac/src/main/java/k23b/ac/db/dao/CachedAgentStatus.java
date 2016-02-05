@@ -1,6 +1,6 @@
 package k23b.ac.db.dao;
 
-public enum AgentStatus {
+public enum CachedAgentStatus {
     OFFLINE, ONLINE, ALL;
 
     @Override

@@ -20,14 +20,14 @@ import k23b.ac.services.UserManager;
 
 public class AssignJobActivity extends Activity {
 
-    long agentId;
+    private long agentId;
 
-    EditText editTextParams;
+    private EditText editTextParams;
 
-    RadioButton radioPeriodicNo;
-    RadioButton radioPeriodicYes;
+    private RadioButton radioPeriodicNo;
+    private RadioButton radioPeriodicYes;
 
-    EditText editTextPeriod;
+    private EditText editTextPeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

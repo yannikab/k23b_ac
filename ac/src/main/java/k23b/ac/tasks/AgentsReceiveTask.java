@@ -8,6 +8,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import android.os.AsyncTask;
+import k23b.ac.db.dao.CachedAgentStatus;
+import k23b.ac.db.srv.CachedAgentSrv;
+import k23b.ac.db.srv.SrvException;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.AgentContainer;
 import k23b.ac.services.Logger;
@@ -66,6 +69,20 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
                 this.agents = agentContainer.getAgents();
 
+                for (Agent a : this.agents) {
+
+                    try {
+
+                        CachedAgentSrv.createOrUpdate(a.getAgentId(), a.getRequestHash(), a.getTimeAccepted(), a.getTimeJobRequest(), a.getTimeTerminated(), CachedAgentStatus.values()[a.getAgentStatus().ordinal()]);
+
+                    } catch (SrvException e) {
+
+                        Logger.error(this.toString(), e.getMessage());
+
+                        continue;
+                    }
+                }
+
                 return ReceiveStatus.RECEIVE_SUCCESS;
             }
 
@@ -110,9 +127,9 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
             agentsReceiveCallback.registrationPending();
             break;
-            
+
         case SESSION_EXPIRED:
-            
+
             agentsReceiveCallback.sessionExpired();
             break;
 

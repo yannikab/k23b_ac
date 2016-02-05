@@ -1,5 +1,6 @@
 package k23b.ac.util;
 
+import k23b.ac.db.dao.CachedJobDao;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.rest.Job;
 
@@ -12,6 +13,20 @@ public class JobFactory extends Job {
         j.jobId = jd.getId();
         j.agentId = jd.getAgentId();
         j.timeAssigned = jd.getTime_assigned();
+        j.params = jd.getParameters();
+        j.periodic = jd.getPeriodic();
+        j.period = jd.getPeriod();
+
+        return j;
+    }
+    
+    public static Job fromCachedDao(CachedJobDao jd) {
+
+        JobFactory j = new JobFactory();
+
+        j.jobId = jd.getJobId();
+        j.agentId = jd.getAgentId();
+        j.timeAssigned = jd.getTimeAssigned();
         j.params = jd.getParameters();
         j.periodic = jd.getPeriodic();
         j.period = jd.getPeriod();

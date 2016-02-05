@@ -1,6 +1,9 @@
 package k23b.ac.fragments;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -26,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import k23b.ac.R;
 import k23b.ac.activities.MainActivity;
+import k23b.ac.db.dao.CachedAgentDao;
+import k23b.ac.db.srv.CachedAgentSrv;
+import k23b.ac.db.srv.SrvException;
 import k23b.ac.fragments.adapters.AgentsArrayAdapter;
 import k23b.ac.fragments.adapters.ResultsArrayAdapter;
 import k23b.ac.rest.Agent;
@@ -38,6 +44,7 @@ import k23b.ac.tasks.AgentsReceiveTask;
 import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.tasks.ResultsAgentReceiveTask;
 import k23b.ac.tasks.ResultsAgentReceiveTask.ResultsAgentReceiveCallback;
+import k23b.ac.util.AgentFactory;
 import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Settings;
 import k23b.ac.util.WebViewManager;
@@ -259,7 +266,7 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
 
         switch (item.getItemId()) {
 
-        case R.id.action_results_agent:
+        case R.id.action_results_agent_refresh:
 
             fetchAgents();
 
@@ -293,7 +300,19 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+
+            try {
+
+                agentsRetrieved(CachedAgentSrv.findAll());
+
+            } catch (SrvException e) {
+
+                Logger.error(this.toString(), e.getMessage());
+
+                agentsRetrieved(new HashSet<CachedAgentDao>());
+            }
+
             return;
         }
 
@@ -304,6 +323,23 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
         agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
 
         agentsReceiveTask.execute();
+    }
+
+    private void agentsRetrieved(Set<CachedAgentDao> agents) {
+
+        this.agents = new ArrayList<Agent>();
+
+        for (CachedAgentDao ad : agents)
+            this.agents.add(AgentFactory.fromCachedDao(ad));
+
+        showAgents();
+
+        showProgress(false);
+
+        if (getActivity() == null)
+            return;
+
+        Toast.makeText(getActivity(), "Network unavailable, " + agents.size() + " cached" + (agents.size() == 1 ? " agent" : " agents") + " retrieved", Toast.LENGTH_LONG).show();
     }
 
     @Override
