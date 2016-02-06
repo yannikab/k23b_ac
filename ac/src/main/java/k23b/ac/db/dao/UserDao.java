@@ -9,11 +9,23 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+/**
+ * The Data Access Object class for the manipulation of the Users Table and the retrieval of information from it
+ *
+ */
 public class UserDao {
 
     private static String[] userTableColumns = { DatabaseHandler.getKeyUUsername(), DatabaseHandler.getKeyUPassword(),
             DatabaseHandler.getKeyUActive() };
-
+    
+    /**
+     * The creation of a new User row in the Users Table
+     * 
+     * @param username
+     * @param password
+     * @return The username of the newly created User
+     * @throws DaoException
+     */
     public static String createUser(String username, String password) throws DaoException {
 
         boolean active = false;
@@ -86,7 +98,14 @@ public class UserDao {
                 + " and Active: " + active + " NOT FOUND !");
 
     }
-
+    
+    /**
+     * Search for a User row based on a username
+     * 
+     * @param username
+     * @return An instance of UserDao which includes the info from the selected row from the Users Table; null if no such username exists
+     * @throws DaoException
+     */
     public static UserDao findUserByUsername(String username) throws DaoException {
 
         UserDao user = null;
@@ -122,7 +141,13 @@ public class UserDao {
 
         return user;
     }
-
+    
+    /**
+     * Deletes a User row based on a username 
+     * 
+     * @param username
+     * @throws DaoException
+     */
     public static void deleteUser(String username) throws DaoException {
 
         Log.d(UserDao.class.getName(), "Deleting UserDao with Username: " + username);
@@ -143,7 +168,13 @@ public class UserDao {
         Log.d(UserDao.class.getName(), "Deleted UserDao with Username: " + username);
 
     }
-
+    
+    /**
+     * Searches for all User rows
+     * 
+     * @return A set of UserDao instances which include the info from the selected rows from the Users Table
+     * @throws DaoException
+     */
     public static Set<UserDao> findAll() throws DaoException {
 
         Log.d(UserDao.class.getName(), "Searching all Users");
@@ -175,7 +206,7 @@ public class UserDao {
         return userSet;
 
     }
-
+    
     private String username;
     private String password;
 
@@ -194,6 +225,6 @@ public class UserDao {
 
     @Override
     public String toString() {
-        return "UserDao [username=" + username + ", password=" + password + "]";
+        return "UserDao [username=" + username + ", password=" + password + ", active=" + "]";
     }
 }
