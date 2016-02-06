@@ -210,7 +210,7 @@ public class AllResultsController {
             }
 
             results.sort((first, second) -> {
-                return first.getResultId() > second.getResultId() ? 1 : -1;
+                return first.getResultId() > second.getResultId() ? -1 : 1;
             });
 
         } catch (SrvException e) {

@@ -207,7 +207,7 @@ public class RequestsController {
             }
 
             requests.sort((first, second) -> {
-                return first.getRequestId() > second.getRequestId() ? 1 : -1;
+                return first.getRequestId() > second.getRequestId() ? -1 : 1;
             });
 
         } catch (SrvException e) {

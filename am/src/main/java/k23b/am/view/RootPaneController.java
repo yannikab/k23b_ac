@@ -101,9 +101,9 @@ public class RootPaneController {
 
         setAdmin(null);
 
-        // fetchAdmin();
+        fetchAdmin();
 
-        showLoginWindow();
+        // showLoginWindow();
 
         tabChanged();
 

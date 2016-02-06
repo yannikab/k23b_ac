@@ -365,7 +365,7 @@ public class JobsController {
             }
 
             agents.sort((first, second) -> {
-                return first.getAgentId() > second.getAgentId() ? 1 : -1;
+                return first.getAgentId() > second.getAgentId() ? -1 : 1;
             });
 
         } catch (SrvException e) {
@@ -430,7 +430,7 @@ public class JobsController {
             }
 
             jobs.sort((first, second) -> {
-                return first.getJobId() > second.getJobId() ? 1 : -1;
+                return first.getJobId() > second.getJobId() ? -1 : 1;
             });
 
         } catch (SrvException e) {

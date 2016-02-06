@@ -206,7 +206,7 @@ public class AgentsController {
             }
 
             agents.sort((first, second) -> {
-                return first.getAgentId() > second.getAgentId() ? 1 : -1;
+                return first.getAgentId() > second.getAgentId() ? -1 : 1;
             });
 
         } catch (SrvException e) {

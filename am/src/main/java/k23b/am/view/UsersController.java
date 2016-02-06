@@ -215,7 +215,7 @@ public class UsersController {
             }
 
             users.sort((first, second) -> {
-                return first.getUserId() > second.getUserId() ? 1 : -1;
+                return first.getUserId() > second.getUserId() ? -1 : 1;
             });
 
         } catch (SrvException e) {
