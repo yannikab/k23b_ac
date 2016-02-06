@@ -18,11 +18,11 @@ import android.util.Log;
  *
  */
 public class CachedAgentDao {
-    
-    private static String[] cachedagentTableColumns = { DatabaseHandler.getKeyCaAgentId(), DatabaseHandler.getKeyCaAgentHash(), 
+
+    private static String[] cachedagentTableColumns = { DatabaseHandler.getKeyCaAgentId(), DatabaseHandler.getKeyCaAgentHash(),
             DatabaseHandler.getKeyCaTimeAccepted(), DatabaseHandler.getKeyCaTimeJobRequest(), DatabaseHandler.getKeyCaTimeTerminated(),
             DatabaseHandler.getKeyCaAgentStatus() };
-    
+
     /**
      * The creation of a new Cached Agent row in the Cached Agents Table.
      * 
@@ -37,52 +37,52 @@ public class CachedAgentDao {
     // this method assumes that an agent does not exist with this id, and blindly creates it
     @SuppressLint("SimpleDateFormat")
     public static void create(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus) throws DaoException {
-        
-        Log.d(CachedAgentDao.class.getName(), "Creating Cached Agent Dao with AgentId: " + agentId + " AgentHash: " + agentHash + " TimeAccepted: " + timeAccepted 
-                + " TimeJobRequest: " + timeJobRequest + " TimeTerminated: " + timeTerminated + " AgentStatus: "+ agentStatus);
-        
+
+        Log.d(CachedAgentDao.class.getName(), "Creating Cached Agent Dao with AgentId: " + agentId + " AgentHash: " + agentHash + " TimeAccepted: " + timeAccepted
+                + " TimeJobRequest: " + timeJobRequest + " TimeTerminated: " + timeTerminated + " AgentStatus: " + agentStatus);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.getKeyCaAgentId(), agentId);
         values.put(DatabaseHandler.getKeyCaAgentHash(), agentHash);
-        values.put(DatabaseHandler.getKeyCaTimeAccepted(), dateFormat.format(timeAccepted));
-        values.put(DatabaseHandler.getKeyCaTimeJobRequest(), dateFormat.format(timeJobRequest));
-        values.put(DatabaseHandler.getKeyCaTimeTerminated(), dateFormat.format(timeTerminated));
+        values.put(DatabaseHandler.getKeyCaTimeAccepted(), timeAccepted != null ? dateFormat.format(timeAccepted) : null);
+        values.put(DatabaseHandler.getKeyCaTimeJobRequest(), timeJobRequest != null ? dateFormat.format(timeJobRequest) : null);
+        values.put(DatabaseHandler.getKeyCaTimeTerminated(), timeTerminated != null ? dateFormat.format(timeTerminated) : null);
         values.put(DatabaseHandler.getKeyCaAgentStatus(), agentStatus.toString());
-        
+
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
         SQLiteDatabase db = dbHandler.openDatabase();
         long rowId;
-        
+
         try {
 
-            rowId = db.insertOrThrow(DatabaseHandler.getCachedJobsTable(), null, values);
+            rowId = db.insertOrThrow(DatabaseHandler.getCachedAgentsTable(), null, values);
 
             if (rowId < 0) {
                 // Database not needed anymore
                 dbHandler.closeDatabase();
-                
-                String message = "Error while inserting Cached Agent with AgentId: "+ agentId + " AgentHash: " + agentHash + " Time Accepted: "
-                        + timeAccepted + " TimeJobRequest: "+ timeJobRequest + " Time Terminated: " + timeTerminated + " AgentStatus: "+ agentStatus.toString(); 
-                
+
+                String message = "Error while inserting Cached Agent with AgentId: " + agentId + " AgentHash: " + agentHash + " Time Accepted: "
+                        + timeAccepted + " TimeJobRequest: " + timeJobRequest + " Time Terminated: " + timeTerminated + " AgentStatus: " + agentStatus.toString();
+
                 Log.e(CachedAgentDao.class.getName(), message);
                 throw new DaoException(message);
             }
-        } catch (SQLException e){
-            
-         // Database not needed anymore
+        } catch (SQLException e) {
+
+            // Database not needed anymore
             dbHandler.closeDatabase();
 
             Log.e(CachedAgentDao.class.getName(), e.getMessage());
-            throw new DaoException("Error while inserting Cached Agent with AgentId: "+ agentId + " AgentHash: " + agentHash + " Time Accepted: "
-                    + timeAccepted + " TimeJobRequest: "+ timeJobRequest + " Time Terminated: " + timeTerminated + " AgentStatus: "+ agentStatus.toString() + " | "+ e.getMessage());
+            throw new DaoException("Error while inserting Cached Agent with AgentId: " + agentId + " AgentHash: " + agentHash + " Time Accepted: "
+                    + timeAccepted + " TimeJobRequest: " + timeJobRequest + " Time Terminated: " + timeTerminated + " AgentStatus: " + agentStatus.toString() + " | " + e.getMessage());
         }
-        
-        Cursor cursor = db.query(DatabaseHandler.getCachedAgentsTable(), cachedagentTableColumns, DatabaseHandler.getKeyCaAgentId() + " = "+ agentId, null, null, null,null);
-        
+
+        Cursor cursor = db.query(DatabaseHandler.getCachedAgentsTable(), cachedagentTableColumns, DatabaseHandler.getKeyCaAgentId() + " = " + agentId, null, null, null, null);
+
         if (cursor.getCount() > 1) {
             cursor.close();
             // Database not needed anymore
@@ -92,19 +92,19 @@ public class CachedAgentDao {
             throw new DaoException("More than one Cached Agents with Id: " + agentId);
         }
         if (cursor.moveToFirst()) {
-              
-            Log.d(CachedAgentDao.class.getName(), "Created Cached Agent Dao with AgentId: " + cursor.getLong(0) + " AgentHash: " + cursor.getString(1) + " TimeAccepted: " + cursor.getString(2) 
-                + " TimeJobRequest: " + cursor.getString(3) + " TimeTerminated: " + cursor.getString(4) + " AgentStatus: "+ cursor.getString(5) + " successfully!");
-            
+
+            Log.d(CachedAgentDao.class.getName(), "Created Cached Agent Dao with AgentId: " + cursor.getLong(0) + " AgentHash: " + cursor.getString(1) + " TimeAccepted: " + cursor.getString(2)
+                    + " TimeJobRequest: " + cursor.getString(3) + " TimeTerminated: " + cursor.getString(4) + " AgentStatus: " + cursor.getString(5) + " successfully!");
+
             cursor.close();
             // Database not needed anymore
             dbHandler.closeDatabase();
             return;
         }
-        
-        String message = "Cached Agent Dao with AgentId: " + agentId + " AgentHash: " + agentHash + " TimeAccepted: " + timeAccepted 
-                + " TimeJobRequest: " + timeJobRequest + " TimeTerminated: " + timeTerminated + " AgentStatus: "+ agentStatus.toString() + "created but NOT FOUND";
-        
+
+        String message = "Cached Agent Dao with AgentId: " + agentId + " AgentHash: " + agentHash + " TimeAccepted: " + timeAccepted
+                + " TimeJobRequest: " + timeJobRequest + " TimeTerminated: " + timeTerminated + " AgentStatus: " + agentStatus.toString() + "created but NOT FOUND";
+
         cursor.close();
         // Database not needed anymore
         dbHandler.closeDatabase();
@@ -112,7 +112,7 @@ public class CachedAgentDao {
         Log.e(CachedAgentDao.class.getName(), message);
         throw new DaoException(message);
     }
-    
+
     /**
      * The update of a Cached Agent row in the Cached Agents Table.
      * 
@@ -127,39 +127,39 @@ public class CachedAgentDao {
     // this method assumes that an agent exists with this id, and blindly updates it
     @SuppressLint("SimpleDateFormat")
     public static void update(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus) throws DaoException {
-        
-        Log.d(CachedAgentDao.class.getName(), "Updating Cached Agent Dao with AgentId: " + agentId + " AgentHash: " + agentHash + " TimeAccepted: " + timeAccepted 
-                + " TimeJobRequest: " + timeJobRequest + " TimeTerminated: " + timeTerminated + " AgentStatus: "+ agentStatus);
-        
+
+        Log.d(CachedAgentDao.class.getName(), "Updating Cached Agent Dao with AgentId: " + agentId + " AgentHash: " + agentHash + " TimeAccepted: " + timeAccepted
+                + " TimeJobRequest: " + timeJobRequest + " TimeTerminated: " + timeTerminated + " AgentStatus: " + agentStatus);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.getKeyCaAgentId(), agentId);
         values.put(DatabaseHandler.getKeyCaAgentHash(), agentHash);
-        values.put(DatabaseHandler.getKeyCaTimeAccepted(), dateFormat.format(timeAccepted));
-        values.put(DatabaseHandler.getKeyCaTimeJobRequest(), dateFormat.format(timeJobRequest));
-        values.put(DatabaseHandler.getKeyCaTimeTerminated(), dateFormat.format(timeTerminated));
+        values.put(DatabaseHandler.getKeyCaTimeAccepted(), timeAccepted != null ? dateFormat.format(timeAccepted) : null);
+        values.put(DatabaseHandler.getKeyCaTimeJobRequest(), timeJobRequest != null ? dateFormat.format(timeJobRequest) : null);
+        values.put(DatabaseHandler.getKeyCaTimeTerminated(), timeTerminated != null ? dateFormat.format(timeTerminated) : null);
         values.put(DatabaseHandler.getKeyCaAgentStatus(), agentStatus.toString());
-        
+
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
 
         // Express the need for an open Database
         SQLiteDatabase db = dbHandler.openDatabase();
-        
-        int rowsAffected = db.update(DatabaseHandler.getCachedAgentsTable(), values, DatabaseHandler.getKeyCaAgentId() +" = " + agentId, null);
-        
-        if(rowsAffected != 1){
+
+        int rowsAffected = db.update(DatabaseHandler.getCachedAgentsTable(), values, DatabaseHandler.getKeyCaAgentId() + " = " + agentId, null);
+
+        if (rowsAffected != 1) {
             // Database not needed anymore
             dbHandler.closeDatabase();
             throw new DaoException("None or more than one Rows affected");
         }
-        
+
         // Database not needed anymore
         dbHandler.closeDatabase();
         Log.d(CachedAgentDao.class.getName(), "Cached Agent with AgentId: " + agentId + " updated.");
 
     }
-    
+
     /**
      * Search if the Cached Agent with agentId exists.
      * 
@@ -168,24 +168,24 @@ public class CachedAgentDao {
      * @throws DaoException
      */
     public static boolean exists(long agentId) throws DaoException {
-        
+
         Log.d(CachedAgentDao.class.getName(), "Searching for the existance of CachedJob with JobId: " + agentId);
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
         SQLiteDatabase db = dbHandler.openDatabase();
-        
+
         Cursor cursor = db.query(DatabaseHandler.getCachedAgentsTable(), cachedagentTableColumns,
                 DatabaseHandler.getKeyCaAgentId() + " = " + agentId, null, null, null, null);
-        
-        if(cursor.getCount() > 1){
+
+        if (cursor.getCount() > 1) {
             cursor.close();
             // Database not needed anymore
             dbHandler.close();
-            
+
             Log.e(CachedAgentDao.class.getName(), "More than one Cached Agent with Id: " + agentId);
             throw new DaoException("More than one Cached Agent with Id: " + agentId);
         }
-        
+
         if (cursor.moveToFirst()) {
             Log.d(CachedAgentDao.class.getName(), "1 row selected");
             cursor.close();
@@ -193,14 +193,14 @@ public class CachedAgentDao {
             dbHandler.closeDatabase();
             return true;
         }
-        
+
         Log.d(CachedAgentDao.class.getName(), "0 row selected");
         cursor.close();
         // Database not needed anymore
         dbHandler.closeDatabase();
         return false;
     }
-    
+
     /**
      * Search for all the Cached Agents.
      * 
@@ -208,23 +208,23 @@ public class CachedAgentDao {
      * @throws DaoException
      */
     public static Set<CachedAgentDao> findAll() throws DaoException {
-        
+
         Log.d(CachedAgentDao.class.getName(), "Searching all Cached Agents");
         Set<CachedAgentDao> agentSet = new HashSet<CachedAgentDao>();
 
         DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
         // Express the need for an open Database
         SQLiteDatabase db = dbHandler.openDatabase();
-        
+
         Cursor cursor = db.query(DatabaseHandler.getCachedAgentsTable(), cachedagentTableColumns, null, null, null, null, null);
         int rows = 0;
-        
+
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                
-                agentSet.add(new CachedAgentDao(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), 
+
+                agentSet.add(new CachedAgentDao(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
                         cursor.getString(4), CachedAgentStatus.valueOf(cursor.getString(5))));
-                
+
                 rows++;
                 cursor.moveToNext();
             }
@@ -234,7 +234,7 @@ public class CachedAgentDao {
         cursor.close();
         // Database not needed anymore
         dbHandler.closeDatabase();
-        
+
         return agentSet;
     }
 
@@ -294,24 +294,24 @@ public class CachedAgentDao {
         this.timeTerminated = timeTerminated;
         this.agentStatus = agentStatus;
     }
-    
+
     @SuppressLint("SimpleDateFormat")
     public CachedAgentDao(long agentId, String agentHash, String timeAccepted, String timeJobRequest, String timeTerminated, CachedAgentStatus agentStatus) {
         super();
-        
+
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
+
         this.agentId = agentId;
         this.agentHash = agentHash;
-        try{
-            this.timeAccepted = format.parse(timeAccepted);
-            this.timeJobRequest = format.parse(timeJobRequest);
-            this.timeTerminated = format.parse(timeTerminated);
-        }catch (ParseException e){
+        try {
+            this.timeAccepted = timeAccepted != null ? format.parse(timeAccepted) : null;
+            this.timeJobRequest = timeJobRequest != null ? format.parse(timeJobRequest) : null;
+            this.timeTerminated = timeTerminated != null ? format.parse(timeTerminated) : null;
+        } catch (ParseException e) {
             Log.e(CachedAgentDao.class.getName(), "Parse error on Date parsing");
         }
 
         this.agentStatus = agentStatus;
     }
-    
+
 }

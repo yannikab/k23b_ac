@@ -40,7 +40,7 @@ public class JobsArrayAdapter extends ArrayAdapter<Job> {
         textViewJobId.setText(String.valueOf(j.getJobId()));
         textViewTimeAssigned.setText(j.getFormattedTimeAssigned());
         textViewTimeSent.setText(j.getFormattedTimeSent());
-        textViewParameters.setText(j.getParams());
+        textViewParameters.setText("\"" + (j.getParams() == null ? "" : j.getParams()) + "\"");
         textViewPeriodic.setText(j.getPeriodic() ? "Yes" : "No");
         textViewInterval.setText(j.getPeriodic() ? String.valueOf(j.getPeriod()) : "-");
         JobStatus status = j.getStatus();

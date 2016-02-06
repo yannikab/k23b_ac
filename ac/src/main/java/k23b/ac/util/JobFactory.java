@@ -27,6 +27,7 @@ public class JobFactory extends Job {
         j.jobId = jd.getJobId();
         j.agentId = jd.getAgentId();
         j.timeAssigned = jd.getTimeAssigned();
+        j.timeSent = jd.getTimeSent();
         j.params = jd.getParameters();
         j.periodic = jd.getPeriodic();
         j.period = jd.getPeriod();

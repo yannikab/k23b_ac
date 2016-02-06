@@ -37,14 +37,7 @@ public class CachedAgentSrv {
 
             try {
 
-                CachedAgentDao.findAll();
-
-                // temporary, for testing
-                Set<CachedAgentDao> set = new HashSet<CachedAgentDao>();
-
-                set.add(new CachedAgentDao(0, "hash", new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), CachedAgentStatus.ONLINE));
-
-                return set;
+                return CachedAgentDao.findAll();
 
             } catch (DaoException e) {
 

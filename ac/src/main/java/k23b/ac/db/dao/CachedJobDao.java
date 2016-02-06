@@ -49,8 +49,8 @@ public class CachedJobDao {
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.getKeyCjId(), jobId);
         values.put(DatabaseHandler.getKeyCjAgentId(), agentId);
-        values.put(DatabaseHandler.getKeyCjTimeAssigned(), dateFormat.format(timeAssigned));
-        values.put(DatabaseHandler.getKeyCjTimeSent(), dateFormat.format(timeSent));
+        values.put(DatabaseHandler.getKeyCjTimeAssigned(), timeAssigned != null ? dateFormat.format(timeAssigned) : null);
+        values.put(DatabaseHandler.getKeyCjTimeSent(), timeSent != null ? dateFormat.format(timeSent) : null);
         values.put(DatabaseHandler.getKeyCjParameters(), parameters);
         values.put(DatabaseHandler.getKeyCjPeriodic(), (periodic ? 1 : 0));
         values.put(DatabaseHandler.getKeyCjPeriod(), period);
@@ -150,8 +150,8 @@ public class CachedJobDao {
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.getKeyCjId(), jobId);
         values.put(DatabaseHandler.getKeyCjAgentId(), agentId);
-        values.put(DatabaseHandler.getKeyCjTimeAssigned(), dateFormat.format(timeAssigned));
-        values.put(DatabaseHandler.getKeyCjTimeSent(), dateFormat.format(timeSent));
+        values.put(DatabaseHandler.getKeyCjTimeAssigned(), timeAssigned != null ? dateFormat.format(timeAssigned) : null);
+        values.put(DatabaseHandler.getKeyCjTimeSent(), timeSent != null ? dateFormat.format(timeSent) : null);
         values.put(DatabaseHandler.getKeyCjParameters(), parameters);
         values.put(DatabaseHandler.getKeyCjPeriodic(), (periodic ? 1 : 0));
         values.put(DatabaseHandler.getKeyCjPeriod(), period);
@@ -163,13 +163,13 @@ public class CachedJobDao {
         SQLiteDatabase db = dbHandler.openDatabase();
 
         int rowsAffected = db.update(DatabaseHandler.getCachedJobsTable(), values, DatabaseHandler.getKeyCjId() + " = " + jobId, null);
-        
-        if(rowsAffected != 1){
+
+        if (rowsAffected != 1) {
             // Database not needed anymore
             dbHandler.closeDatabase();
             throw new DaoException("None or more than one Rows affected");
         }
-        
+
         // Database not needed anymore
         dbHandler.closeDatabase();
         Log.d(CachedJobDao.class.getName(), "CachedJob with JobId: " + jobId + " updated.");
@@ -240,9 +240,9 @@ public class CachedJobDao {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
 
-                jobSet.add(new CachedJobDao(cursor.getLong(0), cursor.getLong(1), cursor.getString(2), cursor.getString(3), 
+                jobSet.add(new CachedJobDao(cursor.getLong(0), cursor.getLong(1), cursor.getString(2), cursor.getString(3),
                         cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6), CachedJobStatus.valueOf(cursor.getString(7))));
-                
+
                 rows++;
                 cursor.moveToNext();
             }
@@ -252,7 +252,7 @@ public class CachedJobDao {
         cursor.close();
         // Database not needed anymore
         dbHandler.closeDatabase();
-        
+
         return jobSet;
     }
 
@@ -318,8 +318,8 @@ public class CachedJobDao {
         this.jobId = jobId;
         this.agentId = agentId;
         try {
-            this.timeAssigned = format.parse(timeAssigned);
-            this.timeSent = format.parse(timeSent);
+            this.timeAssigned = timeAssigned != null ? format.parse(timeAssigned) : null;
+            this.timeSent = timeSent != null ? format.parse(timeSent) : null;
         } catch (ParseException e) {
             Log.e(CachedJobDao.class.getName(), "Parse error on Date parsing");
         }

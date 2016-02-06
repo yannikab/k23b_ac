@@ -37,14 +37,7 @@ public class CachedJobSrv {
 
             try {
 
-                CachedJobDao.findAllWithAgentId(agentId);
-
-                // temporary, for testing
-                Set<CachedJobDao> set = new HashSet<CachedJobDao>();
-
-                set.add(new CachedJobDao(0, 0, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), "params", true, 30, CachedJobStatus.ASSIGNED));
-
-                return set;
+                return CachedJobDao.findAllWithAgentId(agentId);
 
             } catch (DaoException e) {
 
