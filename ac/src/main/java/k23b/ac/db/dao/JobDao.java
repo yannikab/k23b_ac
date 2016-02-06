@@ -14,10 +14,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-/**
- * The Data Access Object class for the manipulation of the Jobs Table and the retrieval of information from it.
- *
- */
 @SuppressLint("SimpleDateFormat")
 public class JobDao {
 
@@ -25,18 +21,7 @@ public class JobDao {
             DatabaseHandler.getKeyJUsername(), DatabaseHandler.getKeyJAgent_ID(), DatabaseHandler.getKeyJTimeAssigned(),
             DatabaseHandler.getKeyJPeriodic(), DatabaseHandler.getKeyJPeriod() };
 
-    /**
-     * The creation of a new Job row in the Jobs Table
-     * 
-     * @param parameters
-     * @param username
-     * @param agentId
-     * @param time_assigned
-     * @param periodic
-     * @param period
-     * @return The JobId of the newly created Job.
-     * @throws DaoException
-     */
+    // I might need to return only an ID
     @SuppressLint("SimpleDateFormat")
     public static long createJob(String parameters, String username, long agentId, Date time_assigned, boolean periodic,
             int period) throws DaoException {
@@ -86,7 +71,7 @@ public class JobDao {
 
             Log.e(JobDao.class.getName(), e.getMessage());
 
-            throw new DaoException("Error while inserting Job with Parameters: " + parameters + " Username: "
+            throw new DaoException("Error while inserting Job Job with Parameters: " + parameters + " Username: "
                     + username + " AgentId: " + agentId + " Time assigned: " + time_assigned + " Periodic: " + periodic
                     + " Period " + period + " | " + e.getMessage());
         }
@@ -121,27 +106,21 @@ public class JobDao {
 
             return id;
         }
-        
-        String message = "Created Job with Id: " + cursor.getLong(0) + " Parameters: " + parameters + " Username: "
-                + username + " AgentId: " + agentId + " Time assigned: " + time_assigned + " Periodic: " + periodic
-                + " Period " + period + "NOT FOUND !";
 
         cursor.close();
 
         // Database not needed anymore
         dbHandler.closeDatabase();
+
+        String message = "Created Job with Id: " + cursor.getLong(0) + " Parameters: " + parameters + " Username: "
+                + username + " AgentId: " + agentId + " Time assigned: " + time_assigned + " Periodic: " + periodic
+                + " Period " + period + "NOT FOUND !";
+
         Log.e(JobDao.class.getName(), message);
 
         throw new DaoException(message);
     }
-    
-    /**
-     * Search for a Job row based on a JobId
-     * 
-     * @param jobId
-     * @return An instance of JobDao which includes the info from the selected row from the Jobs Table; null if no such JobId exists
-     * @throws DaoException
-     */
+
     public static JobDao findJobById(long jobId) throws DaoException {
 
         JobDao job = null;
@@ -177,13 +156,7 @@ public class JobDao {
 
         return job;
     }
-    
-    /**
-     * Deletes a Job row based on a JobId 
-     * 
-     * @param jobId
-     * @throws DaoException
-     */
+
     public static void deleteJob(long jobId) throws DaoException {
 
         Log.d(JobDao.class.getName(), "Deleting Job with Id: " + jobId);
@@ -203,14 +176,7 @@ public class JobDao {
 
         Log.d(JobDao.class.getName(), "Deleted Job with Id: " + jobId);
     }
-    
-    /**
-     * Searches for all Job rows based on a User username
-     * 
-     * @param username
-     * @return A set of JobDao instances which include the info from the selected rows from the Jobs Table
-     * @throws DaoException
-     */
+
     public static Set<JobDao> findAllJobsFromUsername(String username) throws DaoException {
 
         Log.d(JobDao.class.getName(), "Searching all Jobs with Username: " + username);
@@ -243,91 +209,6 @@ public class JobDao {
         dbHandler.closeDatabase();
 
         return jobSet;
-    }
-
-    /**
-     * Searches for all Job rows based on an Agent agentId
-     * 
-     * @param agentId
-     * @return A set of JobDao instances which include the info from the selected rows from the Jobs Table
-     */
-    public static Set<JobDao> findAllJobsFromAgentId(long agentId) {
-
-        Log.d(JobDao.class.getName(), "Searching all Jobs with AgentId: " + agentId);
-        Set<JobDao> jobSet = new HashSet<JobDao>();
-
-        DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
-        // Express the need for an open Database
-        SQLiteDatabase db = dbHandler.openDatabase();
-
-        Cursor cursor = db.query(DatabaseHandler.getJobsTable(), jobTableColumns,
-                DatabaseHandler.getKeyJAgent_ID() + " = '" + agentId + "'", null, null, null, null);
-
-        int rows = 0;
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-
-                jobSet.add(new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
-                        cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6)));
-
-                rows++;
-                cursor.moveToNext();
-            }
-        }
-
-        Log.d(JobDao.class.getName(), rows + (rows == 1 ? " row " : " rows ") + "selected.");
-
-        cursor.close();
-        // Database not needed anymore
-        dbHandler.closeDatabase();
-
-        return jobSet;
-
-    }
-    
-    /**
-     * Searches for all Job rows based on all the Active Users
-     * 
-     * @return A set of JobDao instances which include the info from the selected rows from the Jobs Table
-     */
-    public static Set<JobDao> findAllJobsFromActiveUsers() {
-
-        Log.d(JobDao.class.getName(), "Searching all Jobs from Active Users");
-        Set<JobDao> jobSet = new HashSet<JobDao>();
-
-        DatabaseHandler dbHandler = DatabaseHandler.getDBHandler();
-        // Express the need for an open Database
-        SQLiteDatabase db = dbHandler.openDatabase();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM ").append(DatabaseHandler.getJobsTable()).append(" a INNER JOIN ")
-                .append(DatabaseHandler.getUsersTable()).append(" b ON a.").append(DatabaseHandler.getKeyJUsername())
-                .append("=b.").append(DatabaseHandler.getKeyUUsername()).append(" WHERE b.")
-                .append(DatabaseHandler.getKeyUActive()).append("=?");
-
-        Cursor cursor = db.rawQuery(sb.toString(), new String[] { String.valueOf(1) });
-
-        int rows = 0;
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-
-                jobSet.add(new JobDao(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3),
-                        cursor.getString(4), (cursor.getInt(5) == 1 ? true : false), cursor.getInt(6)));
-
-                rows++;
-                cursor.moveToNext();
-            }
-        }
-        Log.d(JobDao.class.getName(), rows + (rows == 1 ? " row " : " rows ") + "selected.");
-
-        cursor.close();
-        // Database not needed anymore
-        dbHandler.closeDatabase();
-
-        return jobSet;
-
     }
 
     private long id;
