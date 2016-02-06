@@ -3,7 +3,10 @@ package k23b.ac.util;
 import k23b.ac.db.dao.CachedJobDao;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.rest.Job;
-
+/**
+ * A utility class in which a JobDao or a CachedJobDao is converted into a Job object
+ *
+ */
 public class JobFactory extends Job {
 
     public static Job fromDao(JobDao jd) {

@@ -4,6 +4,10 @@ import k23b.ac.db.dao.CachedAgentDao;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.status.AgentStatus;
 
+/**
+ * A utility class in which a CachedAgentDao is converted into an Agent object
+ *
+ */
 public class AgentFactory extends Agent {
 
     public static Agent fromCachedDao(CachedAgentDao ad) {

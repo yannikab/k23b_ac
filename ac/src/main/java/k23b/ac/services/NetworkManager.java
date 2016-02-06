@@ -15,6 +15,10 @@ import android.widget.Toast;
 import k23b.ac.services.observer.Observable;
 import k23b.ac.services.observer.Observer;
 
+/**
+ * A singleton child class of BroadcastReceiver sensing changes in the Connectivity State. It also implements the Observable interface notifying the SenderThread of the aformentioned changes.
+ *
+ */
 public class NetworkManager extends BroadcastReceiver implements Observable<State> {
 
     private static Context context;
@@ -29,7 +33,12 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
                 NetworkManager.context = context;
         }
     }
-
+    
+    /**
+     * A getter of the instance of NetworkManager. It initializes the Network Manager on the first call.
+     * 
+     * @return The instance of NetworkManager.
+     */
     public static NetworkManager getInstance() {
 
         synchronized (NetworkManager.class) {
@@ -113,7 +122,12 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
         
         notifyObservers();
     }
-
+    
+    /**
+     * Getting the Network connection state.
+     * 
+     * @return True if there is an active Network connection; false otherwise.
+     */
     public static boolean isNetworkAvailable() {
 
         synchronized (NetworkManager.class) {

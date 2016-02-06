@@ -9,8 +9,23 @@ import k23b.ac.db.dao.CachedAgentStatus;
 import k23b.ac.db.dao.DaoException;
 import k23b.ac.services.Logger;
 
+/**
+ * A service layer in which methods from the DAO layer are invoked for the manipulation of Cached Agents.
+ *
+ */
 public class CachedAgentSrv {
-
+    
+    /**
+     * Creation of a Cached Agent or update of an already existing Cached Agent.
+     * 
+     * @param agentId The agentId given by the AM.
+     * @param agentHash The agentHash originating by the Agent Statistics
+     * @param timeAccepted The time of Agent acceptance
+     * @param timeJobRequest The time of last Job request
+     * @param timeTerminated The time of Agent termination.
+     * @param agentStatus The Status of the Agent
+     * @throws SrvException
+     */
     public static void createOrUpdate(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus) throws SrvException {
 
         synchronized (CachedAgentDao.class) {
@@ -30,7 +45,13 @@ public class CachedAgentSrv {
             }
         }
     }
-
+    
+    /**
+     * Finds all the Cached Agents in the Database.
+     * 
+     * @return A Set of CachedAgentDao Objects.
+     * @throws SrvException
+     */
     public static Set<CachedAgentDao> findAll() throws SrvException {
 
         synchronized (CachedAgentDao.class) {

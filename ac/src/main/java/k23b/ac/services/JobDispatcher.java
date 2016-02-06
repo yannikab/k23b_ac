@@ -25,7 +25,7 @@ import k23b.ac.util.Settings;
 import k23b.ac.util.UserDaoFactory;
 
 /**
- * An IntentService for the dispatching of a UserContainer containing Jobs of a User using Web Services or ,
+ * A singleton class extending IntentService for the dispatching of a UserContainer containing Jobs of a User using Web Services or ,
  * in case of unavailable connection, temporarily saving it to the SQLite Database.
  */
 public class JobDispatcher extends IntentService {
@@ -36,7 +36,11 @@ public class JobDispatcher extends IntentService {
     public JobDispatcher() {
         super("JobDispatcher");
     }
-
+    
+    /**
+     * Returns the JobDispatcher instance. If this method is called for the first time, the instance of the JobDispatcher is initialized then.
+     * @return The JobDispatcher instance.
+     */
     public static JobDispatcher getInstance() {
 
         synchronized (JobDispatcher.class) {
@@ -47,7 +51,13 @@ public class JobDispatcher extends IntentService {
         }
         return instance;
     }
-
+    
+    /**
+     * A method expressing the Intent for a Job dispatch.
+     * 
+     * @param context The context of the calling Activity/Fragment
+     * @param userObject The User which has Jobs to be dispatched.
+     */
     public void dispatch(Context context, User userObject) {
 
         Log.d(JobDispatcher.class.getName(), "Dispatch called from an Activity");
@@ -67,7 +77,13 @@ public class JobDispatcher extends IntentService {
         dispatchJob(userObject);
 
     }
-
+    
+    /**
+     * The dispatching of Jobs assigned by the User to the AM. If no active Network Connection is found the User and its assigned Jobs are stored in the Database
+     *  to be dispatched when the connection is restored. It is invoked by the onHandleIntent(Intent jobIntent) method
+     * 
+     * @param user The User who assigned Jobs.
+     */
     public void dispatchJob(User user) {
 
         Log.d(JobDispatcher.class.getName(), "DispatchJob Called");
@@ -112,6 +128,13 @@ public class JobDispatcher extends IntentService {
         }
     }
 
+    /**
+     * The HTTP POST call for exposing the UserContainer to the AM
+     * 
+     * @param baseURI The base URI of the AC handlers.
+     * @param userContainer The UserContainer to be send.
+     * @return A Status concerning the result of the HTTP POST call.
+     */
     UsersSendStatus usersSend(String baseURI, UserContainer userContainer) {
 
         try {
@@ -136,6 +159,10 @@ public class JobDispatcher extends IntentService {
         }
     }
 
+    /**
+     * Storing the User with his/her Jobs in the Database
+     * @param user The User who assigned Jobs.
+     */
     public void saveIntoDB(User user) {
 
         try {

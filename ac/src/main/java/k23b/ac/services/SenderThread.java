@@ -24,6 +24,12 @@ import k23b.ac.tasks.status.UsersSendStatus;
 import k23b.ac.util.JobFactory;
 import k23b.ac.util.Settings;
 
+/**
+ * A thread implementing the functionality of sending the stored Users with their assigned Jobs to the AM
+ * given an available network connection. If such a connection is unavailable the Thread waits until there
+ * is one available.
+ *
+ */
 public class SenderThread extends Thread implements Observer<State> {
 
     private int interval;
@@ -96,6 +102,9 @@ public class SenderThread extends Thread implements Observer<State> {
         this.setName("Sender");
     }
 
+    /**
+     * The attempt of sending the UserContainer to the AM. Depending on the result of the HTTP call a relevant action will be taken.
+     */
     private void sendUserContainer() {
 
         outgoingUserContainer = new UserContainer();
@@ -149,7 +158,38 @@ public class SenderThread extends Thread implements Observer<State> {
             Log.e(SenderThread.class.getName(), e.getMessage());
         }
     }
+    
+    /**
+     * The HTTP POST call for exposing the UserContainer to the AM
+     * 
+     * @param baseURI The base URI of the AC handlers.
+     * @param userContainer The UserContainer to be send.
+     * @return A Status concerning the result of the HTTP POST call.
+     */
+    UsersSendStatus usersSend(String baseURI, UserContainer userContainer) {
 
+        try {
+            String url = baseURI + "users/";
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
+
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+
+            String response = restTemplate.postForObject(url, userContainer, String.class);
+
+            if (response.startsWith("Accepted"))
+                return UsersSendStatus.SEND_SUCCESS;
+            else
+                return UsersSendStatus.SERVICE_ERROR;
+
+        } catch (RestClientException e) {
+            Logger.logException(getClass().getSimpleName(), e);
+            return UsersSendStatus.NETWORK_ERROR;
+        }
+    }
+    
     public void sendSuccess() {
 
         Log.d(SenderThread.class.getName(), "Users were sent successfully!");
@@ -177,30 +217,6 @@ public class SenderThread extends Thread implements Observer<State> {
             }
 
             outgoingUserContainer = null;
-        }
-    }
-
-    UsersSendStatus usersSend(String baseURI, UserContainer userContainer) {
-
-        try {
-            String url = baseURI + "users/";
-
-            RestTemplate restTemplate = new RestTemplate();
-
-            restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
-
-            restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-
-            String response = restTemplate.postForObject(url, userContainer, String.class);
-
-            if (response.startsWith("Accepted"))
-                return UsersSendStatus.SEND_SUCCESS;
-            else
-                return UsersSendStatus.SERVICE_ERROR;
-
-        } catch (RestClientException e) {
-            Logger.logException(getClass().getSimpleName(), e);
-            return UsersSendStatus.NETWORK_ERROR;
         }
     }
 
