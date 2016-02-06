@@ -301,17 +301,22 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
+            if (Settings.getCacheAgentsAndJobs()) {
 
-            try {
+                try {
 
-                agentsRetrieved(CachedAgentSrv.findAll());
+                    agentsRetrieved(CachedAgentSrv.findAll());
 
-            } catch (SrvException e) {
+                } catch (SrvException e) {
 
-                Logger.error(this.toString(), e.getMessage());
+                    Logger.error(this.toString(), e.getMessage());
 
-                agentsRetrieved(new HashSet<CachedAgentDao>());
+                    agentsRetrieved(new HashSet<CachedAgentDao>());
+                }
+
+            } else {
+
+                Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             }
 
             return;
@@ -321,7 +326,7 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
 
         clearOutput();
 
-        agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
+        agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), Settings.getCacheAgentsAndJobs());
 
         agentsReceiveTask.execute();
     }
@@ -334,7 +339,7 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
             this.agents.add(AgentFactory.fromCachedDao(ad));
 
         Collections.sort(this.agents);
-        
+
         showAgents();
 
         showProgress(false);

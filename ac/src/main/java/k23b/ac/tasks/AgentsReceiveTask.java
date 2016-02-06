@@ -30,15 +30,19 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     private final String username;
     private final String password;
 
+    private boolean cacheAgents;
+
     private List<Agent> agents;
 
-    public AgentsReceiveTask(AgentsReceiveCallback agentsReceiveCallback, String baseURI, String username, String password) {
+    public AgentsReceiveTask(AgentsReceiveCallback agentsReceiveCallback, String baseURI, String username, String password, boolean cacheAgents) {
         super();
 
         this.agentsReceiveCallback = agentsReceiveCallback;
         this.baseURI = baseURI;
         this.username = username;
         this.password = password;
+
+        this.cacheAgents = cacheAgents;
     }
 
     @Override
@@ -69,17 +73,20 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
                 this.agents = agentContainer.getAgents();
 
-                for (Agent a : this.agents) {
+                if (cacheAgents) {
 
-                    try {
+                    for (Agent a : this.agents) {
 
-                        CachedAgentSrv.createOrUpdate(a.getAgentId(), a.getRequestHash(), a.getTimeAccepted(), a.getTimeJobRequest(), a.getTimeTerminated(), CachedAgentStatus.values()[a.getAgentStatus().ordinal()]);
+                        try {
 
-                    } catch (SrvException e) {
+                            CachedAgentSrv.createOrUpdate(a.getAgentId(), a.getRequestHash(), a.getTimeAccepted(), a.getTimeJobRequest(), a.getTimeTerminated(), CachedAgentStatus.values()[a.getAgentStatus().ordinal()]);
 
-                        Logger.error(this.toString(), e.getMessage());
+                        } catch (SrvException e) {
 
-                        continue;
+                            Logger.error(this.toString(), e.getMessage());
+
+                            continue;
+                        }
                     }
                 }
 
@@ -144,7 +151,7 @@ public class AgentsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             break;
 
         default:
-            
+
             agentsReceiveCallback.serviceError();
             break;
         }

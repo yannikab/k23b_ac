@@ -31,9 +31,11 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
     private final String password;
     private final String agentHash;
 
+    private boolean cacheJobs;
+
     private List<Job> jobs;
 
-    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password, String agentHash) {
+    public JobsReceiveTask(JobsReceiveCallback jobsReceiveCallback, String baseURI, String username, String password, String agentHash, boolean cacheJobs) {
         super();
 
         this.jobsReceiveCallback = jobsReceiveCallback;
@@ -41,6 +43,8 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
         this.username = username;
         this.password = password;
         this.agentHash = agentHash;
+
+        this.cacheJobs = cacheJobs;
     }
 
     @Override
@@ -71,17 +75,20 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
                 this.jobs = jobContainer.getJobs();
 
-                for (Job j : this.jobs) {
+                if (cacheJobs) {
 
-                    try {
+                    for (Job j : this.jobs) {
 
-                        CachedJobSrv.createOrUpdate(j.getJobId(), j.getAgentId(), j.getTimeAssigned(), j.getTimeSent(), j.getParams(), j.getPeriodic(), j.getPeriod(), CachedJobStatus.values()[j.getStatus().ordinal()]);
+                        try {
 
-                    } catch (SrvException e) {
+                            CachedJobSrv.createOrUpdate(j.getJobId(), j.getAgentId(), j.getTimeAssigned(), j.getTimeSent(), j.getParams(), j.getPeriodic(), j.getPeriod(), CachedJobStatus.values()[j.getStatus().ordinal()]);
 
-                        Logger.error(this.toString(), e.getMessage());
+                        } catch (SrvException e) {
 
-                        continue;
+                            Logger.error(this.toString(), e.getMessage());
+
+                            continue;
+                        }
                     }
                 }
 
@@ -146,7 +153,7 @@ public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
             break;
 
         default:
-            
+
             jobsReceiveCallback.serviceError();
             break;
         }

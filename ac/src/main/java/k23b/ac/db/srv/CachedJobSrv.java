@@ -1,7 +1,6 @@
 package k23b.ac.db.srv;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import k23b.ac.db.dao.CachedJobDao;

@@ -19,11 +19,15 @@ public class Settings {
 
         setLogOutOnSessionExpiry(true);
         Logger.info(Settings.class.getSimpleName(), "logOutOnSessionExpiry: " + getLogOutOnSessionExpiry());
+        
+        setCacheAgentsAndJobs(true);
+        Logger.info(Settings.class.getSimpleName(), "cacheAgentsAndJobs: " + getCacheAgentsAndJobs());
     }
 
     private static String baseURI;
     private static int senderThreadInterval;
     private static boolean logOutOnSessionExpiry;
+    private static boolean cacheAgentsAndJobs;
 
     public static int getSenderThreadInterval() {
         return senderThreadInterval;
@@ -47,5 +51,13 @@ public class Settings {
 
     private static void setLogOutOnSessionExpiry(boolean logOutOnSessionExpiry) {
         Settings.logOutOnSessionExpiry = logOutOnSessionExpiry;
+    }
+
+    public static boolean getCacheAgentsAndJobs() {
+        return cacheAgentsAndJobs;
+    }
+
+    private static void setCacheAgentsAndJobs(boolean cacheAgentsAndJobs) {
+        Settings.cacheAgentsAndJobs = cacheAgentsAndJobs;
     }
 }

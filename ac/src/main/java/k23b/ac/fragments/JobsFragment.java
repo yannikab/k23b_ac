@@ -233,17 +233,22 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
+            if (Settings.getCacheAgentsAndJobs()) {
 
-            try {
+                try {
 
-                agentsRetrieved(CachedAgentSrv.findAll());
+                    agentsRetrieved(CachedAgentSrv.findAll());
 
-            } catch (SrvException e) {
+                } catch (SrvException e) {
 
-                Logger.error(this.toString(), e.getMessage());
+                    Logger.error(this.toString(), e.getMessage());
 
-                agentsRetrieved(new HashSet<CachedAgentDao>());
+                    agentsRetrieved(new HashSet<CachedAgentDao>());
+                }
+
+            } else {
+
+                Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             }
 
             return;
@@ -251,7 +256,7 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
 
         showProgress(true);
 
-        agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword());
+        agentsReceiveTask = new AgentsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), Settings.getCacheAgentsAndJobs());
 
         agentsReceiveTask.execute();
     }
@@ -264,7 +269,7 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
             this.agents.add(AgentFactory.fromCachedDao(ad));
 
         Collections.sort(this.agents);
-        
+
         showAgents();
 
         this.selectedAgent = null;
@@ -272,7 +277,7 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
         this.jobs = null;
 
         showJobs();
-        
+
         showProgress(false);
 
         if (getActivity() == null)
@@ -335,17 +340,22 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
+            if (Settings.getCacheAgentsAndJobs()) {
 
-            try {
+                try {
 
-                jobsRetrieved(CachedJobSrv.findAllWithAgentId(selectedAgent.getAgentId()));
+                    jobsRetrieved(CachedJobSrv.findAllWithAgentId(selectedAgent.getAgentId()));
 
-            } catch (SrvException e) {
+                } catch (SrvException e) {
 
-                Logger.error(this.toString(), e.getMessage());
+                    Logger.error(this.toString(), e.getMessage());
 
-                jobsRetrieved(new HashSet<CachedJobDao>());
+                    jobsRetrieved(new HashSet<CachedJobDao>());
+                }
+
+            } else {
+
+                Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             }
 
             return;
@@ -353,7 +363,7 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
 
         showProgressJobs(true);
 
-        jobsReceiveTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash());
+        jobsReceiveTask = new JobsReceiveTask(this, Settings.getBaseURI(), u.getUsername(), u.getPassword(), selectedAgent.getRequestHash(), Settings.getCacheAgentsAndJobs());
 
         jobsReceiveTask.execute();
     }
@@ -366,7 +376,7 @@ public class JobsFragment extends FragmentBase implements AgentsReceiveCallback,
             this.jobs.add(JobFactory.fromCachedDao(jd));
 
         Collections.sort(this.jobs);
-        
+
         showJobs();
 
         showProgress(false);
