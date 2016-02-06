@@ -9,8 +9,22 @@ import k23b.ac.db.dao.DaoException;
 import k23b.ac.db.dao.JobDao;
 import k23b.ac.db.dao.UserDao;
 
+/**
+ * A service layer in which methods from the DAO layer are invoked for the manipulation of Jobs.
+ */
 public class JobSrv {
 
+    /**
+     * Creation of a Job object
+     *  
+     * @param username
+     * @param agentId
+     * @param params
+     * @param periodic
+     * @param period
+     * @return An instance of JobDao which includes the info from the selected column from the Jobs Table
+     * @throws SrvException
+     */
     public static JobDao create(String username, long agentId, String params, boolean periodic, int period) throws SrvException {
 
         try {
@@ -45,6 +59,13 @@ public class JobSrv {
         }
     }
 
+    /**
+     * Searches for a Job object with a given jobId.
+     * 
+     * @param jobId
+     * @return An instance of JobDao which includes the info from the selected column from the Jobs Table
+     * @throws SrvException
+     */
     public static JobDao findById(long jobId) throws SrvException {
 
         try {
@@ -58,7 +79,13 @@ public class JobSrv {
             throw new SrvException("Data access error while searching for Job with id: " + jobId);
         }
     }
-
+    
+    /**
+     * Deletes a Job object with a given jobId.
+     * 
+     * @param jobId
+     * @throws SrvException
+     */
     public static void delete(long jobId) throws SrvException {
 
         try {
@@ -75,7 +102,14 @@ public class JobSrv {
             throw new SrvException("Data access error while sending (deleting) Job with id: " + jobId);
         }
     }
-
+    
+    /**
+     * Searches for Job objects created by a User with a given username.
+     * 
+     * @param username
+     * @return A set of JobDao instances which include the info from the selected columns from the Jobs Table
+     * @throws SrvException
+     */
     public static Set<JobDao> findAllJobsFromUsername(String username) throws SrvException {
 
         try {

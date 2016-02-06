@@ -1,5 +1,8 @@
 package k23b.ac.rest.status;
 
+/**
+ * An enumeration of the possible JobsStatus values.  
+ */
 public enum JobStatus {
     ASSIGNED, SENT, STOPPED, ALL;
 

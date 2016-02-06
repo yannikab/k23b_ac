@@ -9,11 +9,23 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+/**
+ * The Data Access Object class for the manipulation of the Users Table and the retrieval of information from it
+ *
+ */
 public class UserDao {
 
     private static String[] userTableColumns = { DatabaseHandler.getKeyUUsername(), DatabaseHandler.getKeyUPassword(),
             DatabaseHandler.getKeyUActive() };
-
+    
+    /**
+     * The creation of a new User row in the Users Table
+     * 
+     * @param username
+     * @param password
+     * @return The username of the newly created User
+     * @throws DaoException
+     */
     public static String createUser(String username, String password) throws DaoException {
 
         boolean active = false;
@@ -67,9 +79,6 @@ public class UserDao {
                 Log.d(UserDao.class.getName(),
                         "Created UserDao with Username: " + username + " and Password: " + password + " successfully!");
 
-                // user = new UserDao(cursor.getString(0), cursor.getString(1),
-                // (cursor.getInt(2) == 1 ? true : false));
-
                 cursor.close();
                 // Database not needed anymore
                 dbHandler.closeDatabase();
@@ -89,7 +98,14 @@ public class UserDao {
                 + " and Active: " + active + " NOT FOUND !");
 
     }
-
+    
+    /**
+     * Search for a User row based on a username
+     * 
+     * @param username
+     * @return An instance of UserDao which includes the info from the selected row from the Users Table; null if no such username exists
+     * @throws DaoException
+     */
     public static UserDao findUserByUsername(String username) throws DaoException {
 
         UserDao user = null;
@@ -125,7 +141,13 @@ public class UserDao {
 
         return user;
     }
-
+    
+    /**
+     * Deletes a User row based on a username 
+     * 
+     * @param username
+     * @throws DaoException
+     */
     public static void deleteUser(String username) throws DaoException {
 
         Log.d(UserDao.class.getName(), "Deleting UserDao with Username: " + username);
@@ -133,15 +155,6 @@ public class UserDao {
 
         // Express the need for an open Database
         SQLiteDatabase db = dbHandler.openDatabase();
-
-        // this check belongs to the srv layer
-        // Set<JobDao> jobSet = JobDao.findAllJobsFromUsername(username);
-        // if (!jobSet.isEmpty()) {
-        // dbHandler.closeDatabase();
-        // throw new DaoException(
-        // "Trying to delete UserDao with Username: " + username + " while there
-        // are some jobs from him left.");
-        // }
 
         int rowsAffected = db.delete(DatabaseHandler.getUsersTable(),
                 DatabaseHandler.getKeyUUsername() + " = '" + username + "'", null);
@@ -155,7 +168,13 @@ public class UserDao {
         Log.d(UserDao.class.getName(), "Deleted UserDao with Username: " + username);
 
     }
-
+    
+    /**
+     * Searches for all User rows
+     * 
+     * @return A set of UserDao instances which include the info from the selected rows from the Users Table
+     * @throws DaoException
+     */
     public static Set<UserDao> findAll() throws DaoException {
 
         Log.d(UserDao.class.getName(), "Searching all Users");
@@ -187,7 +206,12 @@ public class UserDao {
         return userSet;
 
     }
-
+    
+    /**
+     * Searches for all User rows from Active Users
+     * 
+     * @return A set of UserDao instances which include the info from the selected rows from the Users Table
+     */
     public static Set<UserDao> findAllActive() {
 
         Log.d(UserDao.class.getName(), "Searching all Active Users");
@@ -221,6 +245,12 @@ public class UserDao {
 
     }
 
+    /**
+     * Sets a certain User as Active based on username
+     * 
+     * @param username
+     * @throws DaoException
+     */
     public static void setActive(String username) throws DaoException {
 
         Log.d(UserDao.class.getName(), "Setting Active: " + username);
@@ -238,11 +268,6 @@ public class UserDao {
             throw new DaoException("No such UserDao: " + username + " to set Active");
         }
 
-        // if (u.isActive()) {
-        // dbHandler.closeDatabase();
-        // throw new DaoException("UserDao: " + username + " already Active");
-        // }
-
         int rowsAffected = db.update(DatabaseHandler.getUsersTable(), values,
                 DatabaseHandler.getKeyUUsername() + " = '" + username + "'", null);
 
@@ -254,6 +279,12 @@ public class UserDao {
 
     }
 
+    /**
+     * Sets a certain User as Inactive based on username
+     * 
+     * @param username
+     * @throws DaoException
+     */
     public static void setInactive(String username) throws DaoException {
 
         Log.d(UserDao.class.getName(), "Setting Inactive: " + username);
@@ -270,10 +301,6 @@ public class UserDao {
             dbHandler.closeDatabase();
             throw new DaoException("No such UserDao: " + username + " to set Inactive");
         }
-        // if (!u.isActive()) {
-        // dbHandler.closeDatabase();
-        // throw new DaoException("UserDao: " + username + " already Inactive");
-        // }
 
         int rowsAffected = db.update(DatabaseHandler.getUsersTable(), values,
                 DatabaseHandler.getKeyUUsername() + " = '" + username + "'", null);
