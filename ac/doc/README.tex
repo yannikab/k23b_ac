@@ -501,11 +501,14 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 
 \section{Ο Android Client}
 
-\subsection{Εγγραφή - Σύνδεση}
+
+\subsection{Γραφικη διεπαφή
+}
+\subsubsection{Εγγραφή - Σύνδεση}
 
 Κατά την εκκίνησή του, ο Android Client ζητά τα στοιχεία σύνδεσης του χρήστη. Στην περίπτωση επιτυχούς σύνδεσης με την αντίστοιχη υπηρεσία του Aggregator Manager, τα στοιχεία σύνδεσης αποθηκεύονται σε shared preferences έτσι ώστε να είναι διαθέσιμα σε πιθανή μεταγενέστερη εκτέλεση του προγράμματος χωρίς να τα εισάγει ξανά ο χρήστης. Αν ο χρήστης δεν έχει εγγραφεί στον Aggregator Manager, του δίνεται η δυνατότητα μέσω του αντίστοιχου activity, για να συνδεθεί όμως απαιτείται έγκριση από κάποιον administrator όπως είδαμε στις σχετικές υπηρεσίες του Aggregator Manager.
 
-\subsection{Αποσύνδεση}
+\subsubsection{Αποσύνδεση}
 
 Όταν βρισκόμαστε στο βασικό activity της εφαρμογής και πατήσουμε το πλήκτρο επιστροφής, επιστρέφουμε στην οθόνη σύνδεσης οπότε ο χρήστης μπορεί να συνδεθεί με διαφορετικά στοιχεία. Δεν γίνεται αποσύνδεση του προηγούμενου χρήστη και διαγραφή του από τα shared preferences παρά μόνο όταν επιλεγεί ρητά από το βασικό activity η αποσύνδεση. Πέρα από την αποσύνδεση με επιλογή του χρήστη, ενδέχεται να έχουμε αποσύνδεση του τρέχοντος χρήστη στην περίπτωση που έχει παρέλθει ο μέγιστος χρόνος σύνδεσης που είναι ρυθμισμένος στον Aggregator Manager, και αυτό μόνο όταν έχει ενεργοποιηθεί η boolean ρύθμιση logOutOnSessionExpiry του Android Client. Αν η ρύθμιση είναι ανενεργή τότε ο χρήστης απλά επιστρέφει στην οθόνη σύνδεσης χωρίς να διαγραφεί από τα shared preferences.
 \newline
@@ -528,7 +531,10 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 
 \newpage
 
-\subsection{Agents}
+\subsubsection{Agents}
+
+Η όψη αυτή του Android Client απεικονίζει τους Agents που υπάρχουν καταγεγραμμένοι στη βάση δεδομένων του Aggregator Manager. Επιλέγοντας "Refresh" από το action bar ανανεώνεται η όψη. Στην περίπτωση που δεν υπάρχει σύνδεση με το δίκτυο τη στιγμή που ζητείται ανανέωση, γίνεται αναζήτηση στη βάση δεδομένων του Android Client για τους agents που ελήφθησαν την τελευταία φορά που έγινε ανανέωση ενώ υπήρχε σύνδεση. Με long touch στη γραμμή κάποιου agent ενεργοποιείται το action mode AgentActions και δίνεται η δυνατότητα τερματισμού του σχετικού agent.
+\newline
 
 Σχετικές κλάσεις:
 
@@ -548,7 +554,11 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 
 \end{itemize}
 
-\subsection{Jobs}
+\subsubsection{Jobs}
+
+Η όψη αυτή απεικονίζει τους agents που υπάρχουν καταγεγραμμένοι στη βάση δεδομένων του Aggregator Manager, και επιλέγοντας κάποιον agent με short touch εμφανίζονται οι εργασίες που έχουν ανατεθεί σε αυτόν κατά το παρελθόν. Στην περίπτωση που ζητηθεί ανανέωση ενώ δεν υπάρχει σύνδεση με το δίκτυο, γίνεται αναζήτηση στην τοπική βάση δεδομένων για agents η jobs που είχαν ληφθεί κατά το παρελθόν. Με long touch στη γραμμή κάποιου agent ενεργοποιείται το action mode JobsActionsAgent που επιτρέπει την ανάθεση μιας καινούριας εργασίας. Για το σκοπό αυτό ξεκινά νέο activity, το AssignJobActivity. Με long touch στη γραμμή κάποιας εργασίας ενεργοποιείται το action mode JobsActionsJob που επιτρέπει τον τερματισμό της εργασίας ή την ανάθεσή της ξανά στον ίδιο agent.
+\newline
+
 
 Σχετικές κλάσεις:
 
@@ -568,7 +578,10 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 
 \end{itemize}
 
-\subsection{Agent Results}
+\subsubsection{Agent Results}
+
+Στην όψη αυτή εμφανίζονται οι agents που είναι καταχωρημένοι στη βάση δεδομένων του Aggregator Manager και τα τελευταία αποτελέσματά τους. Με short touch στη γραμμή κάποιου agent εμφανίζονται τα τελευταία αποτελέσματα εργασιών του. Το πλήθος των τελευταίων αποτελεσμάτων καθορίζεται από σχετικό πεδίο στην όψη. Στην περίπτωση που δεν υπάρχει σύνδεση με το δίκτυο, εμφανίζονται μόνο οι agents και όχι τα αποτελέσματά τους αφού αυτά δεν αποθηκεύονται στη βάση δεδομένων λόγω σχετικά μεγάλων απαιτήσεων σε χώρο. Η XML έξοδος κάθε εργασίας παρουσιάζεται στα δεξιά της όψης, αφού πατήσουμε short touch πάνω στη γραμμή κάποιου αποτελέσματος. Για την εμφάνιση της εξόδου, χρησιμοποιείται ένας browser (WebView) τον οποίο διαχειρίζεται η κλάση WebViewManager. 
+\newline
 
 Σχετικές κλάσεις:
 
@@ -588,7 +601,9 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 
 \end{itemize}
 
-\subsection{All Results}
+\subsubsection{All Results}
+Η όψη είναι όμοια με την Agent Results, με τη διαφορά ότι εμφανίζονται τα τελευταία αποτελέσματα για όλους τους agents.
+\newline
 
 Σχετικές κλάσεις:
 
@@ -603,6 +618,192 @@ password="5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5">
 \item k23b.ac.tasks: ResultsAllReceiveTask
 
 \item k23b.ac.util: WebViewManager
+
+\end{itemize}
+
+\subsubsection{Η απεικόνιση των αποτελεσμάτων}
+
+Για τις όψεις που παρουσιάζουν αποτελέσματα, χρησιμοποιείται η βοηθητική κλάση WebViewManager. Κατά την κατασκευή ενός instance αυτής της κλάσης περνιέται ως παράμετρος ένα WebView (web browser component) της γραφικής διεπαφής. Μέσω της μεθόδου displayOutput(String) μπορεί να περαστεί η XML έξοδος μιας εργασίας προς εμφάνιση στο WebView. Η κλάση WebViewManager χρησιμοποιεί ένα στιγμιότυπο της κλάσης XmlTreeConverter για μετατροπή της γενικής XML εισόδου σε μία ιεραρχική δομή από HTML unordered lists και list items (<ul>, <li>). Αφού δημιουργηθεί αυτή η δενδρική δομή, προσαρτάται σε αυτήν μια HTML επικεφαλίδα και ένας επίλογος έτσι ώστε να είναι ένα έγκυρο HTML έγγραφο. Στο έγγραφο αυτό συμπεριλαμβάνεται και κώδικας JavaScript για την εμφάνιση της ιεραρχικής δομής σαν δένδρο με κόμβους που υποστηρίζουν εμφάνιση και απόκρυψη. Μάλιστα προσφέρεται και η δυνατότητα εκτέλεσης από την Android εφαρμογή συναρτήσεων JavaScript που έχουν φορτωθεί στον browser. Παράδειγμα χρήσης αυτής της δυνατότητας είναι οι μέθοδοι expandAll() και collapseAll() του WebViewManager που εμφανίζουν και κρύβουν όλους τους κόμβους του δένδρου αντίστοιχα.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{results}
+\centering
+\caption{Eμφάνιση αποτελέσματος σε δένδρο με χρήση του WebViewManager.}
+\end{figure}
+
+
+\newpage
+
+\subsection{Υπηρεσίες του Android Client}
+
+\subsubsection{Ανάθεση Εργασιών}
+
+Οι όψεις "Agents" και "Jobs" της γραφικής διεπαφής επιτρέπουν στο χρήστη την ανάθεση νέων εργασιών. Η υποστήριξη της λειτουργικότητας αυτής γίνεται χρησιμοποιώντας τις υπηρεσίες που φαίνονται στο παρακάτω σχήμα:
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{services}
+\centering
+\caption{Οι σχετικές με την ανάθεση εργασιών υπηρεσίες του Android Client.}
+\end{figure}
+
+Σε κάθε αίτημα της γραφικής διεπαφής για την ανάθεση μιας νέας εργασίας, καλείται η μέθοδος dispatch() της κλάσης JobDispatcher με παράμετρο τον χρήστη που ζητάει την ανάθεση και την ίδια την εργασία. Στην περίπτωση που υπάρχει εκείνη τη στιγμή σύνδεση με το δίκτυο, ο JobDispatcher στέλνει κατ' ευθείαν τη νέα εργασία στον Aggregator Manager. Αν δεν υπάρχει σύνδεση εκείνη τη στιγμή, τότε η εργασία καταχωρείται στη βάση δεδομένων του Android Client. Δημιουργείται ένας χρήστης που αντιστοιχεί στο χρήστη που είναι συνδεδεμένος εκείνη τη στιγμή (αν δεν υπάρχει ήδη), και προστίθεται η εργασία στις εργασίες του χρήστη προς αποστολή. Την αποστολή των εργασιών που έχουν καταχωρηθεί στην τοπική βάση δεδομένων αναλαμβάνει η κλάση SenderThread η οποία είναι ένα νήμα το οποίο ενεργοποιείται όταν αποκατασταθεί η σύνδεση με το δίκτυο και μπαίνει σε αναμονή όταν εντοπίσει ότι η σύνδεση έχει χαθεί.
+
+\begin{itemize}
+
+\item{Job Dispatcher}
+
+Ο Job Dispatcher είναι ένα IntentService του οποίου η μέθοδος onHandleIntent() αναλαμβάνει να εντοπίσει αν εκείνη τη στιγμή υπάρχει δίκτυο και αναλόγως είτε να στείλει απ' ευθείας την εργασία στον Aggregator Manager είτε να την αποθηκεύσει στην τοπική βάση δεδομένων. Στην περίπτωση της αποθήκευσης, δημιουργεί εγγραφές στη βάση δεδομένων για τον χρήστη που αναθέτει την εργασία και για την ίδια την εργασία. Για τον εντοπισμό της ύπαρξης η όχι σύνδεσης με το δίκτυο χρησιμοποιεί την κλάση NetworkManager.
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.services: NetworkManager, JobDispatcher
+
+\item k23b.ac.db.srv: UserSrv, JobSrv
+
+\item k23b.ac.db.dao: UserDao, JobDao
+
+\end{itemize}
+
+\item{Sender Thread}
+
+Το Sender Thread είναι ένα απλό νήμα το οποίο περιοδικά αδειάζει τη βάση δεδομένων από τα περιεχόμενά της. Αναλαμβάνει να δημιουργήσει ένα πακέτο που περιέχει όλους τους χρήστες που βρίσκονται στη βάση, με τον κάθε χρήστη να περιέχει όλες τις εργασίες που έχει αναθέσει. Αφού δημιουργήσει το πακέτο το στέλνει στον Aggregator Manager. Στην περίπτωση επιτυχούς αποστολής, αναλαμβάνει να διαγράψει από τη βάση δεδομένων τους χρήστες και τις εργασίες που στάλθηκαν επιτυχώς. Το Sender Thread ξεκινά και τερματίζει με τη βοήθεια της υπηρεσίας SenderService, η οποία εξασφαλίζει τον ομαλό τερματισμό του νήματος κατά το τέλος εκτέλεσης της εφαρμογής.
+
+Σχετικές κλάσεις:
+
+\begin{itemize}
+
+\item k23b.ac.services: NetworkManager, SenderService, SenderThread
+
+\item k23b.ac.db.srv: UserSrv, JobSrv
+
+\item k23b.ac.db.dao: UserDao, JobDao
+
+\end{itemize}
+
+\item{Database (Users/Jobs)}
+
+Η βάση δεδομένων του Android Client έχει υλοποιηθεί χρησιμοποιώντας SQLite. Λόγω της ανάγκης για πρόσβαση από δυο νήματα με το ένα νήμα να δημιουργεί εγγραφές στη βάση και το άλλο να διαγράφει εγγραφές από αυτήν, έχουν αξιοποιηθεί μηχανισμοί συγχρονισμού ώστε οι λειτουργίες να γίνονται σωστά. Έχουν υλοποιηθεί δυο layers όπως και στο δεύτερο παραδοτέο, ένα data access layer για την πρόσβαση στη βάση δεδομένων (Dao) και ένα service layer για πρόσβαση στη βάση ευθυγραμμισμένη με τη λογική του προβλήματος (Srv). Παρακάτω παρατίθενται τα πρωτότυπα των στατικών μεθόδων του κάθε επιπέδου:
+
+\newpage
+
+UserSrv:
+\begin{lstlisting}
+public UserDao create(String username, String password);
+public UserDao createUserWithJobs(UserDao user, List<JobDao> jobList);
+public UserDao find(String username);
+public Set<UserDao> findAll();
+public void delete(String username);
+public void tryDelete(String username);
+
+\end{lstlisting}
+
+JobSrv:
+\begin{lstlisting}
+
+public JobDao create(String username, long agentId, String params, boolean periodic, int period);
+public JobDao findById(long jobId);
+public Set<JobDao> findAllJobsFromUsername(String username);
+public void delete(long jobId);
+
+\end{lstlisting}
+
+UserDao:
+
+\begin{lstlisting}
+public String createUser(String username, String password);
+public UserDao findUserByUsername(String username);
+public Set<UserDao> findAll();
+public void deleteUser(String username);
+
+\end{lstlisting}
+
+JobDao:
+
+\begin{lstlisting}
+public long createJob(String parameters, String username,
+    long agentId, Date time_assigned, boolean periodic, int period);
+public JobDao findJobById(long jobId);
+public Set<JobDao> findAllJobsFromUsername(String username);
+public void deleteJob(long jobId);
+\end{lstlisting}
+
+Από τα παραπάνω operations κάποια δεν χρησιμοποιήθηκαν τελικά αλλά παρέμειναν στον πηγαίο κώδικα για πληρότητα.
+
+\newpage
+
+\subsubsection{Asynchronous tasks για επικοινωνία με τον Aggregator Manager}
+
+Οι όψεις της εφαρμογής είναι retained fragments που αξιοποιούν τα παρακάτω asynchronous tasks για να παρέχουν τη λειτουργικότητά τους. Όλα τα tasks βασίζονται σε RESTful επικοινωνία μέσω XML περιεχομένου που παρέχεται από το Spring Framework.
+
+\begin{itemize}
+
+\item UserRegisterTask
+\newline
+Το task αυτό χρησιμοποιείται από το fragment RegisterFragment και επικοινωνεί με την αντίστοιχη υπηρεσία του Aggregator Manager για την εγγραφή νέων χρηστών.
+
+\item UserLoginTask
+\newline
+Το task αυτό χρησιμοποιείται από το fragment LoginFragment και επικοινωνεί με την αντίστοιχη υπηρεσία του Aggregator Manager για τη σύνδεση χρηστών.
+
+\item AgentsReceiveTask
+\newline
+Το task αυτό χρησιμοποιείται από τα fragments AgentsFragment, JobsFragment, ResultsAgentFragment. Επικοινωνεί με τη σχετική υπηρεσία του Aggregator Manager για λήψη agents και μετά από επιτυχή λήψη τους αποθηκεύει στη βάση δεδομένων για ενδεχόμενη offline χρήση τους αργότερα.
+
+\item JobsReceiveTask
+\newline
+Το task αυτό χρησιμοποιείται από το fragment JobsFragment. Επικοινωνεί με τη σχετική υπηρεσία του Aggregator Manager για λήψη εργασιών και μετά από επιτυχή λήψη τις αποθηκεύει στη βάση δεδομένων για ενδεχόμενη offline χρήση τους αργότερα.
+
+\item ResultsAgentReceiveTask
+\newline
+Το task αυτό χρησιμοποιείται από το fragment ResultsAgentFragment και επικοινωνεί με τη σχετική υπηρεσία του Aggregator Manager για λήψη αποτελεσμάτων κάποιου agent.
+
+\item ResultsAllReceiveTask
+\newline
+Το task αυτό χρησιμοποιείται από το fragment ResultsAllFragment και επικοινωνεί με τη σχετική υπηρεσία του Aggregator Manager για λήψη αποτελεσμάτων από όλους τους agents.
+
+\end{itemize}
+
+\newpage
+
+\subsubsection{Αποθήκευση agents και jobs για offline χρήση}
+
+Τα asynchronous tasks AgentsReceiveTask και JobsReceiveTask, πέρα από το να επιστρέφουν τα ληφθέντα δεδομένα στις σχετικές όψεις της εφαρμογής, τα αποθηκεύουν και στην τοπική βάση δεδομένων του Android Client για ενδεχόμενη offline χρήση τους αργότερα. Για το λόγο αυτό χρησιμοποιούνται οι παρακάτω κλάσεις από τα service και data access layers:
+
+CachedAgentSrv:
+\begin{lstlisting}
+public void createOrUpdate(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus);
+public Set<CachedAgentDao> findAll();
+\end{lstlisting}
+
+CachedJobSrv:
+\begin{lstlisting}
+public void createOrUpdate(long jobId, long agentId,
+    Date timeAssigned, Date timeSent, String parameters, boolean
+    periodic, int period, CachedJobStatus status);
+public Set<CachedJobDao> findAllWithAgentId(long agentId);
+\end{lstlisting}
+
+CachedAgentDao:
+
+\begin{lstlisting}
+public void create(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus);
+public void update(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus);
+public boolean exists(long agentId);
+public Set<CachedAgentDao> findAll();
+\end{lstlisting}
+
+CachedJobDao:
+
+\begin{lstlisting}
+public void create(long jobId, long agentId, Date timeAssigned, Date timeSent, String parameters, boolean periodic, int period, CachedJobStatus status);
+public void update(long jobId, long agentId, Date timeAssigned, Date timeSent, String parameters, boolean periodic, int period, CachedJobStatus status);
+public boolean exists(long jobId);
+public Set<CachedJobDao> findAllWithAgentId(long agentId);
+\end{lstlisting}
+
+Κατά τη λήψη των δεδομένων καλείται η μέθοδος createOrUpdate() για κάθε ληφθείσα οντότητα (agent η job). Για την ανάκτηση τους κατά την offline χρήση χρησιμοποιούνται οι μέθοδοι findAll() για τους agents και findAllWithAgentId() για τα jobs.
 
 \end{itemize}
 
