@@ -47,7 +47,7 @@ public class RestJobProvider implements IJobProvider {
             StringBuilder sb = new StringBuilder();
             sb.append(String.valueOf(c.getJobId()));
             sb.append(",");
-            sb.append(c.getCmd());
+            sb.append(c.getCmd().isEmpty() ? " " : c.getCmd());
             sb.append(",");
             sb.append(String.valueOf(c.getPeriodic()));
             sb.append(",");

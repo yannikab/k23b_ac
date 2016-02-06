@@ -46,7 +46,20 @@ public class LineParser {
         if (cmdArraySize > 0)
             strToken = paramTokenizer.nextToken();
 
-        if (strToken.compareTo("exit") == 0) {
+        if (cmdArraySize == 0) {
+
+            cmdArraySize += runNmapAsRoot ? 2 : 1;
+
+            cmdArray = new String[cmdArraySize];
+
+            int curr = 0;
+
+            if (runNmapAsRoot)
+                cmdArray[curr++] = "sudo";
+
+            cmdArray[curr++] = "nmap";
+
+        } else if (strToken.compareTo("exit") == 0) {
             cmdArray = new String[cmdArraySize];
             cmdArray[0] = strToken;
         } else if (strToken.compareTo("stop") == 0) {
