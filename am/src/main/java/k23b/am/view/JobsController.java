@@ -295,7 +295,7 @@ public class JobsController {
         });
 
         paramsColumn.setCellValueFactory((cellData) -> {
-            return cellData.getValue().getParamsProperty();
+            return cellData.getValue().getFormattedParamsProperty();
         });
 
         periodicColumn.setCellValueFactory((cellData) -> {

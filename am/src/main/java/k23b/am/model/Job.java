@@ -21,6 +21,7 @@ public class Job {
     private ObjectProperty<Date> timeAssignedProperty;
     private ObjectProperty<Date> timeSentProperty;
     private StringProperty paramsProperty;
+    private StringProperty formattedParamsProperty;
     private BooleanProperty periodicProperty;
     private IntegerProperty periodProperty;
     private ObjectProperty<Date> timeStoppedProperty;
@@ -48,6 +49,10 @@ public class Job {
 
     public StringProperty getParamsProperty() {
         return paramsProperty;
+    }
+    
+    public StringProperty getFormattedParamsProperty() {
+        return formattedParamsProperty;
     }
 
     public BooleanProperty getPeriodicProperty() {
@@ -82,6 +87,7 @@ public class Job {
         this.timeAssignedProperty = new SimpleObjectProperty<Date>(timeAssigned);
         this.timeSentProperty = new SimpleObjectProperty<Date>(timeSent);
         this.paramsProperty = new SimpleStringProperty(params);
+        this.formattedParamsProperty = new SimpleStringProperty("\"" + params + "\"");
         this.periodicProperty = new SimpleBooleanProperty(periodic);
         this.periodProperty = new SimpleIntegerProperty(period);
         this.timeStoppedProperty = new SimpleObjectProperty<Date>(timeStopped);
