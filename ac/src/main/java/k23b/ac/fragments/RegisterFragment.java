@@ -170,7 +170,7 @@ public class RegisterFragment extends FragmentBase implements UserRegisterTask.R
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -248,7 +248,7 @@ public class RegisterFragment extends FragmentBase implements UserRegisterTask.R
         if (getActivity() == null)
             return;
 
-        Toast.makeText(getActivity(), getString(R.string.info_registration_success), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getString(R.string.info_registration_success), Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -92,7 +92,7 @@ public class AgentActions implements ActionMode.Callback {
 
         JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
-        Toast.makeText(callback.getActivity(), "Termination requested for agent " + selectedAgent.getShortRequestHash(), Toast.LENGTH_LONG).show();
+        Toast.makeText(callback.getActivity(), "Termination requested for agent " + selectedAgent.getShortRequestHash(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

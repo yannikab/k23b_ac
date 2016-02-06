@@ -162,7 +162,7 @@ public class AgentsFragment extends FragmentBase implements AgentsReceiveCallbac
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            // Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
 
             try {
 
@@ -201,7 +201,7 @@ public class AgentsFragment extends FragmentBase implements AgentsReceiveCallbac
         if (getActivity() == null)
             return;
 
-        Toast.makeText(getActivity(), "Network unavailable, " + agents.size() + " cached" + (agents.size() == 1 ? " agent" : " agents") + " retrieved", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Network unavailable, " + agents.size() + " cached" + (agents.size() == 1 ? " agent" : " agents") + " retrieved", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -216,7 +216,7 @@ public class AgentsFragment extends FragmentBase implements AgentsReceiveCallbac
         if (getActivity() == null)
             return;
 
-        Toast.makeText(getActivity(), agents.size() + (agents.size() == 1 ? " agent" : " agents") + " received", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), agents.size() + (agents.size() == 1 ? " agent" : " agents") + " received", Toast.LENGTH_SHORT).show();
     }
 
     private void showAgents() {

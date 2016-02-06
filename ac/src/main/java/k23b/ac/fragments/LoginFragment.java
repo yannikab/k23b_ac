@@ -180,7 +180,7 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -201,7 +201,7 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -300,7 +300,7 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
         showProgress(false);
 
-        Toast.makeText(getActivity(), getString(R.string.error_registration_pending), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getString(R.string.error_registration_pending), Toast.LENGTH_SHORT).show();
     }
 
     @Override

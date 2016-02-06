@@ -88,12 +88,12 @@ public class JobsActionsJob implements ActionMode.Callback {
             return;
 
         if (!selectedJob.getPeriodic()) {
-            Toast.makeText(callback.getActivity(), "Can not stop job " + j.getJobId() + ", it is not periodic", Toast.LENGTH_LONG).show();
+            Toast.makeText(callback.getActivity(), "Can not stop job " + j.getJobId() + ", it is not periodic", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (j.getStatus() == JobStatus.ASSIGNED) {
-            Toast.makeText(callback.getActivity(), "Can not stop job " + j.getJobId() + ", it has not been sent", Toast.LENGTH_LONG).show();
+            Toast.makeText(callback.getActivity(), "Can not stop job " + j.getJobId() + ", it has not been sent", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -107,7 +107,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
-        Toast.makeText(callback.getActivity(), "Stop requested for job " + j.getJobId(), Toast.LENGTH_LONG).show();
+        Toast.makeText(callback.getActivity(), "Stop requested for job " + j.getJobId(), Toast.LENGTH_SHORT).show();
     }
 
     private void reassignJob(User u, Job j) {
@@ -126,7 +126,7 @@ public class JobsActionsJob implements ActionMode.Callback {
 
         JobDispatcher.getInstance().dispatch(callback.getActivity(), u);
 
-        Toast.makeText(callback.getActivity(), "Re-assigned job " + j.getJobId(), Toast.LENGTH_LONG).show();
+        Toast.makeText(callback.getActivity(), "Re-assigned job " + j.getJobId(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

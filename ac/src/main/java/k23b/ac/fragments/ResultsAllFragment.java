@@ -261,7 +261,7 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
 
         if (!NetworkManager.isNetworkAvailable()) {
 
-            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.error_network_unavailable), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -320,7 +320,7 @@ public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCa
         if (getActivity() == null)
             return;
 
-        Toast.makeText(getActivity(), results.size() + (results.size() == 1 ? " result" : " results") + " received", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), results.size() + (results.size() == 1 ? " result" : " results") + " received", Toast.LENGTH_SHORT).show();
     }
 
     private void showResults() {

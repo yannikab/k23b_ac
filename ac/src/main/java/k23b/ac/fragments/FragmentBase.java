@@ -48,7 +48,7 @@ public class FragmentBase extends Fragment {
         if (getActivity() == null)
             return;
 
-        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getString(R.string.error_network_error), Toast.LENGTH_SHORT).show();
     }
 
     public void serviceError() {
@@ -58,6 +58,6 @@ public class FragmentBase extends Fragment {
         if (getActivity() == null)
             return;
 
-        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getString(R.string.error_service_error), Toast.LENGTH_SHORT).show();
     }
 }
