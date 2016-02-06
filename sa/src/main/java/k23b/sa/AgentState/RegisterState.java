@@ -29,7 +29,9 @@ public class RegisterState extends AgentState {
     @Override
     public void handleState() {
 
-        for (int i = 0; i < connectionAttempts; i++) {
+        int i;
+        
+        for (i = 0; i < connectionAttempts && !Thread.currentThread().isInterrupted(); i++) {
 
             String message = String.format("Registration attempt %d of %d", i + 1, connectionAttempts);
             log.info(message);
@@ -69,7 +71,7 @@ public class RegisterState extends AgentState {
             }
         }
 
-        String message = "Shutting down after " + connectionAttempts + " connection attempts.";
+        String message = "Shutting down after " + i + " connection " + (i == 1 ? "attempt." : "attempts.");
         log.info(message);
         System.out.println(message);
 
