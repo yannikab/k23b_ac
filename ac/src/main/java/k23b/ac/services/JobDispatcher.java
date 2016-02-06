@@ -24,6 +24,10 @@ import k23b.ac.util.JobDaoFactory;
 import k23b.ac.util.Settings;
 import k23b.ac.util.UserDaoFactory;
 
+/**
+ * An IntentService for the dispatching of a UserContainer containing Jobs of a User using Web Services or ,
+ * in case of unavailable connection, temporarily saving it to the SQLite Database.
+ */
 public class JobDispatcher extends IntentService {
 
     private static JobDispatcher instance;
@@ -166,14 +170,11 @@ public class JobDispatcher extends IntentService {
         Log.e(JobDispatcher.class.getName(), "Service Error, User Container was not Sent");
         synchronized (JobDispatcher.class) {
 
-            if (jobDispatcherCache != null) {
-
-                for (User user : jobDispatcherCache.getUsers())
-                    instance.saveIntoDB(user);
-
+            if (jobDispatcherCache != null)
                 jobDispatcherCache = null;
-            }
+
         }
+        Log.e(JobDispatcher.class.getName(), "User Container Discarded");
     }
 
     public void networkError() {

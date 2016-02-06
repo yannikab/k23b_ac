@@ -207,7 +207,33 @@ public class SenderThread extends Thread implements Observer<State> {
     public void serviceError() {
 
         Log.e(SenderThread.class.getName(), "Service Error, User Container was not Sent");
-        outgoingUserContainer = null;
+        synchronized (SenderThread.class) {
+
+            for (User user : outgoingUserContainer.getUsers()) {
+
+                for (Job job : user.getJobs()) {
+
+                    try {
+
+                        JobSrv.delete(job.getJobId());
+
+                    } catch (SrvException e) {
+                        Log.e(SenderThread.class.getName(), e.getMessage());
+                    }
+                }
+                try {
+
+                    UserSrv.tryDelete(user.getUsername());
+
+                } catch (SrvException e) {
+                    Log.e(SenderThread.class.getName(), e.getMessage());
+                }
+            }
+
+            outgoingUserContainer = null;
+        }
+        Log.d(SenderThread.class.getName(), "User Container Discarded");
+
     }
 
     public void networkError() {
