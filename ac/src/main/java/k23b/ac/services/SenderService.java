@@ -4,6 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+/**
+ * A service that takes care the starting and termination of the SenderThread.
+ */
 public class SenderService extends Service {
 
     private SenderThread senderThread;

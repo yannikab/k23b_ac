@@ -28,6 +28,9 @@ import org.xml.sax.SAXException;
 
 import k23b.ac.services.Logger;
 
+/**
+ * Used to convert the XML form of a Result into HTML
+ */
 public class XmlTreeConverter {
 
     private DocumentBuilder db;

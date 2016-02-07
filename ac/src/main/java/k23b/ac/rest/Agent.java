@@ -10,6 +10,10 @@ import org.simpleframework.xml.Root;
 import android.annotation.SuppressLint;
 import k23b.ac.rest.status.AgentStatus;
 
+/**
+ * Annotated class for the Agent entity
+ *
+ */
 @Root(name = "agent")
 public class Agent implements Comparable<Agent> {
 

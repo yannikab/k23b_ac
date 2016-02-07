@@ -1,5 +1,8 @@
 package k23b.ac.rest.status;
 
+/**
+ * An enumeration of the possible Agent Status values
+ */
 public enum AgentStatus {
     OFFLINE, ONLINE, ALL;
 

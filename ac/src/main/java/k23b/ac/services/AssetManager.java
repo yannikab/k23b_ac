@@ -8,6 +8,9 @@ import java.io.StringWriter;
 
 import android.content.Context;
 
+/**
+ * A convenience class for Asset loading used by WebViewManager
+ */
 public class AssetManager {
 
     private static Context context;

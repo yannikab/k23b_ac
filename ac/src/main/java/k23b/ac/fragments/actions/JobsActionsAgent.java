@@ -13,6 +13,9 @@ import k23b.ac.rest.Agent;
 import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 
+/**
+ * The Action called by the JobsFragment for Job Assignment 
+ */
 public class JobsActionsAgent implements ActionMode.Callback {
 
     public interface Callback {

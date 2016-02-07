@@ -50,6 +50,9 @@ import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Settings;
 import k23b.ac.util.WebViewManager;
 
+/**
+ * The Fragment which attached to the Main Activity offers the list of available Results of a single Agent out of a list of the latter.
+ */
 public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveCallback, ResultsAgentReceiveCallback {
 
     private AgentsReceiveTask agentsReceiveTask;

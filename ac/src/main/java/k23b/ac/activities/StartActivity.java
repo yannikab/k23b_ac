@@ -5,6 +5,10 @@ import android.os.Bundle;
 import k23b.ac.R;
 import k23b.ac.services.Logger;
 
+/**
+ *  The first activity to be launched in the application 
+ *
+ */
 public class StartActivity extends Activity {
 
     @Override

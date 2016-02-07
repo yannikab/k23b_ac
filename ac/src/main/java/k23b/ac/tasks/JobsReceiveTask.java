@@ -16,6 +16,9 @@ import k23b.ac.rest.JobContainer;
 import k23b.ac.services.Logger;
 import k23b.ac.tasks.status.ReceiveStatus;
 
+/**
+ * An AsyncTask in which the AC receives the available Jobs of an Agent from the AM. 
+ */
 public class JobsReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     public interface JobsReceiveCallback extends TaskCallback {

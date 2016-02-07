@@ -36,6 +36,9 @@ import k23b.ac.tasks.AgentsReceiveTask.AgentsReceiveCallback;
 import k23b.ac.util.AgentFactory;
 import k23b.ac.util.Settings;
 
+/**
+ * The Fragment which attached to the Main Activity offers the list of available Agents 
+ */
 public class AgentsFragment extends FragmentBase implements AgentsReceiveCallback, AgentActions.Callback {
 
     private AgentsReceiveTask agentsReceiveTask;

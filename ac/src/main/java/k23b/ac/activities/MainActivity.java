@@ -19,6 +19,9 @@ import k23b.ac.fragments.ResultsAllFragment;
 import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 
+/**
+ * The activity that offers the functionality of Navigating through screens
+ */
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     public static final int ASSIGN_JOB_REQUEST = 1;

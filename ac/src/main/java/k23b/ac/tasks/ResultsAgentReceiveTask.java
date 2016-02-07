@@ -13,6 +13,9 @@ import k23b.ac.services.Logger;
 import k23b.ac.rest.Result;
 import k23b.ac.tasks.status.ReceiveStatus;
 
+/**
+ * An AsyncTask in which the AC receives the available Results of an Agent from the AM. 
+ */
 public class ResultsAgentReceiveTask extends AsyncTask<Void, Void, ReceiveStatus> {
 
     public interface ResultsAgentReceiveCallback extends TaskCallback {

@@ -20,6 +20,9 @@ import k23b.ac.services.SenderService;
 import k23b.ac.services.UserManager;
 import k23b.ac.util.Settings;
 
+/**
+ * The Fragment in which the necessary initialiasation for the services occur and the LoginActivity starts.
+ */
 public class StartFragment extends Fragment {
 
     private boolean initialized = false;

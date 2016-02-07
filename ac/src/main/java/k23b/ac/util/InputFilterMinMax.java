@@ -3,6 +3,9 @@ package k23b.ac.util;
 import android.text.InputFilter;
 import android.text.Spanned;
 
+/**
+ * A filter used on ResultsAgentFragment and ResultsAllFragment for number of Results presented.
+ */
 public class InputFilterMinMax implements InputFilter {
 
     private int min, max;

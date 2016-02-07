@@ -12,6 +12,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import k23b.ac.rest.status.JobStatus;
 
+/**
+ *  Annotated class for the Job entity 
+ *
+ */
 @Root(name = "job")
 public class Job implements Comparable<Job>, Parcelable {
 

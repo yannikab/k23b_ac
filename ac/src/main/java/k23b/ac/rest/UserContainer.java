@@ -6,6 +6,10 @@ import java.util.List;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+/**
+ *   Annotated class for a list of User entities. 
+ *
+ */
 @Root(name = "users")
 public class UserContainer {
 

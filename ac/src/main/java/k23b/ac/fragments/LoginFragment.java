@@ -29,6 +29,9 @@ import k23b.ac.services.UserManager;
 import k23b.ac.tasks.UserLoginTask;
 import k23b.ac.util.Settings;
 
+/**
+ * The Fragment in which the action of Login is initiated or the RegisterActivity is started.
+ */
 public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCallback {
 
     private UserLoginTask userLoginTask = null;

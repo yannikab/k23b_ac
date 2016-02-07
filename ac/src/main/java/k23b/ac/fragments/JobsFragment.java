@@ -46,6 +46,9 @@ import k23b.ac.util.AgentFactory;
 import k23b.ac.util.JobFactory;
 import k23b.ac.util.Settings;
 
+/**
+ *  The Fragment which attached to the Main Activity offers the list of available Jobs out of a list of Agents.
+ */
 public class JobsFragment extends FragmentBase implements AgentsReceiveCallback, JobsReceiveCallback, JobsActionsAgent.Callback, JobsActionsJob.Callback {
 
     private AgentsReceiveTask agentsReceiveTask;

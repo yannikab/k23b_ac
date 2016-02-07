@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import k23b.ac.rest.User;
 
+/**
+ * A service for the reservation of a logged in User throughout the course of the application. 
+ */
 public class UserManager {
 
     private static final String SHARED_PREFERENCES = "shared.preferences";

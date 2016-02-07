@@ -2,6 +2,9 @@ package k23b.ac.services;
 
 import android.util.Log;
 
+/**
+ * A convenience class for logging purposes
+ */
 public class Logger {
 
     public static void debug(String tag, String message) {

@@ -18,6 +18,10 @@ import k23b.ac.services.JobDispatcher;
 import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 
+/**
+ *  The activity in which a Job assignment to an Agent occurs. 
+ *
+ */
 public class AssignJobActivity extends Activity {
 
     private long agentId;

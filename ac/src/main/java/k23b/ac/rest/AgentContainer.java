@@ -7,6 +7,10 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+/**
+ * Annotated class for a list of Agent entities along with a common Agent status
+ *
+ */
 @Root(name = "agents")
 public class AgentContainer {
 

@@ -10,6 +10,10 @@ import org.simpleframework.xml.Root;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Annotated class for the User entity.
+ *
+ */
 @Root(name = "user")
 public class User implements Parcelable {
 

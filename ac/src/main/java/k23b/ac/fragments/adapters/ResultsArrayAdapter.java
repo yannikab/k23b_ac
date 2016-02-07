@@ -11,6 +11,9 @@ import android.widget.TextView;
 import k23b.ac.R;
 import k23b.ac.rest.Result;
 
+/**
+ * The Adapter for the way the Results are displayed.
+ */
 public class ResultsArrayAdapter extends ArrayAdapter<Result> {
 
     public ResultsArrayAdapter(Context context, List<Result> results) {

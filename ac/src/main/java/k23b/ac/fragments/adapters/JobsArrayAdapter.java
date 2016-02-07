@@ -1,5 +1,8 @@
 package k23b.ac.fragments.adapters;
 
+/**
+ * The Adapter for the way the Jobs are displayed.
+ */
 import java.util.List;
 
 import android.content.Context;

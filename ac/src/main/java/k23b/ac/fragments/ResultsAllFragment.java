@@ -37,6 +37,9 @@ import k23b.ac.util.InputFilterMinMax;
 import k23b.ac.util.Settings;
 import k23b.ac.util.WebViewManager;
 
+/**
+ *  The Fragment which attached to the Main Activity offers the list of all available Results. 
+ */
 public class ResultsAllFragment extends FragmentBase implements ResultsReceiveCallback {
 
     private ResultsAllReceiveTask resultsAllReceiveTask;

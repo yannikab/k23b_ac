@@ -12,6 +12,9 @@ import k23b.ac.R;
 import k23b.ac.rest.Agent;
 import k23b.ac.rest.status.AgentStatus;
 
+/**
+ * The Adapter for the way the Agents are displayed. 
+ */
 public class AgentsArrayAdapter extends ArrayAdapter<Agent> {
 
     public AgentsArrayAdapter(Context context, List<Agent> agents) {

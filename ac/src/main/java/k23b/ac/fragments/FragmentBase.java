@@ -7,6 +7,9 @@ import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 import k23b.ac.util.Settings;
 
+/**
+ * Parent class for the Agents, Jobs, Login, Register, ResultsAgent, ResultsAll Fragments. 
+ */
 public class FragmentBase extends Fragment {
 
     public void incorrectCredentials() {

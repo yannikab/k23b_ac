@@ -16,6 +16,9 @@ import k23b.ac.services.JobDispatcher;
 import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 
+/**
+ * The Action called by the JobsFragment for Job Re-assignment and periodic Job termination. 
+ */
 public class JobsActionsJob implements ActionMode.Callback {
 
     public interface Callback {

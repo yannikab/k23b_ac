@@ -24,6 +24,9 @@ import k23b.ac.services.NetworkManager;
 import k23b.ac.tasks.UserRegisterTask;
 import k23b.ac.util.Settings;
 
+/**
+ *  The Fragment in which the action of Registration is initiated. 
+ */
 public class RegisterFragment extends FragmentBase implements UserRegisterTask.RegisterCallback {
 
     private UserRegisterTask userRegisterTask = null;

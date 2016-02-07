@@ -6,6 +6,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import k23b.ac.services.AssetManager;
 
+/**
+ * Used to load the HTML form of a Result.
+ */
 public class WebViewManager {
 
     private static final String headerAsset = "header.html";
