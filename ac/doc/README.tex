@@ -776,7 +776,9 @@ public void deleteJob(long jobId);
 
 CachedAgentSrv:
 \begin{lstlisting}
-public void createOrUpdate(long agentId, String agentHash, Date timeAccepted, Date timeJobRequest, Date timeTerminated, CachedAgentStatus agentStatus);
+public void createOrUpdate(long agentId, String agentHash,
+    Date timeAccepted, Date timeJobRequest, Date timeTerminated,
+    CachedAgentStatus agentStatus);
 public Set<CachedAgentDao> findAll();
 \end{lstlisting}
 
@@ -806,11 +808,15 @@ public boolean exists(long jobId);
 public Set<CachedJobDao> findAllWithAgentId(long agentId);
 \end{lstlisting}
 
-Κατά τη λήψη των δεδομένων καλείται η μέθοδος createOrUpdate() για κάθε ληφθείσα οντότητα (agent η job). Για την ανάκτηση τους κατά την offline χρήση χρησιμοποιούνται οι μέθοδοι findAll() για τους agents και findAllWithAgentId() για τα jobs. Η οθόνη ρυθμίσεων της εφαρμογής δίνει τη δυνατότητα ενεργοποίησης και απενεργοποίησης της τοπικής αποθήκευσης agents και jobs κατά τη λήψη. Στην περίπτωση που αυτή απενεργοποιηθεί, απλά εμφανίζεται μήνυμα μη σύνδεσης με το δίκτυο σε τυχόν προσπάθεια προβολής agents η jobs κατά την offline λειτουργία.
+Κατά τη λήψη των δεδομένων καλείται η μέθοδος createOrUpdate() για κάθε ληφθείσα οντότητα (agent η job). Για την ανάκτηση τους κατά την offline χρήση χρησιμοποιούνται οι μέθοδοι findAll() για τους agents και findAllWithAgentId() για τα jobs. Η οθόνη ρυθμίσεων της εφαρμογής δίνει τη δυνατότητα ενεργοποίησης και απενεργοποίησης της τοπικής αποθήκευσης agents και jobs κατά τη λήψη. Στην περίπτωση που αυτή απενεργοποιηθεί, απλά εμφανίζεται μήνυμα μη σύνδεσης με το δίκτυο σε τυχόν προσπάθεια προβολής agents η jobs κατά την offline λειτουργία. Η παραπάνω λειτουργικότητα περιγράφεται σχηματικά στο σχήμα που ακολουθεί:
 
 \newpage
 
-
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{caching-offline}
+\centering
+\caption{Η τοπική αποθήκευση agents και jobs για μεταγενέστερη offline χρήση.}
+\end{figure}
 
 \end{sloppypar}
 
