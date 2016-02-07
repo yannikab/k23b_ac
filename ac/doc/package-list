@@ -1,0 +1,14 @@
+k23b.ac
+k23b.ac.activities
+k23b.ac.db.dao
+k23b.ac.db.srv
+k23b.ac.fragments
+k23b.ac.fragments.actions
+k23b.ac.fragments.adapters
+k23b.ac.rest
+k23b.ac.rest.status
+k23b.ac.services
+k23b.ac.services.observer
+k23b.ac.tasks
+k23b.ac.tasks.status
+k23b.ac.util
