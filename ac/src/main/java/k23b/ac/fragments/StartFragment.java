@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,12 @@ public class StartFragment extends Fragment {
 
         final Context context = activity.getApplicationContext();
 
+        Settings.setContext(context);
+
+        Settings.getBaseURI();
+
+        Settings.getCacheAgentsAndJobs();
+
         UserManager.getInstance().setContext(context);
 
         NetworkManager.setContext(context);
@@ -53,6 +61,11 @@ public class StartFragment extends Fragment {
         intent.putExtra("interval", Settings.getSenderThreadInterval());
 
         context.startService(intent);
+
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        activity.registerReceiver(NetworkManager.getInstance(), intentFilter);
     }
 
     @Override
@@ -74,6 +87,9 @@ public class StartFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (getActivity() != null)
+            getActivity().unregisterReceiver(NetworkManager.getInstance());
     }
 
     @Override

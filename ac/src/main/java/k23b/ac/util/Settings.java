@@ -1,5 +1,9 @@
 package k23b.ac.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import k23b.ac.services.Logger;
 
 /**
@@ -8,26 +12,36 @@ import k23b.ac.services.Logger;
  */
 public class Settings {
 
-    static {
+    private static final String defaultServer = "http://ykab.dynu.net:8080";
+    // private static final String defaultServer = "http://192.168.2.7:8080";
 
-        setBaseURI("http://ykab.dynu.net:8080/am/client/");
-        // setBaseURI("http://192.168.2.7:8080/am/client/");
-        Logger.info(Settings.class.getSimpleName(), "baseURI: " + getBaseURI());
+    private static final String serverPath = "/am/client/";
+
+    private static boolean serverLoaded = false;
+    private static boolean cacheAgentsAndJobsLoaded = false;
+
+    static {
 
         setSenderThreadInterval(30);
         Logger.info(Settings.class.getSimpleName(), "senderThreadInterval: " + getSenderThreadInterval());
 
         setLogOutOnSessionExpiry(true);
         Logger.info(Settings.class.getSimpleName(), "logOutOnSessionExpiry: " + getLogOutOnSessionExpiry());
-        
-        setCacheAgentsAndJobs(true);
-        Logger.info(Settings.class.getSimpleName(), "cacheAgentsAndJobs: " + getCacheAgentsAndJobs());
     }
 
-    private static String baseURI;
+    private static Context context;
+
+    public static void setContext(Context context) {
+
+        synchronized (Settings.class) {
+
+            if (Settings.context == null)
+                Settings.context = context;
+        }
+    }
+
     private static int senderThreadInterval;
     private static boolean logOutOnSessionExpiry;
-    private static boolean cacheAgentsAndJobs;
 
     public static int getSenderThreadInterval() {
         return senderThreadInterval;
@@ -38,11 +52,47 @@ public class Settings {
     }
 
     public static String getBaseURI() {
-        return baseURI;
+
+        synchronized (Settings.class) {
+
+            if (context == null)
+                return null;
+
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+            String serverAddress = sp.getString("server_address", null);
+
+            if (serverAddress == null) {
+
+                serverAddress = defaultServer;
+
+                setServerAddress(defaultServer);
+            }
+
+            String baseURI = serverAddress + serverPath;
+
+            if (!serverLoaded) {
+                serverLoaded = true;
+
+                Logger.info(Settings.class.getSimpleName(), "baseURI: " + baseURI);
+            }
+
+            return baseURI;
+        }
     }
 
-    private static void setBaseURI(String baseURI) {
-        Settings.baseURI = baseURI;
+    private static void setServerAddress(String serverAddress) {
+
+        if (context == null)
+            return;
+
+        Logger.info(Settings.class.getSimpleName(), "Setting server address to: " + serverAddress);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Editor editor = sp.edit();
+        editor.putString("server_address", serverAddress);
+        editor.commit();
     }
 
     public static boolean getLogOutOnSessionExpiry() {
@@ -54,10 +104,17 @@ public class Settings {
     }
 
     public static boolean getCacheAgentsAndJobs() {
-        return cacheAgentsAndJobs;
-    }
 
-    private static void setCacheAgentsAndJobs(boolean cacheAgentsAndJobs) {
-        Settings.cacheAgentsAndJobs = cacheAgentsAndJobs;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        boolean cacheAgentsAndJobs = sp.getBoolean("cache_agents_and_jobs", true);
+
+        if (!cacheAgentsAndJobsLoaded) {
+            cacheAgentsAndJobsLoaded = true;
+
+            Logger.info(Settings.class.getSimpleName(), "cacheAgentsAndJobs: " + getCacheAgentsAndJobs());
+        }
+
+        return cacheAgentsAndJobs;
     }
 }

@@ -46,6 +46,11 @@
             android:label="@string/title_activity_assign_job"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
+        <activity
+            android:name="k23b.ac.activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
 
         <service
             android:name="k23b.ac.services.JobDispatcher"

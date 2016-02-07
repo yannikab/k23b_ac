@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -19,7 +17,6 @@ import k23b.ac.fragments.NavigationDrawerFragment;
 import k23b.ac.fragments.ResultsAgentFragment;
 import k23b.ac.fragments.ResultsAllFragment;
 import k23b.ac.services.Logger;
-import k23b.ac.services.NetworkManager;
 import k23b.ac.services.UserManager;
 
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -44,14 +41,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
-                .findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
-        registerReceiver(NetworkManager.getInstance(), intentFilter);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -132,6 +123,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
         case R.id.action_settings:
 
+            Intent intent = new Intent(this, SettingsActivity.class);
+
+            startActivity(intent);
+
             return true;
 
         case R.id.action_logout:
@@ -185,8 +180,6 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     protected void onDestroy() {
 
         Logger.info(this.toString(), "onDestroy()");
-
-        unregisterReceiver(NetworkManager.getInstance());
 
         super.onDestroy();
 

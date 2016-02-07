@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:key="server_address"
+        android:summary="Specifies the server address of the Aggregator Manager to communicate with."
+        android:title="Server address" >
+    </EditTextPreference>
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="cache_agents_and_jobs"
+        android:summary="If enabled, received agents and jobs will be cached and retrieved for offline use."
+        android:title="Use cache for agents and jobs" />
+
+</PreferenceScreen>

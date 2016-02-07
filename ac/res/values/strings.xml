@@ -7,6 +7,7 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_main">Android Client</string>
     <string name="title_activity_assign_job">Assign Job</string>
+    <string name="title_activity_settings">Settings</string>
     <string name="title_fragment_agents">Agents</string>
     <string name="title_fragment_jobs">Jobs</string>
     <string name="title_fragment_results_agent">Agent Results</string>

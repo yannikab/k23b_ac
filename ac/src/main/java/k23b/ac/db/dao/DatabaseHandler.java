@@ -49,7 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if (dbOpenCounter.incrementAndGet() == 1) {
             // Opening new database
-            Log.d(DatabaseHandler.class.getName(), "Opening DB");
+            // Log.d(DatabaseHandler.class.getName(), "Opening DB");
             try {
                 db = instance.getWritableDatabase();
             } catch (SQLiteException e) {
@@ -67,7 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public synchronized void closeDatabase() {
 
         if (dbOpenCounter.decrementAndGet() == 0) {
-            Log.d(DatabaseHandler.class.getName(), "Closing DB");
+            // Log.d(DatabaseHandler.class.getName(), "Closing DB");
             // Closing database
             db.close();
         }
@@ -192,7 +192,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String CACHED_JOBS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + CACHED_JOBS_TABLE + "(" + KEY_CJ_ID
             + " INTEGER PRIMARY KEY NOT NULL," + KEY_CJ_AGENT_ID + " INTEGER NOT NULL," + KEY_CJ_TIME_ASSIGNED + " TEXT NOT NULL," + KEY_CJ_TIME_SENT
-            + " TEXT," + KEY_CJ_PARAMETERS + " TEXT NOT NULL," + KEY_CJ_PERIODIC + " INTEGER NOT NULL," + KEY_CJ_PERIOD + " INTEGER," + KEY_CJ_JOB_STATUS 
+            + " TEXT," + KEY_CJ_PARAMETERS + " TEXT," + KEY_CJ_PERIODIC + " INTEGER NOT NULL," + KEY_CJ_PERIOD + " INTEGER," + KEY_CJ_JOB_STATUS 
             + " TEXT NOT NULL" +")";
 
     public static String getKeyUUsername() {
