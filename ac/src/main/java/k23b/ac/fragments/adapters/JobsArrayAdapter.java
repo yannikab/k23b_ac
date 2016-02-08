@@ -37,8 +37,7 @@ public class JobsArrayAdapter extends ArrayAdapter<Job> {
         TextView textViewInterval = (TextView) convertView.findViewById(R.id.rowJobInterval);
         TextView textViewStatus = (TextView) convertView.findViewById(R.id.rowJobStatus);
 
-        convertView.setBackgroundColor(
-                getContext().getResources().getColor(position % 2 == 0 ? R.color.row_back : R.color.row_back_alt));
+        convertView.setBackgroundColor(getContext().getResources().getColor(position % 2 == 0 ? R.color.row_back : R.color.row_back_alt));
 
         textViewJobId.setText(String.valueOf(j.getJobId()));
         textViewTimeAssigned.setText(j.getFormattedTimeAssigned());

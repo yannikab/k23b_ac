@@ -21,13 +21,11 @@ import k23b.ac.services.UserManager;
 import k23b.ac.util.Settings;
 
 /**
- * The Fragment in which the necessary initialiasation for the services occur and the LoginActivity starts.
+ * The Fragment in which the necessary initialization for the services occur and the LoginActivity starts.
  */
 public class StartFragment extends Fragment {
 
     private boolean initialized = false;
-
-    private boolean firstStart = true;
 
     @Override
     public void onAttach(Activity activity) {
@@ -55,6 +53,8 @@ public class StartFragment extends Fragment {
 
         NetworkManager.setContext(context);
 
+        NetworkManager.getInstance().registerReceiver();
+        
         AssetManager.setContext(context);
 
         DatabaseHandler.setContext(context);
@@ -64,11 +64,6 @@ public class StartFragment extends Fragment {
         intent.putExtra("interval", Settings.getSenderThreadInterval());
 
         context.startService(intent);
-
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
-        activity.registerReceiver(NetworkManager.getInstance(), intentFilter);
     }
 
     @Override
@@ -90,9 +85,6 @@ public class StartFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (getActivity() != null)
-            getActivity().unregisterReceiver(NetworkManager.getInstance());
     }
 
     @Override
@@ -103,10 +95,6 @@ public class StartFragment extends Fragment {
         super.onStart();
 
         Intent intent = new Intent(getActivity(), LoginActivity.class);
-
-        intent.putExtra("firstStart", firstStart);
-
-        firstStart = false;
 
         startActivity(intent);
     }

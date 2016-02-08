@@ -181,7 +181,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + " TEXT PRIMARY KEY NOT NULL," + KEY_U_PASSWORD + " TEXT NOT NULL," + KEY_U_ACTIVE + " INTEGER NOT NULL" + ")";
 
     private static final String JOBS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + JOBS_TABLE + "(" + KEY_J_ID
-            + " INTEGER PRIMARY KEY NOT NULL," + KEY_J_PARAMETERS + " TEXT NOT NULL," + KEY_J_USERNAME
+            + " INTEGER PRIMARY KEY NOT NULL," + KEY_J_PARAMETERS + " TEXT," + KEY_J_USERNAME
             + " TEXT NOT NULL," + KEY_J_AGENT_ID + " INTEGER NOT NULL," + KEY_J_TIME_ASSIGNED + " TEXT NOT NULL,"
             + KEY_J_PERIODIC + " INTEGER NOT NULL," + KEY_J_PERIOD + " INTEGER," + " FOREIGN KEY (" + KEY_J_USERNAME
             + ") REFERENCES " + USERS_TABLE + " (" + KEY_U_USERNAME + "))";

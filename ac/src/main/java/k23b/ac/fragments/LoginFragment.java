@@ -36,7 +36,7 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
     private UserLoginTask userLoginTask = null;
 
-    private boolean firstStart;
+    private static boolean firstStart = true;
 
     public LoginFragment() {
 
@@ -46,8 +46,6 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        this.firstStart = activity.getIntent().getBooleanExtra("firstStart", true);
     }
 
     @Override
@@ -56,8 +54,10 @@ public class LoginFragment extends FragmentBase implements UserLoginTask.LoginCa
 
         setRetainInstance(true);
 
-        if (firstStart)
+        if (firstStart) {
+            firstStart = false;
             checkStatus();
+        }
     }
 
     @Override

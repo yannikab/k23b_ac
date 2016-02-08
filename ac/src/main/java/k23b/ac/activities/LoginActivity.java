@@ -55,4 +55,9 @@ public class LoginActivity extends Activity {
 
         super.onDestroy();
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

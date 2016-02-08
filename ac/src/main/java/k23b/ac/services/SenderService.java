@@ -31,6 +31,9 @@ public class SenderService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if (senderThread != null)
+            return super.onStartCommand(intent, flags, startId);
+
         int interval = intent.getIntExtra("interval", 60);
 
         Logger.info(this.toString(), String.format("Starting job sender thread. (interval=%d)", interval));
@@ -51,6 +54,12 @@ public class SenderService extends Service {
 
         super.onTaskRemoved(rootIntent);
 
+        if (senderThread == null) {
+
+            stopSelf();
+            return;
+        }
+
         Logger.info(this.toString(), "Stopping job sender thread.");
 
         senderThread.interrupt();
@@ -69,5 +78,7 @@ public class SenderService extends Service {
         Logger.info(this.toString(), "Sender service stopping.");
 
         stopSelf();
+
+        NetworkManager.getInstance().unregisterReceiver();
     }
 }

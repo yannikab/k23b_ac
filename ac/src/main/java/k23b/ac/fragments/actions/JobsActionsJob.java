@@ -17,7 +17,7 @@ import k23b.ac.services.Logger;
 import k23b.ac.services.UserManager;
 
 /**
- * The Action called by the JobsFragment for Job Re-assignment and periodic Job termination. 
+ * The Action called by the JobsFragment for Job Re-assignment and periodic Job termination.
  */
 public class JobsActionsJob implements ActionMode.Callback {
 
@@ -121,7 +121,7 @@ public class JobsActionsJob implements ActionMode.Callback {
         Job job = new Job();
         job.setAgentId(j.getAgentId());
         job.setTimeAssigned(new Date(System.currentTimeMillis()));
-        job.setParams(j.getParams());
+        job.setParams(j.getParams() == null ? "" : j.getParams());
         job.setPeriodic(j.getPeriodic());
         job.setPeriod(j.getPeriod());
 

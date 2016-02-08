@@ -19,7 +19,7 @@ public class JobDaoFactory extends JobDao {
 
     public static JobDao fromJob(Job j) {
 
-        return new JobDaoFactory(j.getJobId(), j.getParams(), null, j.getAgentId(), j.getTimeAssigned(),
+        return new JobDaoFactory(j.getJobId(), j.getParams() == null ? "" : j.getParams(), null, j.getAgentId(), j.getTimeAssigned(),
                 j.getPeriodic(), j.getPeriod());
     }
 }

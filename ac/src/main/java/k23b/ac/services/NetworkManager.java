@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
@@ -33,7 +34,7 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
                 NetworkManager.context = context;
         }
     }
-    
+
     /**
      * A getter of the instance of NetworkManager. It initializes the Network Manager on the first call.
      * 
@@ -47,6 +48,29 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
                 instance = new NetworkManager();
 
             return instance;
+        }
+    }
+
+    public void registerReceiver() {
+
+        synchronized (NetworkManager.class) {
+
+            if (context != null) {
+
+                final IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+                context.registerReceiver(NetworkManager.getInstance(), intentFilter);
+            }
+        }
+    }
+
+    public void unregisterReceiver() {
+
+        synchronized (NetworkManager.class) {
+            
+            if (context != null)
+                context.unregisterReceiver(this);
         }
     }
 
@@ -70,6 +94,9 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
 
         synchronized (NetworkManager.class) {
 
+            if (observerList == null)
+                return;
+
             if (observerList.isEmpty())
                 return;
 
@@ -83,11 +110,17 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
     @Override
     public void notifyObservers() {
 
-        for (Observer<State> obs : observerList)
-            obs.update(this, getCurrentState());
+        synchronized (NetworkManager.class) {
 
-        Log.d(NetworkManager.class.getName(), "Observers notified");
+            if (observerList == null)
+                return;
 
+            for (Observer<State> obs : observerList)
+                obs.update(this, getCurrentState());
+
+            Log.d(NetworkManager.class.getName(), "Observers notified");
+
+        }
     }
 
     @Override
@@ -119,10 +152,10 @@ public class NetworkManager extends BroadcastReceiver implements Observable<Stat
             Log.d(NetworkManager.class.getName(), "Network Connection Unavailable!");
             Toast.makeText(context, "Network Unavailable", Toast.LENGTH_SHORT).show();
         }
-        
+
         notifyObservers();
     }
-    
+
     /**
      * Getting the Network connection state.
      * 

@@ -345,6 +345,14 @@ public class ResultsAgentFragment extends FragmentBase implements AgentsReceiveC
 
         showAgents();
 
+        this.selectedAgent = null;
+
+        this.results = null;
+
+        showResults();
+
+        clearOutput();
+
         showProgress(false);
 
         if (getActivity() == null)
